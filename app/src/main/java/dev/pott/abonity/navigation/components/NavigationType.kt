@@ -21,7 +21,7 @@ fun rememberNavigationType(activity: Activity): State<NavigationType> {
     return remember(windowSizeClass) {
         derivedStateOf {
             when {
-                windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded -> {
+                windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded && windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact -> {
                     NavigationType.DRAWER
                 }
 
