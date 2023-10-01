@@ -13,6 +13,7 @@ internal fun Project.configureKotlinJvm() {
         sourceCompatibility = projectJavaVersion
         targetCompatibility = projectJavaVersion
     }
+    configureKotlin()
 }
 
 internal fun Project.configureKotlin() {

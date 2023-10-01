@@ -39,6 +39,14 @@ android {
 
 dependencies {
 
+    implementation(projects.core.local)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
+    implementation(projects.core.entity)
+    implementation(projects.feature.subscription)
+    implementation(projects.feature.settings)
+    implementation(projects.navigation)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

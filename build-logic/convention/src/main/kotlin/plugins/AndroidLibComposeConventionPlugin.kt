@@ -14,9 +14,7 @@ class AndroidLibComposeConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.gradle.jacoco")
-            }
-            extensions.getByType<LibraryAndroidComponentsExtension>().apply {
-                configureJacoco(this)
+                apply("dev.pott.android.lib")
             }
             extensions.getByType<LibraryExtension>().apply {
                 configureAndroidCompose(this)

@@ -1,5 +1,7 @@
 rootProject.name = "Abonity"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google()
@@ -8,6 +10,7 @@ pluginManagement {
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -19,3 +22,18 @@ dependencyResolutionManagement {
 includeBuild("build-logic")
 
 include(":app")
+
+include(
+    ":core:local",
+    ":core:data",
+    ":core:domain",
+    ":core:entity",
+    ":core:test",
+)
+
+include(":navigation")
+
+include(
+    ":feature:subscription",
+    ":feature:settings",
+)

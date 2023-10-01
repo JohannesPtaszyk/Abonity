@@ -22,12 +22,14 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 apply("org.gradle.jacoco")
                 apply("org.jetbrains.kotlin.android")
             }
-
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk =
                     libs.findVersion("targetSdkVersion").get().toString().toInt()
                 configureGradleManagedDevices(this)
+                libraryVariants.all {
+                    generateBuildConfigProvider?.configure { enabled = false }
+                }
             }
             extensions.getByType<LibraryAndroidComponentsExtension>().apply {
                 configureJacoco(this)
@@ -35,7 +37,6 @@ class AndroidLibConventionPlugin : Plugin<Project> {
             dependencies {
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))
-                add("androidTestImplementation", project(":core:testing"))
             }
         }
     }

@@ -1,6 +1,5 @@
 package dev.pott.abonity.navigation
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import dev.pott.abonity.feature.settings.SettingsScreen
 import dev.pott.abonity.feature.settings.SettingsScreenDestination
