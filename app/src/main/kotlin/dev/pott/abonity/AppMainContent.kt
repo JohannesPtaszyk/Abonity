@@ -83,7 +83,7 @@ fun AppMainContent(activity: Activity) {
                         startDestination = NavigationItem.entries.first().destination.route,
                         Modifier.padding(innerPadding)
                     ) {
-                        appNavGraph(navController)
+                        appNavGraph()
                     }
                 }
             )

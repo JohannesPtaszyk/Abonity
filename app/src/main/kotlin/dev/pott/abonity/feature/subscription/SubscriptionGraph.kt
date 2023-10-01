@@ -11,7 +11,7 @@ import dev.pott.abonity.feature.subscription.overview.OverviewScreen
 import dev.pott.abonity.navigation.destination.composable
 import dev.pott.abonity.navigation.destination.navigation
 
-fun NavGraphBuilder.subscriptionGraph(navController: NavController) {
+fun NavGraphBuilder.subscriptionGraph() {
     navigation(SubscriptionNavigationDestination) {
         composable(OverviewScreenDestination) {
             OverviewScreen()

@@ -7,7 +7,7 @@ import dev.pott.abonity.feature.settings.SettingsScreenDestination
 import dev.pott.abonity.feature.subscription.subscriptionGraph
 import dev.pott.abonity.navigation.destination.composable
 
-fun NavGraphBuilder.appNavGraph(navController: NavController) {
-    subscriptionGraph(navController)
+fun NavGraphBuilder.appNavGraph() {
+    subscriptionGraph()
     composable(SettingsScreenDestination) { SettingsScreen() }
 }
