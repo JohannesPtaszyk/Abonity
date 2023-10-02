@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.pott.abonity.theme
 
 import androidx.compose.ui.graphics.Color

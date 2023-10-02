@@ -1,0 +1,6 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: true
+
+Compose:
+  active: false

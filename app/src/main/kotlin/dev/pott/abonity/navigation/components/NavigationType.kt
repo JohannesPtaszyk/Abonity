@@ -3,6 +3,7 @@ package dev.pott.abonity.navigation.components
 import android.app.Activity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -21,15 +22,15 @@ fun rememberNavigationType(activity: Activity): State<NavigationType> {
     return remember(windowSizeClass) {
         derivedStateOf {
             when {
-                windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded && windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact -> {
+                isDrawer(windowSizeClass) -> {
                     NavigationType.DRAWER
                 }
 
-                windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium || windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact -> {
+                isNavigationRail(windowSizeClass) -> {
                     NavigationType.RAIL
                 }
 
-                windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact -> {
+                isBottomNavigation(windowSizeClass) -> {
                     NavigationType.BOTTOM
                 }
 
@@ -39,4 +40,18 @@ fun rememberNavigationType(activity: Activity): State<NavigationType> {
             }
         }
     }
+}
+
+private fun isBottomNavigation(windowSizeClass: WindowSizeClass): Boolean {
+    return windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+}
+
+private fun isNavigationRail(windowSizeClass: WindowSizeClass): Boolean {
+    return windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium ||
+        windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact
+}
+
+private fun isDrawer(windowSizeClass: WindowSizeClass): Boolean {
+    return windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+        windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
 }

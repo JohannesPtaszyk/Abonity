@@ -12,6 +12,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.process.CommandLineArgumentProvider
 import java.io.File
 
+@Suppress("unused")
 class AndroidRoomConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {

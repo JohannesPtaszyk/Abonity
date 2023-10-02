@@ -1,9 +1,11 @@
 package plugins
 
+import configurations.applyDetekt
 import configurations.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+@Suppress("unused")
 class JvmLibConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -12,6 +14,7 @@ class JvmLibConventionPlugin : Plugin<Project> {
                 apply("dev.pott.android.lint")
             }
             configureKotlinJvm()
+            applyDetekt()
         }
     }
 }

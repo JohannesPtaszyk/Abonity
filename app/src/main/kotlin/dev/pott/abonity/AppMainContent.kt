@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -15,7 +16,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -29,7 +32,7 @@ import dev.pott.abonity.navigation.components.rememberNavigationType
 import dev.pott.abonity.theme.AppTheme
 
 @Composable
-fun AppMainContent(activity: Activity) {
+fun AppMainContent(activity: Activity, modifier: Modifier = Modifier) {
     AppTheme {
         val navigationType by rememberNavigationType(activity)
         val navController = rememberNavController()
@@ -46,6 +49,7 @@ fun AppMainContent(activity: Activity) {
             }
         }
         Scaffold(
+            modifier = modifier,
             bottomBar = {
                 AnimatedVisibility(
                     navigationType == NavigationType.BOTTOM,
@@ -56,37 +60,73 @@ fun AppMainContent(activity: Activity) {
                 }
             }
         ) { innerPadding ->
-            PermanentNavigationDrawer(
-                drawerContent = {
-                    AnimatedContent(
-                        navigationType,
-                        label = "NavigationTypeTransition"
-                    ) { targetNavigationType ->
-                        when (targetNavigationType) {
-                            NavigationType.DRAWER -> {
-                                AppPermanentDrawerSheet(tabs, selectedTab, navController)
-                            }
-
-                            NavigationType.RAIL -> {
-                                AppNavigationRail(tabs, selectedTab, navController)
-                            }
-
-                            NavigationType.BOTTOM -> {
-                                // Bottom bar will be rendered in scaffold
-                            }
-                        }
-                    }
-                },
-                content = {
-                    NavHost(
-                        navController = navController,
-                        startDestination = NavigationItem.entries.first().destination.route,
-                        Modifier.padding(innerPadding)
-                    ) {
-                        appNavGraph()
-                    }
-                }
+            AppMainScaffoldContent(
+                navigationType,
+                tabs,
+                selectedTab,
+                navController,
+                innerPadding
             )
         }
     }
+}
+
+@Suppress("LongParameterList")
+@Composable
+private fun AppMainScaffoldContent(
+    navigationType: NavigationType,
+    tabs: Array<NavigationItem>,
+    selectedTab: NavigationItem?,
+    navController: NavHostController,
+    innerPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    PermanentNavigationDrawer(
+        modifier = modifier,
+        drawerContent = {
+            AnimatedContent(
+                navigationType,
+                label = "NavigationTypeTransition"
+            ) { targetNavigationType ->
+                when (targetNavigationType) {
+                    NavigationType.DRAWER -> {
+                        AppPermanentDrawerSheet(
+                            tabs,
+                            selectedTab,
+                            navController,
+                            Modifier.padding(
+                                horizontal = 12.dp,
+                                vertical = 16.dp
+                            )
+                        )
+                    }
+
+                    NavigationType.RAIL -> {
+                        AppNavigationRail(
+                            tabs,
+                            selectedTab,
+                            navController,
+                            Modifier.padding(
+                                horizontal = 12.dp,
+                                vertical = 16.dp
+                            )
+                        )
+                    }
+
+                    NavigationType.BOTTOM -> {
+                        // Bottom bar will be rendered in scaffold
+                    }
+                }
+            }
+        },
+        content = {
+            NavHost(
+                navController = navController,
+                startDestination = NavigationItem.entries.first().destination.route,
+                Modifier.padding(innerPadding)
+            ) {
+                appNavGraph()
+            }
+        }
+    )
 }

@@ -4,6 +4,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
+import configurations.applyDetekt
 import configurations.configureAndroidCompose
 import configurations.configureGradleManagedDevices
 import configurations.configureJacoco
@@ -14,6 +15,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
+@Suppress("unused")
 class AndroidAppConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -54,7 +56,8 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("firebase.crashlytics").get())
                 "implementation"(libs.findLibrary("firebase.performance").get())
             }
+
+            applyDetekt()
         }
     }
-
 }

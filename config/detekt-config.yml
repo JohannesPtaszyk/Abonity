@@ -1,0 +1,9 @@
+build:
+  maxIssues: 0
+  weights:
+    formatting: 1 # maxIssues + 1 so formatting issues will always fail
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'

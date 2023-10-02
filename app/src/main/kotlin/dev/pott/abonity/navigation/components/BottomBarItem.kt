@@ -5,13 +5,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import dev.pott.abonity.navigation.NavigationItem
 
 @Composable
-fun RowScope.BottomBarItem(navigationItem: NavigationItem, selected: Boolean, onClick: () -> Unit) {
+fun RowScope.BottomBarItem(
+    navigationItem: NavigationItem,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     NavigationBarItem(
+        modifier = modifier,
         selected = selected,
         onClick = onClick,
         icon = {

@@ -13,6 +13,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.kotlin
 
+@Suppress("unused")
 class AndroidLibConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {

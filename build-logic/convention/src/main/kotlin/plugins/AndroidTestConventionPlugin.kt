@@ -1,3 +1,5 @@
+package plugins
+
 import com.android.build.gradle.TestExtension
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
 import configurations.configureGradleManagedDevices
@@ -6,6 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+@Suppress("unused")
 class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
@@ -22,5 +25,4 @@ class AndroidTestConventionPlugin : Plugin<Project> {
             }
         }
     }
-
 }

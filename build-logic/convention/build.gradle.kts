@@ -17,6 +17,7 @@ kotlin {
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.detekt.plugin)
     compileOnly(libs.firebase.crashlytics.gradlePlugin)
     compileOnly(libs.firebase.performance.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
@@ -56,6 +57,10 @@ gradlePlugin {
         register("JvmLibConventionPlugin") {
             id = "dev.pott.jvm.lib"
             implementationClass = "plugins.JvmLibConventionPlugin"
+        }
+        register("ProjectConventionPlugin") {
+            id = "dev.pott.project"
+            implementationClass = "plugins.ProjectConventionPlugin"
         }
     }
 }
