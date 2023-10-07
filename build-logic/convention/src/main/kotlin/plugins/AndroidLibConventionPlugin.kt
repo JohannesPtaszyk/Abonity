@@ -3,8 +3,10 @@ package plugins
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
+import configurations.applyDetekt
 import configurations.configureGradleManagedDevices
 import configurations.configureJacoco
+import configurations.configureKotlinJvm
 import extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -35,6 +37,8 @@ class AndroidLibConventionPlugin : Plugin<Project> {
             extensions.getByType<LibraryAndroidComponentsExtension>().apply {
                 configureJacoco(this)
             }
+            configureKotlinJvm()
+            applyDetekt()
             dependencies {
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))

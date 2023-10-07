@@ -29,7 +29,7 @@ import dev.pott.abonity.app.navigation.components.AppNavigationRail
 import dev.pott.abonity.app.navigation.components.AppPermanentDrawerSheet
 import dev.pott.abonity.app.navigation.components.NavigationType
 import dev.pott.abonity.app.navigation.components.rememberNavigationType
-import dev.pott.abonity.app.theme.AppTheme
+import dev.pott.abonity.core.ui.theme.AppTheme
 
 @Composable
 fun AppMainContent(activity: Activity, modifier: Modifier = Modifier) {

@@ -10,12 +10,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 
+@Suppress("MaxLineLength", "ParameterWrapping")
 fun NavGraphBuilder.composable(
     destination: Destination<*>,
     enterTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
     exitTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
-    popEnterTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = enterTransition,
-    popExitTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? = exitTransition,
+    popEnterTransition:
+    (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? = enterTransition,
+    popExitTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
+        exitTransition,
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit
 ) {
     composable(
@@ -40,4 +43,3 @@ fun NavGraphBuilder.navigation(
         builder = builder
     )
 }
-

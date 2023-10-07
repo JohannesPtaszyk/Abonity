@@ -41,7 +41,7 @@ data class SubscriptionEntity(
     val color: String,
 ) {
     init {
-        if(paymentType == LocalPaymentType.PERIODICALLY) {
+        if (paymentType == LocalPaymentType.PERIODICALLY) {
             checkNotNull(period) {
                 "Period must be set for periodically payment type"
             }

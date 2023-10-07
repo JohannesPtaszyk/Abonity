@@ -3,7 +3,6 @@ package dev.pott.abonity
 import dev.pott.abonity.core.domain.SubscriptionLocalDataSource
 import dev.pott.abonity.core.entity.Subscription
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 
 class FakeSubscriptionLocalDataSource(
     private val testSubscriptionFlow: Flow<List<Subscription>>

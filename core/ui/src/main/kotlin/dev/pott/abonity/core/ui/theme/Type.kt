@@ -1,4 +1,4 @@
-package dev.pott.abonity.app.theme
+package dev.pott.abonity.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,5 +1,3 @@
 package dev.pott.abonity.core.local.db
 
-object AppDatabase {
-
-}
+object AppDatabase

@@ -40,7 +40,7 @@ abstract class Destination<T>(val baseRoute: String) {
     }
 }
 
-open class NoArgDestination(baseRoute: String): Destination<Nothing>(baseRoute) {
+open class NoArgDestination(baseRoute: String) : Destination<Nothing>(baseRoute) {
 
     override val arguments: List<NamedNavArgument> = emptyList()
 

@@ -27,6 +27,7 @@ include(
     ":core:local",
     ":core:domain",
     ":core:entity",
+    ":core:ui",
     ":core:test",
 )
 
