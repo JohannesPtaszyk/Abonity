@@ -25,7 +25,6 @@ include(":app")
 
 include(
     ":core:local",
-    ":core:data",
     ":core:domain",
     ":core:entity",
     ":core:test",

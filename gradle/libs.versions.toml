@@ -4,7 +4,7 @@ targetSdkVersion = "34"
 minSdkVersion = "21"
 
 androidDesugarJdkLibs = "2.0.3"
-androidGradlePlugin = "8.1.1"
+androidGradlePlugin = "8.1.2"
 androidxActivity = "1.8.0-rc01"
 androidxAppCompat = "1.6.1"
 androidxComposeBom = "2023.09.02"
@@ -27,9 +27,11 @@ androidxTestRunner = "1.5.2"
 androidxTracing = "1.1.0"
 androidxUiAutomator = "2.2.0"
 androidxWindowManager = "1.1.0"
-assertK = "0.27.0"
+assertk = "0.27.0"
+arrow = "1.2.1"
 detekt = "1.23.1"
 detektComposeRules = "0.2.2"
+faker = "1.14.0"
 firebaseBom = "32.3.1"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
@@ -39,6 +41,7 @@ googleOssPlugin = "0.10.6"
 hilt = "2.48"
 hiltExt = "1.0.0"
 jacoco = "0.8.7"
+javaxInject = "1"
 junitBom = "5.10.0"
 kotlin = "1.9.10"
 kotlinxCoroutines = "1.7.3"
@@ -85,10 +88,14 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxUiAutomator" }
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 androidx-window-manager = { module = "androidx.window:window", version.ref = "androidxWindowManager" }
-assertk = { group = " com.willowtreeapps.assertk", name = "assertk" }
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-detekt-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
-detekt-composeRules = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRules" }
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+arrow-bom = { group = "io.arrow-kt", name = "arrow-stack", version.ref = "arrow" }
+arrow-core = { group = "io.arrow-kt", name = "arrow-core" }
+arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+detekt-composeRules = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektComposeRules" }
+faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "faker" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
@@ -100,13 +107,17 @@ google-oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-lic
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junitBom" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }
 junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }

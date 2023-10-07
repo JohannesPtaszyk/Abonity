@@ -26,6 +26,8 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("dev.pott.android.lint")
                 apply("org.gradle.jacoco")
                 apply("org.jetbrains.kotlin.android")
+                apply("com.google.gms.google-services")
+                apply("com.google.android.gms.oss-licenses-plugin")
             }
 
             extensions.configure<ApplicationExtension> {

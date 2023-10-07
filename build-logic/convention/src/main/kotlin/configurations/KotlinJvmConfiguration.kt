@@ -22,11 +22,24 @@ internal fun Project.configureKotlin() {
         kotlinOptions {
             jvmTarget = projectJavaVersion.toString()
             allWarningsAsErrors = true
-            freeCompilerArgs = freeCompilerArgs + listOf(
+            freeCompilerArgs += listOf(
                 "-opt-in=kotlin.RequiresOptIn",
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-opt-in=kotlinx.coroutines.FlowPreview",
             )
+        }
+
+        configurations.configureEach {
+            incoming.afterResolve {
+                dependencies.forEach {
+                    if (it.name.contains("kotlinx.coroutines")) {
+                        kotlinOptions {
+                            freeCompilerArgs += listOf(
+                                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                                "-opt-in=kotlinx.coroutines.FlowPreview",
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

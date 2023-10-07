@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.pott.abonity.feature.subscription"
+    namespace = "dev.pott.abonity.feature.navigation"
 }
 
 dependencies {

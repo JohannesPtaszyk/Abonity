@@ -1,11 +1,10 @@
 plugins {
     id("dev.pott.android.app")
     id("dev.pott.hilt")
-    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
-    namespace = "dev.pott.abonity"
+    namespace = "dev.pott.abonity.app"
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -40,7 +39,6 @@ android {
 dependencies {
 
     implementation(projects.core.local)
-    implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.core.entity)
     implementation(projects.feature.subscription)
@@ -58,7 +56,9 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window.manager)
+    implementation(libs.google.oss.licenses)
 
+    implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
     debugImplementation(libs.androidx.compose.ui.tooling)

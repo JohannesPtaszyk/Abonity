@@ -7,3 +7,20 @@ naming:
   FunctionNaming:
     ignoreAnnotated:
       - 'Composable'
+  FunctionMaxLength:
+    active: true
+    excludes: [ '**/test/**', '**/androidTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    maximumFunctionNameLength: 80
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9]*'
+
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+  UnusedPrivateProperty:
+    ignoreAnnotated:
+      - 'Preview'
