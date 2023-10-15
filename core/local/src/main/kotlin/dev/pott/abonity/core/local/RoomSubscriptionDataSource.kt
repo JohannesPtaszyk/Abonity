@@ -68,7 +68,7 @@ class RoomSubscriptionDataSource @Inject constructor(
                     LocalPaymentPeriod.MONTHS -> PaymentPeriod.MONTHS
                     LocalPaymentPeriod.YEARS -> PaymentPeriod.YEARS
                 }
-                PaymentType.Periodically(nonNullPeriodCount, paymentPeriod)
+                PaymentType.Periodic(nonNullPeriodCount, paymentPeriod)
             }
         }
     }

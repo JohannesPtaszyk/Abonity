@@ -1,11 +1,8 @@
 package dev.pott.abonity.app.navigation.components
 
-import android.app.Activity
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -15,10 +12,8 @@ enum class NavigationType {
     DRAWER, RAIL, BOTTOM
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun rememberNavigationType(activity: Activity): State<NavigationType> {
-    val windowSizeClass = calculateWindowSizeClass(activity)
+fun rememberNavigationType(windowSizeClass: WindowSizeClass): State<NavigationType> {
     return remember(windowSizeClass) {
         derivedStateOf {
             when {

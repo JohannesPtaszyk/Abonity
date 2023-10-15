@@ -8,7 +8,7 @@ import org.junit.jupiter.api.assertThrows
 class PaymentTypeTest {
 
     @Nested
-    inner class Periodically {
+    inner class Periodic {
 
         @TestFactory
         fun `PaymentType constructor throws for period count below 1`(): List<DynamicTest> {
@@ -22,7 +22,7 @@ class PaymentTypeTest {
                         "WHEN invoking constructor THEN throws IllegalArgumentException"
                 ) {
                     assertThrows<IllegalStateException> {
-                        PaymentType.Periodically(
+                        PaymentType.Periodic(
                             periodCount = it.first,
                             period = it.second
                         )

@@ -31,7 +31,7 @@ class RoomSubscriptionDataSourceTest {
                     name = "Name Periodic",
                     description = "Description Periodic",
                     paymentInfo = createTestPaymentInfo(
-                        type = PaymentType.Periodically(
+                        type = PaymentType.Periodic(
                             periodCount = 1,
                             period = PaymentPeriod.MONTHS,
                         )

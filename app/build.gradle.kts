@@ -1,6 +1,7 @@
 plugins {
     id("dev.pott.android.app")
     id("dev.pott.hilt")
+    id("dev.pott.android.room")
 }
 
 android {

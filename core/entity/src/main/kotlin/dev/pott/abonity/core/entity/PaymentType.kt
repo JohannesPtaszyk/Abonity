@@ -4,7 +4,7 @@ sealed interface PaymentType {
 
     data object OneTime : PaymentType
 
-    data class Periodically(
+    data class Periodic(
         val periodCount: Int,
         val period: PaymentPeriod,
     ) : PaymentType {

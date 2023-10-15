@@ -9,7 +9,7 @@ import dev.pott.abonity.app.navigation.navigateTabItem
 
 @Composable
 fun AppPermanentDrawerSheet(
-    tabs: Array<NavigationItem>,
+    tabs: List<NavigationItem>,
     selectedTab: NavigationItem?,
     navController: NavHostController,
     modifier: Modifier = Modifier
