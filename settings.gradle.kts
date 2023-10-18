@@ -31,6 +31,10 @@ include(
     ":core:test",
 )
 
+include(
+    ":common:test",
+)
+
 include(":navigation")
 
 include(

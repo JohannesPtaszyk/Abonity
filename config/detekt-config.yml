@@ -13,8 +13,7 @@ naming:
     maximumFunctionNameLength: 80
   TopLevelPropertyNaming:
     constantPattern: '[A-Z][A-Za-z0-9]*'
-  PrivatePropertyNaming:
-    constantPattern: '[A-Z][A-Za-z0-9]*'
+    privatePropertyPattern: '[A-Z][A-Za-z0-9]*'
 
 complexity:
   LongParameterList:

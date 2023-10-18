@@ -19,7 +19,7 @@ class FakeSubscriptionDao(
         entities.trySendBlocking(initialEntities)
     }
 
-    override fun upsertSubscription(subscription: SubscriptionEntity) {
+    override suspend fun upsertSubscription(subscription: SubscriptionEntity) {
         val currentEntities = entities.tryReceive().getOrThrow().toMutableList()
         val indexOfEntity =
             currentEntities.indexOfFirst { it.id == subscription.id }
