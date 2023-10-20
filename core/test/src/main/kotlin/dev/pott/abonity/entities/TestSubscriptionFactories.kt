@@ -14,14 +14,12 @@ fun createTestSubscription(
     name: String = "Test Subscription",
     description: String = "Test Description",
     paymentInfo: PaymentInfo = createTestPaymentInfo(),
-    color: HexColor = HexColor("#FFFFFF"),
 ): Subscription {
     return Subscription(
         id,
         name,
         description,
         paymentInfo,
-        color
     )
 }
 

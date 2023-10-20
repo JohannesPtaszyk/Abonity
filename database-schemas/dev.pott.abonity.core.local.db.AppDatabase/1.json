@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cbd610bc862df555cbd335180940a3f1",
+    "identityHash": "a5c7c0ae60180c6da12f68830cb96bf8",
     "entities": [
       {
         "tableName": "subscription_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `first_payment_local_date` TEXT NOT NULL, `payment_type` TEXT NOT NULL, `period_count` INTEGER, `period` TEXT, `color` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `first_payment_local_date` TEXT NOT NULL, `payment_type` TEXT NOT NULL, `period_count` INTEGER, `period` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -61,12 +61,6 @@
             "columnName": "period",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "color",
-            "columnName": "color",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -82,7 +76,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cbd610bc862df555cbd335180940a3f1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a5c7c0ae60180c6da12f68830cb96bf8')"
     ]
   }
 }

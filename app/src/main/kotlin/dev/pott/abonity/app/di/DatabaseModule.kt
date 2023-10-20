@@ -40,7 +40,6 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                        "#A12312"
                     )
                 )
                 dao.upsertSubscription(
@@ -54,7 +53,6 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                        "#A12312"
                     )
                 )
                 dao.upsertSubscription(
@@ -68,7 +66,6 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                        "#497E76"
                     )
                 )
                 dao.upsertSubscription(
@@ -78,11 +75,10 @@ object DatabaseModule {
                         "Ffürhstück füür die Arbeit im Büro",
                         4.78,
                         "EUR",
-                        "2023-12-12",
+                        "2022-12-12",
                         LocalPaymentType.PERIODICALLY,
                         3,
                         LocalPaymentPeriod.DAYS,
-                        "#8BC34A"
                     )
                 )
                 dao.upsertSubscription(
@@ -96,7 +92,6 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         2,
                         LocalPaymentPeriod.WEEKS,
-                        "#42A5F5"
                     )
                 )
                 dao.upsertSubscription(
@@ -106,11 +101,10 @@ object DatabaseModule {
                         "Ich brauche ein neues Macbook",
                         1999.99,
                         "USD",
-                        "2024-12-12",
+                        "2021-12-12",
                         LocalPaymentType.ONE_TIME,
                         null,
                         null,
-                        "#FF5733"
                     )
                 )
             }

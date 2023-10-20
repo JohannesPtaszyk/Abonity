@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="payment_period_days">
+        <item quantity="one">%1$s /\u00A0day</item>
+        <item quantity="other">%1$s /\u00A0%2$d\u00A0days</item>
+    </plurals>
+    <plurals name="payment_period_weeks">
+        <item quantity="one">%1$s /\u00A0week</item>
+        <item quantity="other">%1$s /\u00A0%2$d\u00A0weeks</item>
+    </plurals>
+    <plurals name="payment_period_months">
+        <item quantity="one">%1$s /\u00A0month</item>
+        <item quantity="other">%1$s /\u00A0%2$d\u00A0months</item>
+    </plurals>
+    <plurals name="payment_period_years">
+        <item quantity="one">%1$s /\u00A0year</item>
+        <item quantity="other">%1$s /\u00A0%2$d\u00A0years</item>
+    </plurals>
+</resources>

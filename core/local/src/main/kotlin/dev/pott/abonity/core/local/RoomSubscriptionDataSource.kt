@@ -40,7 +40,6 @@ class RoomSubscriptionDataSource @Inject constructor(
                     name = entity.name,
                     description = entity.description,
                     paymentInfo = paymentInfo,
-                    color = HexColor(entity.color),
                 )
             }
         }

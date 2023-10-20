@@ -9,13 +9,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -46,9 +46,14 @@ fun AppMainContent(activity: Activity, modifier: Modifier = Modifier) {
                     enter = slideInVertically { it } + fadeIn(),
                     exit = slideOutVertically { it } + fadeOut()
                 ) {
-                    AppBottomBar(state.navigationItems, state.selectedNavigationItem, navController)
+                    AppBottomBar(
+                        state.navigationItems,
+                        state.selectedNavigationItem,
+                        navController
+                    )
                 }
-            }
+            },
+            contentWindowInsets = WindowInsets(0,0,0,0)
         ) { innerPadding ->
             AppMainScaffoldContent(
                 state,
@@ -106,14 +111,12 @@ private fun AppMainScaffoldContent(
             }
         },
         content = {
-            key(state) {
-                NavHost(
-                    navController = navController,
-                    startDestination = NavigationItem.entries.first().destination.route,
-                    Modifier.padding(innerPadding)
-                ) {
-                    appNavGraph(state)
-                }
+            NavHost(
+                navController = navController,
+                startDestination = NavigationItem.entries.first().destination.route,
+                Modifier.padding(innerPadding)
+            ) {
+                appNavGraph(state)
             }
         }
     )

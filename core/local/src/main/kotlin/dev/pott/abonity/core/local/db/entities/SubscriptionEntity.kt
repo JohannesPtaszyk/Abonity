@@ -34,11 +34,6 @@ data class SubscriptionEntity(
      */
     @ColumnInfo("period")
     val period: LocalPaymentPeriod?,
-    /**
-     * Color as Hex representation
-     */
-    @ColumnInfo("color")
-    val color: String,
 ) {
     init {
         if (paymentType == LocalPaymentType.PERIODICALLY) {

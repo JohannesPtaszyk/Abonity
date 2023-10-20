@@ -1,8 +1,13 @@
 package dev.pott.abonity.feature.subscription.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -12,8 +17,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -23,6 +32,8 @@ import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.preview.MultiPreview
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.getDefaultLocale
 import dev.pott.abonity.feature.subscription.overview.SubscriptionOverviewItem
@@ -39,25 +50,50 @@ fun SubscriptionOverviewCard(
 ) {
     val subscription = item.subscription
     Card(modifier = modifier, onClick = onClick) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row {
-                Column {
-                    Text(
-                        text = subscription.name,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = subscription.description,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-                Price(item.periodPrice)
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f, fill = false)) {
+                Text(
+                    text = subscription.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = subscription.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
-            val paymentInfo = subscription.paymentInfo
-            val paymentType = paymentInfo.type
-            if (paymentType is PaymentType.Periodic) {
-                PeriodicPriceInfo(paymentType, paymentInfo)
-            }
+            Spacer(Modifier.width(8.dp))
+            PaymentInfo(item.subscription.paymentInfo, item.periodPrice)
+        }
+        Spacer(modifier = modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun PaymentInfo(
+    paymentInfo: PaymentInfo, periodPrice: Price, modifier: Modifier = Modifier
+) {
+    Column(horizontalAlignment = Alignment.End) {
+        val formattedPeriodPrice by rememberFormattedPrice(
+            periodPrice.value, periodPrice.currency
+        )
+        Text(
+            text = formattedPeriodPrice,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier,
+            maxLines = 1
+        )
+
+        val paymentType = paymentInfo.type
+        if (paymentType is PaymentType.Periodic && paymentInfo.price != periodPrice) {
+            PeriodicPriceInfo(paymentType, paymentInfo)
         }
     }
 }
@@ -65,41 +101,53 @@ fun SubscriptionOverviewCard(
 @Composable
 private fun PeriodicPriceInfo(
     paymentType: PaymentType.Periodic,
-    paymentInfo: PaymentInfo
+    paymentInfo: PaymentInfo,
+    modifier: Modifier = Modifier,
 ) {
-    val period by remember {
-        derivedStateOf {
-            when (paymentType.period) {
-                PaymentPeriod.DAYS -> "days"
-                PaymentPeriod.WEEKS -> "weeks"
-                PaymentPeriod.MONTHS -> "months"
-                PaymentPeriod.YEARS -> "years"
-            }
-        }
-    }
     val formattedPeriodPrice by rememberFormattedPrice(
         paymentInfo.price.value,
         paymentInfo.price.currency
     )
-    Text(
-        style = MaterialTheme.typography.labelSmall,
-        text = "$formattedPeriodPrice every ${paymentType.periodCount} $period"
-    )
-}
+    val period = when (paymentType.period) {
+        PaymentPeriod.DAYS -> pluralStringResource(
+            id = R.plurals.payment_period_days,
+            count = paymentType.periodCount,
+            formattedPeriodPrice,
+            paymentType.periodCount,
+        )
 
-@Composable
-private fun Price(
-    periodPrice: Price,
-    modifier: Modifier = Modifier
-) {
-    val formattedPeriodPrice by rememberFormattedPrice(
-        periodPrice.value,
-        periodPrice.currency
-    )
+        PaymentPeriod.WEEKS -> pluralStringResource(
+            id = R.plurals.payment_period_weeks,
+            count = paymentType.periodCount,
+            formattedPeriodPrice,
+            paymentType.periodCount,
+        )
+
+        PaymentPeriod.MONTHS -> pluralStringResource(
+            id = R.plurals.payment_period_months,
+            count = paymentType.periodCount,
+            formattedPeriodPrice,
+            paymentType.periodCount,
+        )
+
+        PaymentPeriod.YEARS -> pluralStringResource(
+            id = R.plurals.payment_period_weeks,
+            count = paymentType.periodCount,
+            formattedPeriodPrice,
+            paymentType.periodCount,
+        )
+    }
     Text(
-        text = formattedPeriodPrice,
-        style = MaterialTheme.typography.titleLarge,
-        modifier = modifier
+        style = MaterialTheme.typography.labelSmall.copy(
+            lineBreak = LineBreak(
+                LineBreak.Strategy.HighQuality,
+                LineBreak.Strictness.Strict,
+                wordBreak = LineBreak.WordBreak.Phrase
+            )
+        ),
+        text = "$period",
+        modifier = modifier,
+        textAlign = TextAlign.End,
     )
 }
 
@@ -118,7 +166,7 @@ private fun rememberFormattedPrice(
     }
 }
 
-@Preview
+@MultiPreview
 @Composable
 fun SubscriptionCardPreview(
     @PreviewParameter(PreviewProvider::class) item: SubscriptionOverviewItem
@@ -138,35 +186,26 @@ private class PreviewProvider :
                     Subscription(
                         0,
                         "Periodic Subscription",
-                        "This is a periodic subscription",
+                        "This is a periodic subscription with a really long description, because we need to make sure to fit every kind of text into this ui!",
                         PaymentInfo(
                             Price(9999.11, currency),
                             LocalDate(2022, 12, 12),
                             PaymentType.Periodic(
-                                1,
-                                PaymentPeriod.MONTHS
+                                1, PaymentPeriod.MONTHS
                             )
                         ),
-                        HexColor("#FF5733")
-                    ),
-                    Price(999.11, currency)
-                ),
-                SubscriptionOverviewItem(
+                    ), Price(999.11, currency)
+                ), SubscriptionOverviewItem(
                     Subscription(
                         0,
                         "One Time Payment",
                         "This is a one time payment",
                         PaymentInfo(
                             Price(
-                                0.99,
-                                Currency.getInstance("USD")
-                            ),
-                            LocalDate(1999, 1, 1),
-                            PaymentType.OneTime
+                                0.99, Currency.getInstance("USD")
+                            ), LocalDate(1999, 1, 1), PaymentType.OneTime
                         ),
-                        HexColor("#FF6933")
-                    ),
-                    Price(0.99, Currency.getInstance("USD"))
+                    ), Price(0.99, Currency.getInstance("USD"))
                 )
             )
         }
