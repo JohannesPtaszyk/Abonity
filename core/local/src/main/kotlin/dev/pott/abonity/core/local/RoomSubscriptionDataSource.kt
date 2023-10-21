@@ -1,15 +1,16 @@
 package dev.pott.abonity.core.local
 
 import dev.pott.abonity.core.domain.SubscriptionLocalDataSource
-import dev.pott.abonity.core.entity.HexColor
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.local.db.SubscriptionDao
 import dev.pott.abonity.core.local.db.entities.LocalPaymentPeriod
 import dev.pott.abonity.core.local.db.entities.LocalPaymentType
+import dev.pott.abonity.core.local.db.entities.SubscriptionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
@@ -22,27 +23,35 @@ class RoomSubscriptionDataSource @Inject constructor(
     override fun getSubscriptionFlow(): Flow<List<Subscription>> {
         return dao.getSubscriptionFlow().map { subscriptions ->
             subscriptions.map { entity ->
-                val currency = Currency.getInstance(entity.currency)
-                val price = Price(entity.price, currency)
-                val firstPayment = LocalDate.parse(entity.firstPaymentLocalDate)
-                val paymentType = entity.paymentType.toDomain(
-                    periodCount = entity.periodCount,
-                    period = entity.period,
-                )
-                val paymentInfo = PaymentInfo(
-                    price = price,
-                    firstPayment = firstPayment,
-                    type = paymentType
-                )
-
-                Subscription(
-                    id = entity.id,
-                    name = entity.name,
-                    description = entity.description,
-                    paymentInfo = paymentInfo,
-                )
+                entity.toDomain()
             }
         }
+    }
+
+    override fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription> {
+        return dao.getSubscription(subscriptionId.id).map { it.toDomain() }
+    }
+
+    private fun SubscriptionEntity.toDomain(): Subscription {
+        val currency = Currency.getInstance(currency)
+        val price = Price(price, currency)
+        val firstPayment = LocalDate.parse(firstPaymentLocalDate)
+        val paymentType = paymentType.toDomain(
+            periodCount = periodCount,
+            period = period,
+        )
+        val paymentInfo = PaymentInfo(
+            price = price,
+            firstPayment = firstPayment,
+            type = paymentType
+        )
+
+        return Subscription(
+            id = SubscriptionId(id),
+            name = name,
+            description = description,
+            paymentInfo = paymentInfo,
+        )
     }
 
     private fun LocalPaymentType.toDomain(

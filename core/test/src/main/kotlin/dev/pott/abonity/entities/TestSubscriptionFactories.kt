@@ -1,8 +1,8 @@
 package dev.pott.abonity.entities
 
-import dev.pott.abonity.core.entity.HexColor
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.SubscriptionId
 import io.github.serpro69.kfaker.Faker
 import kotlinx.datetime.LocalDate
 import java.util.Currency
@@ -16,7 +16,7 @@ fun createTestSubscription(
     paymentInfo: PaymentInfo = createTestPaymentInfo(),
 ): Subscription {
     return Subscription(
-        id,
+        SubscriptionId(id),
         name,
         description,
         paymentInfo,

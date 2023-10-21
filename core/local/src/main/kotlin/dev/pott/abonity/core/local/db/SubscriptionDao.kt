@@ -14,4 +14,7 @@ interface SubscriptionDao {
 
     @Query("SELECT * FROM subscription_entity")
     fun getSubscriptionFlow(): Flow<List<SubscriptionEntity>>
+
+    @Query("SELECT * FROM subscription_entity WHERE id==:id")
+    fun getSubscription(id: Long): Flow<SubscriptionEntity>
 }

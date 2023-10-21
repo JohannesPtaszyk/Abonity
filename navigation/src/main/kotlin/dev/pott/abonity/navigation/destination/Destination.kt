@@ -19,13 +19,26 @@ abstract class Destination<T>(val baseRoute: String) {
 
     abstract fun getArgs(savedStateHandle: SavedStateHandle): T
 
-    abstract fun routeWithArgs(args: T): String
+    protected abstract fun getParamsFromArgs(args: T): Map<String, Any>
+
+    fun getRouteWithArgs(args: T): String {
+        val params = getParamsFromArgs(args)
+        return replaceParamsInRoute(params)
+    }
+
+    private fun replaceParamsInRoute(params: Map<String, Any>): String {
+        var route = this.route
+        params.forEach {
+            route = route.replace("{${it.key}}", it.value.toString())
+        }
+        return route
+    }
 
     protected fun StringBuilder.appendArguments() {
         arguments.filter {
             !it.argument.isNullable
         }.forEach {
-            append("/$it")
+            append("/{${it.name}}")
         }
 
         arguments.filter {
@@ -40,7 +53,8 @@ abstract class Destination<T>(val baseRoute: String) {
     }
 }
 
-open class NoArgDestination(baseRoute: String) : Destination<Nothing>(baseRoute) {
+open class NoArgDestination(baseRoute: String) :
+    Destination<Nothing>(baseRoute) {
 
     override val arguments: List<NamedNavArgument> = emptyList()
 
@@ -48,7 +62,7 @@ open class NoArgDestination(baseRoute: String) : Destination<Nothing>(baseRoute)
         throw NoArgumentsException()
     }
 
-    override fun routeWithArgs(args: Nothing): String {
+    override fun getParamsFromArgs(args: Nothing): Map<String, Any> {
         throw NoArgumentsException()
     }
 }

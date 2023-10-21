@@ -27,7 +27,7 @@ open class NoArgNestedDestination(
         throw NoArgumentsException()
     }
 
-    override fun routeWithArgs(args: Nothing): String {
+    override fun getParamsFromArgs(args: Nothing): Map<String, Any> {
         throw NoArgumentsException()
     }
 }

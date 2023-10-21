@@ -53,7 +53,7 @@ fun AppMainContent(activity: Activity, modifier: Modifier = Modifier) {
                     )
                 }
             },
-            contentWindowInsets = WindowInsets(0,0,0,0)
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { innerPadding ->
             AppMainScaffoldContent(
                 state,
@@ -116,7 +116,7 @@ private fun AppMainScaffoldContent(
                 startDestination = NavigationItem.entries.first().destination.route,
                 Modifier.padding(innerPadding)
             ) {
-                appNavGraph(state)
+                appNavGraph(state, navController)
             }
         }
     )

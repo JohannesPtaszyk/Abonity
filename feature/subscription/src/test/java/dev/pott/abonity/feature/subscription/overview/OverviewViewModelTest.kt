@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
 
 @ExtendWith(CoroutinesTestExtension::class)
-class SubscriptionOverviewViewModelTest {
+class OverviewViewModelTest {
 
     @Test
     fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items`() {
@@ -39,18 +39,18 @@ class SubscriptionOverviewViewModelTest {
             val clock = FakeClock(today)
             val calculator = PeriodicPriceCalculator(clock)
 
-            val tested = SubscriptionOverviewViewModel(repository, calculator)
+            val tested = OverviewViewModel(repository, calculator)
 
             val expectedSubscriptions = listOf(
-                SubscriptionOverviewItem(
+                SubscriptionItem(
                     subscription = subscription,
                     periodPrice = Price(15.0, Currency.getInstance("EUR"))
                 )
             )
 
             tested.state.test {
-                assertThat(awaitItem()).isEqualTo(SubscriptionOverviewState())
-                assertThat(awaitItem()).isEqualTo(SubscriptionOverviewState(subscriptions = expectedSubscriptions))
+                assertThat(awaitItem()).isEqualTo(OverviewState())
+                assertThat(awaitItem()).isEqualTo(OverviewState(subscriptions = expectedSubscriptions))
             }
         }
     }

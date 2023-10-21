@@ -26,25 +26,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.core.entity.HexColor
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.preview.MultiPreview
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.getDefaultLocale
-import dev.pott.abonity.feature.subscription.overview.SubscriptionOverviewItem
+import dev.pott.abonity.feature.subscription.overview.SubscriptionItem
 import kotlinx.datetime.LocalDate
 import java.text.NumberFormat
 import java.util.Currency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubscriptionOverviewCard(
-    item: SubscriptionOverviewItem,
+fun SubscriptionCard(
+    item: SubscriptionItem,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -78,11 +78,14 @@ fun SubscriptionOverviewCard(
 
 @Composable
 private fun PaymentInfo(
-    paymentInfo: PaymentInfo, periodPrice: Price, modifier: Modifier = Modifier
+    paymentInfo: PaymentInfo,
+    periodPrice: Price,
+    modifier: Modifier = Modifier
 ) {
     Column(horizontalAlignment = Alignment.End) {
         val formattedPeriodPrice by rememberFormattedPrice(
-            periodPrice.value, periodPrice.currency
+            periodPrice.value,
+            periodPrice.currency
         )
         Text(
             text = formattedPeriodPrice,
@@ -169,43 +172,56 @@ private fun rememberFormattedPrice(
 @MultiPreview
 @Composable
 fun SubscriptionCardPreview(
-    @PreviewParameter(PreviewProvider::class) item: SubscriptionOverviewItem
+    @PreviewParameter(PreviewProvider::class) item: SubscriptionItem
 ) {
     AppTheme {
-        SubscriptionOverviewCard(item = item) { }
+        SubscriptionCard(item = item) { }
     }
 }
 
 private class PreviewProvider :
-    PreviewParameterProvider<SubscriptionOverviewItem> {
-    override val values: Sequence<SubscriptionOverviewItem>
+    PreviewParameterProvider<SubscriptionItem> {
+    override val values: Sequence<SubscriptionItem>
         get() {
             val currency = Currency.getInstance("EUR")
             return sequenceOf(
-                SubscriptionOverviewItem(
+                SubscriptionItem(
                     Subscription(
-                        0,
+                        SubscriptionId(0),
                         "Periodic Subscription",
-                        "This is a periodic subscription with a really long description, because we need to make sure to fit every kind of text into this ui!",
+                        """
+                            This is a periodic subscription 
+                            with a really long description, 
+                            because we need to make sure to 
+                            fit every kind of text into this 
+                            ui!
+                        """.trim(),
                         PaymentInfo(
                             Price(9999.11, currency),
                             LocalDate(2022, 12, 12),
                             PaymentType.Periodic(
-                                1, PaymentPeriod.MONTHS
+                                1,
+                                PaymentPeriod.MONTHS
                             )
                         ),
-                    ), Price(999.11, currency)
-                ), SubscriptionOverviewItem(
+                    ),
+                    Price(999.11, currency)
+                ),
+                SubscriptionItem(
                     Subscription(
-                        0,
+                        SubscriptionId(1),
                         "One Time Payment",
                         "This is a one time payment",
                         PaymentInfo(
                             Price(
-                                0.99, Currency.getInstance("USD")
-                            ), LocalDate(1999, 1, 1), PaymentType.OneTime
+                                0.99,
+                                Currency.getInstance("USD")
+                            ),
+                            LocalDate(1999, 1, 1),
+                            PaymentType.OneTime
                         ),
-                    ), Price(0.99, Currency.getInstance("USD"))
+                    ),
+                    Price(0.99, Currency.getInstance("USD"))
                 )
             )
         }
