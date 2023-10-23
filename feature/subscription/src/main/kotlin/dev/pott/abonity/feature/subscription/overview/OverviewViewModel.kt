@@ -18,7 +18,7 @@ class OverviewViewModel @Inject constructor(
 
     override fun initialize() {
         viewModelScope.launch {
-            repository.getSubscriptionFlow().map { subscriptions ->
+            repository.getSubscriptionsFlow().map { subscriptions ->
                 subscriptions.map { subscription ->
                     SubscriptionItem(
                         subscription,

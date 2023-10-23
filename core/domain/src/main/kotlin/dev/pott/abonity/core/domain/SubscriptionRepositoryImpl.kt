@@ -8,11 +8,11 @@ import javax.inject.Inject
 class SubscriptionRepositoryImpl @Inject constructor(
     private val localDataSource: SubscriptionLocalDataSource,
 ) : SubscriptionRepository {
-    override fun getSubscriptionFlow(): Flow<List<Subscription>> {
-        return localDataSource.getSubscriptionFlow()
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
+        return localDataSource.getSubscriptionsFlow()
     }
 
     override fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription> {
-        return localDataSource.getSubscription(subscriptionId)
+        return localDataSource.getSubscriptionFlow(subscriptionId)
     }
 }

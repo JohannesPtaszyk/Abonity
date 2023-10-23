@@ -20,16 +20,16 @@ import javax.inject.Inject
 class RoomSubscriptionDataSource @Inject constructor(
     private val dao: SubscriptionDao
 ) : SubscriptionLocalDataSource {
-    override fun getSubscriptionFlow(): Flow<List<Subscription>> {
-        return dao.getSubscriptionFlow().map { subscriptions ->
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
+        return dao.getSubscriptionsFlow().map { subscriptions ->
             subscriptions.map { entity ->
                 entity.toDomain()
             }
         }
     }
 
-    override fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription> {
-        return dao.getSubscription(subscriptionId.id).map { it.toDomain() }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
+        return dao.getSubscriptionFlow(subscriptionId.id).map { it.toDomain() }
     }
 
     private fun SubscriptionEntity.toDomain(): Subscription {

@@ -46,7 +46,7 @@ class RoomSubscriptionDataSourceTest {
                     )
                 )
             )
-            dataSource.getSubscriptionFlow().test {
+            dataSource.getSubscriptionsFlow().test {
                 assertThat(awaitItem()).isEqualTo(expected)
             }
         }

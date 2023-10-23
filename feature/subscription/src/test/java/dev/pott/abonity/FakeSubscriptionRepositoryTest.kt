@@ -12,6 +12,6 @@ class FakeSubscriptionRepositoryTest {
     fun `getSubscriptionFlow returns constructor parameter`() {
         val flow = emptyFlow<List<Subscription>>()
         val tested = FakeSubscriptionRepository(flow)
-        assertThat(tested.getSubscriptionFlow()).isSameAs(flow)
+        assertThat(tested.getSubscriptionsFlow()).isSameAs(flow)
     }
 }

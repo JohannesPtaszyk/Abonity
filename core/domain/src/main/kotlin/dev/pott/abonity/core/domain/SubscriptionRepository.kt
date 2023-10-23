@@ -5,6 +5,6 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import kotlinx.coroutines.flow.Flow
 
 interface SubscriptionRepository {
-    fun getSubscriptionFlow(): Flow<List<Subscription>>
+    fun getSubscriptionsFlow(): Flow<List<Subscription>>
     fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription>
 }

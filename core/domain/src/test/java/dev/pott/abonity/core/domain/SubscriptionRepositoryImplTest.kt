@@ -19,7 +19,7 @@ class SubscriptionRepositoryImplTest {
             )
             val tested = SubscriptionRepositoryImpl(fakeLocalDataSource)
 
-            val result = tested.getSubscriptionFlow()
+            val result = tested.getSubscriptionsFlow()
 
             assertThat(result).isEqualTo(localSubscriptions)
         }

@@ -15,7 +15,7 @@ class FakeSubscriptionLocalDataSourceTest {
             val subscriptionsFlow = flowOf(createTestSubscriptionList())
             val fake = FakeSubscriptionLocalDataSource(subscriptionsFlow)
 
-            val result = fake.getSubscriptionFlow()
+            val result = fake.getSubscriptionsFlow()
 
             assertThat(result).isEqualTo(subscriptionsFlow)
         }

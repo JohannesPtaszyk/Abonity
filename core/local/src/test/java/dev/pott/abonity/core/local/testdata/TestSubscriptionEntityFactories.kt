@@ -13,7 +13,6 @@ fun createSubscriptionEntityWithPeriodicPayment(
     firstPaymentLocalDate: String = "2020-02-02",
     periodCount: Int = 1,
     period: LocalPaymentPeriod = LocalPaymentPeriod.MONTHS,
-    color: String = "#FFFFFF",
 ) = SubscriptionEntity(
     id = id,
     name = name,
@@ -24,7 +23,6 @@ fun createSubscriptionEntityWithPeriodicPayment(
     paymentType = LocalPaymentType.PERIODICALLY,
     periodCount = periodCount,
     period = period,
-    color = color,
 )
 
 fun createSubscriptionEntityWithOneTimePayment(
@@ -34,7 +32,6 @@ fun createSubscriptionEntityWithOneTimePayment(
     price: Double = 9.99,
     currency: String = "EUR",
     firstPaymentLocalDate: String = "2020-02-02",
-    color: String = "#FFFFFF",
 ) = SubscriptionEntity(
     id = id,
     name = name,
@@ -45,5 +42,4 @@ fun createSubscriptionEntityWithOneTimePayment(
     paymentType = LocalPaymentType.ONE_TIME,
     periodCount = null,
     period = null,
-    color = color,
 )

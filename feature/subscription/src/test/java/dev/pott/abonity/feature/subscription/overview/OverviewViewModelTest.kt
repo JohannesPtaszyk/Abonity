@@ -35,9 +35,7 @@ class OverviewViewModelTest {
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val today = Instant.parse("2021-03-01T00:00:00Z")
-            val clock = FakeClock(today)
-            val calculator = PeriodicPriceCalculator(clock)
+            val calculator = createPeriodicPriceCalculator()
 
             val tested = OverviewViewModel(repository, calculator)
 
@@ -53,5 +51,87 @@ class OverviewViewModelTest {
                 assertThat(awaitItem()).isEqualTo(OverviewState(subscriptions = expectedSubscriptions))
             }
         }
+    }
+
+    @Test
+    fun `GIVEN initialized vm WHEN openDetails THEN state contains detail id`() {
+        runTest {
+            val subscription = createTestSubscription(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, Currency.getInstance("EUR")),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
+                ),
+            )
+            val localSubscriptionFlow = flowOf(listOf(subscription))
+            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val calculator = createPeriodicPriceCalculator()
+
+            val tested = OverviewViewModel(repository, calculator)
+
+            tested.state.test {
+                skipItems(2) // Skip initial state and first subscription emit
+                tested.openDetails(subscription.id)
+                assertThat(awaitItem()).isEqualTo(
+                    OverviewState(
+                        subscription.id,
+                        listOf(
+                            SubscriptionItem(
+                                subscription = subscription,
+                                periodPrice = Price(
+                                    15.0,
+                                    Currency.getInstance("EUR")
+                                )
+                            )
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN initialized vm WHEN openDetails AND consumeDetails THEN state contains no id`() {
+        runTest {
+            val subscription = createTestSubscription(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, Currency.getInstance("EUR")),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
+                ),
+            )
+            val localSubscriptionFlow = flowOf(listOf(subscription))
+            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val calculator = createPeriodicPriceCalculator()
+
+            val tested = OverviewViewModel(repository, calculator)
+
+            tested.state.test {
+                skipItems(2) // Skip initial state and first subscription emit
+                tested.openDetails(subscription.id)
+                skipItems(1) // Skip emit with id
+                tested.consumeDetails()
+                assertThat(awaitItem()).isEqualTo(
+                    OverviewState(
+                        subscriptions = listOf(
+                            SubscriptionItem(
+                                subscription = subscription,
+                                periodPrice = Price(
+                                    15.0,
+                                    Currency.getInstance("EUR")
+                                )
+                            )
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun createPeriodicPriceCalculator(): PeriodicPriceCalculator {
+        val today = Instant.parse("2021-03-01T00:00:00Z")
+        val clock = FakeClock(today)
+        val calculator = PeriodicPriceCalculator(clock)
+        return calculator
     }
 }

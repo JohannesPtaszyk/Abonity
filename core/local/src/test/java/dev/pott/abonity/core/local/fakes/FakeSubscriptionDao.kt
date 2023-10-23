@@ -5,7 +5,8 @@ import dev.pott.abonity.core.local.db.entities.SubscriptionEntity
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class FakeSubscriptionDao(
     initialEntities: List<SubscriptionEntity> = emptyList()
@@ -31,7 +32,14 @@ class FakeSubscriptionDao(
         entities.trySendBlocking(currentEntities)
     }
 
-    override fun getSubscriptionFlow(): Flow<List<SubscriptionEntity>> {
-        return entities.consumeAsFlow()
+    override fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>> {
+        return entities.receiveAsFlow()
+    }
+
+    override fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity> {
+        return entities.receiveAsFlow()
+            .mapNotNull {
+                    subscriptionEntities -> subscriptionEntities.find { it.id == id }
+            }
     }
 }

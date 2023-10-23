@@ -13,8 +13,8 @@ interface SubscriptionDao {
     suspend fun upsertSubscription(subscription: SubscriptionEntity)
 
     @Query("SELECT * FROM subscription_entity")
-    fun getSubscriptionFlow(): Flow<List<SubscriptionEntity>>
+    fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>>
 
     @Query("SELECT * FROM subscription_entity WHERE id==:id")
-    fun getSubscription(id: Long): Flow<SubscriptionEntity>
+    fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity>
 }

@@ -18,7 +18,6 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: SubscriptionRepository,
-    private val calculator: PeriodicPriceCalculator,
 ) : LazyInitViewModel<DetailState>(DetailState()) {
 
     private val args = DetailScreenDestination.getArgs(savedStateHandle)
