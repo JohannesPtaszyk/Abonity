@@ -31,13 +31,11 @@ import dev.pott.abonity.app.navigation.components.NavigationType
 import dev.pott.abonity.app.navigation.rememberAppState
 import dev.pott.abonity.core.ui.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun AppMainContent(activity: Activity, modifier: Modifier = Modifier) {
     AppTheme {
         val navController = rememberNavController()
         val state by rememberAppState(activity, navController)
-        Log.d("AppMainContent", "App State: $state")
         Scaffold(
             modifier = modifier,
             bottomBar = {

@@ -18,8 +18,8 @@ class OverviewViewModel @Inject constructor(
 
     override fun initialize() {
         viewModelScope.launch {
-            repository.getSubscriptionFlow().map {
-                it.map { subscription ->
+            repository.getSubscriptionFlow().map { subscriptions ->
+                subscriptions.map { subscription ->
                     SubscriptionItem(
                         subscription,
                         calculator.calculateForPeriod(

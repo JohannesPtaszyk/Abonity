@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import co.touchlab.kermit.Logger
 import dev.pott.abonity.app.navigation.components.NavigationType
 import dev.pott.abonity.app.navigation.components.rememberNavigationType
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
@@ -50,7 +51,9 @@ fun rememberAppState(
                 selectedNavigationItem ?: NavigationItem.SUBSCRIPTION,
                 navigationItems.toList(),
                 SubscriptionGraphState(windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium)
-            )
+            ).also {
+                Logger.withTag("AppState").v { it.toString() }
+            }
         }
     }
 }

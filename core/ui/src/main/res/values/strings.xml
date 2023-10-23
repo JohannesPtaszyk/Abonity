@@ -13,7 +13,25 @@
         <item quantity="other">%1$s /\u00A0%2$d\u00A0months</item>
     </plurals>
     <plurals name="payment_period_years">
-        <item quantity="one">%1$s /\u00A0year</item>
+        <item quantity="one">/\u00A0year</item>
         <item quantity="other">%1$s /\u00A0%2$d\u00A0years</item>
     </plurals>
+    <plurals name="payment_per_days">
+        <item quantity="one">/\u00A0day</item>
+        <item quantity="other">/\u00A0%1$s\u00A0days</item>
+    </plurals>
+    <plurals name="payment_per_weeks">
+        <item quantity="one">/\u00A0week</item>
+        <item quantity="other">/\u00A0%1$d\u00A0weeks</item>
+    </plurals>
+    <plurals name="payment_per_months">
+        <item quantity="one">/\u00A0month</item>
+        <item quantity="other">/\u00A0%1$d\u00A0months</item>
+    </plurals>
+    <plurals name="payment_per_years">
+        <item quantity="one">/\u00A0year</item>
+        <item quantity="other">/\u00A0%1$d\u00A0years</item>
+    </plurals>
+    <string name="common_back_button_content_description">Go back to previous screen</string>
+    <string name="common_close_button_content_description">Dismiss current screen</string>
 </resources>

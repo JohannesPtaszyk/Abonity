@@ -13,10 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -35,24 +32,25 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.preview.MultiPreview
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.core.ui.util.getDefaultLocale
 import dev.pott.abonity.feature.subscription.overview.SubscriptionItem
 import kotlinx.datetime.LocalDate
-import java.text.NumberFormat
 import java.util.Currency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionCard(
     item: SubscriptionItem,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val subscription = item.subscription
-    Card(modifier = modifier, onClick = onClick) {
+    Card(modifier = modifier, onClick = onClick, enabled = !isSelected) {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.weight(1f, fill = false)) {
@@ -83,12 +81,8 @@ private fun PaymentInfo(
     modifier: Modifier = Modifier
 ) {
     Column(horizontalAlignment = Alignment.End) {
-        val formattedPeriodPrice by rememberFormattedPrice(
-            periodPrice.value,
-            periodPrice.currency
-        )
-        Text(
-            text = formattedPeriodPrice,
+        FormattedPrice(
+            price = periodPrice,
             style = MaterialTheme.typography.titleLarge,
             modifier = modifier,
             maxLines = 1
@@ -101,85 +95,17 @@ private fun PaymentInfo(
     }
 }
 
-@Composable
-private fun PeriodicPriceInfo(
-    paymentType: PaymentType.Periodic,
-    paymentInfo: PaymentInfo,
-    modifier: Modifier = Modifier,
-) {
-    val formattedPeriodPrice by rememberFormattedPrice(
-        paymentInfo.price.value,
-        paymentInfo.price.currency
-    )
-    val period = when (paymentType.period) {
-        PaymentPeriod.DAYS -> pluralStringResource(
-            id = R.plurals.payment_period_days,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
-
-        PaymentPeriod.WEEKS -> pluralStringResource(
-            id = R.plurals.payment_period_weeks,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
-
-        PaymentPeriod.MONTHS -> pluralStringResource(
-            id = R.plurals.payment_period_months,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
-
-        PaymentPeriod.YEARS -> pluralStringResource(
-            id = R.plurals.payment_period_weeks,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
-    }
-    Text(
-        style = MaterialTheme.typography.labelSmall.copy(
-            lineBreak = LineBreak(
-                LineBreak.Strategy.HighQuality,
-                LineBreak.Strictness.Strict,
-                wordBreak = LineBreak.WordBreak.Phrase
-            )
-        ),
-        text = "$period",
-        modifier = modifier,
-        textAlign = TextAlign.End,
-    )
-}
-
-@Composable
-private fun rememberFormattedPrice(
-    value: Double,
-    currency: Currency,
-): State<String> {
-    val defaultLocale = getDefaultLocale()
-    return remember {
-        derivedStateOf {
-            val format = NumberFormat.getCurrencyInstance(defaultLocale)
-            format.currency = currency
-            format.format(value)
-        }
-    }
-}
-
 @MultiPreview
 @Composable
 fun SubscriptionCardPreview(
-    @PreviewParameter(PreviewProvider::class) item: SubscriptionItem
+    @PreviewParameter(SubscriptionCardPreviewProvider::class) item: SubscriptionItem
 ) {
     AppTheme {
-        SubscriptionCard(item = item) { }
+        SubscriptionCard(item = item, onClick = {}, isSelected = false)
     }
 }
 
-private class PreviewProvider :
+private class SubscriptionCardPreviewProvider :
     PreviewParameterProvider<SubscriptionItem> {
     override val values: Sequence<SubscriptionItem>
         get() {

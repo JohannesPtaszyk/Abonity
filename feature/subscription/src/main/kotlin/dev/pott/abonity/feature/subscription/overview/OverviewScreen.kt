@@ -16,8 +16,6 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.feature.subscription.components.SubscriptionCard
 
-private const val OVERVIEW_PANE_SPLIT_FRACTION = 0.5f
-
 @Composable
 fun OverviewScreen(
     viewModel: OverviewViewModel,
@@ -72,10 +70,10 @@ private fun SubscriptionList(
             SubscriptionCard(
                 subscriptionItem,
                 modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                onClick(subscriptionItem.subscription.id)
-            }
+                    .fillMaxWidth(),
+                onClick = { onClick(subscriptionItem.subscription.id) },
+                isSelected = state.detailId == subscriptionItem.subscription.id
+            )
         }
     }
 }

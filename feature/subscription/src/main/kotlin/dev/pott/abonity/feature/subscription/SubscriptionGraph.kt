@@ -1,23 +1,14 @@
 package dev.pott.abonity.feature.subscription
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
-import com.google.accompanist.adaptive.TwoPane
-import com.google.accompanist.adaptive.calculateDisplayFeatures
 import dev.pott.abonity.core.entity.SubscriptionId
-import dev.pott.abonity.core.ui.util.getActivity
 import dev.pott.abonity.feature.subscription.add.AddScreen
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
@@ -38,17 +29,28 @@ fun NavGraphBuilder.subscriptionGraph(
         composable(OverviewScreenDestination) {
             val overviewViewModel = hiltViewModel<OverviewViewModel>()
             val detailViewModel = hiltViewModel<DetailViewModel>()
+            var lastNavigationId by rememberSaveable {
+                mutableStateOf<Long?>(null)
+            }
             if (state.showOverviewAsMultiColumn) {
+                LaunchedEffect(lastNavigationId) {
+                    val id = lastNavigationId ?: return@LaunchedEffect
+                    lastNavigationId = null
+                    overviewViewModel.openDetails(SubscriptionId(id))
+                }
                 OverviewScreenWithDetails(
                     overviewViewModel,
                     detailViewModel
                 )
             } else {
+                LaunchedEffect(state) {
+                    lastNavigationId = null
+                }
                 OverviewScreen(
                     viewModel = overviewViewModel,
-                    openDetails = {
-                        detailViewModel.setId(it)
-                        val args = DetailScreenDestination.Args(it.id)
+                    openDetails = { detailId ->
+                        lastNavigationId = detailId.id
+                        val args = DetailScreenDestination.Args(detailId.id)
                         navController.navigate(
                             DetailScreenDestination.getRouteWithArgs(args)
                         )
@@ -57,7 +59,15 @@ fun NavGraphBuilder.subscriptionGraph(
             }
         }
         composable(DetailScreenDestination) {
-            DetailScreen(hiltViewModel())
+            LaunchedEffect(state.showOverviewAsMultiColumn) {
+                if (state.showOverviewAsMultiColumn) {
+                    navController.popBackStack()
+                }
+            }
+            DetailScreen(
+                hiltViewModel(),
+                close = { navController.popBackStack() },
+            )
         }
         composable(AddScreenDestination) {
             AddScreen()

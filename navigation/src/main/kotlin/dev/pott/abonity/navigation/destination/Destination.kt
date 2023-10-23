@@ -3,6 +3,7 @@ package dev.pott.abonity.navigation.destination
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
+import co.touchlab.kermit.Logger
 
 abstract class Destination<T>(val baseRoute: String) {
 
@@ -10,6 +11,10 @@ abstract class Destination<T>(val baseRoute: String) {
         buildString {
             append(baseRoute)
             appendArguments()
+        }.also {
+            Logger.withTag(this::class.java.simpleName).v {
+                "Created route: $it for destination: $this"
+            }
         }
     }
 
