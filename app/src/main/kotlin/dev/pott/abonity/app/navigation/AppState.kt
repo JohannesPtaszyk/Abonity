@@ -33,18 +33,17 @@ fun rememberAppState(
     val windowSizeClass = calculateWindowSizeClass(activity)
     val navigationType by rememberNavigationType(windowSizeClass)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val navigationItems = NavigationItem.values()
-    val selectedNavigationItem by remember(currentDestination) {
+    val navigationItems = remember { NavigationItem.values() }
+    val selectedNavigationItem by remember(navBackStackEntry?.destination) {
         derivedStateOf {
             navigationItems.find { navigationItem ->
-                currentDestination?.hierarchy?.find {
+                navBackStackEntry?.destination?.hierarchy?.find {
                     navigationItem.destination.route == it.route
                 } != null
             }
         }
     }
-    return remember {
+    return remember(selectedNavigationItem) {
         derivedStateOf {
             AppState(
                 navigationType,
