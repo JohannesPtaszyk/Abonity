@@ -40,15 +40,16 @@ class OverviewViewModelTest {
             val tested = OverviewViewModel(repository, calculator)
 
             val expectedSubscriptions = listOf(
-                SubscriptionItem(
+                SelectableSubscriptionWithPeriodPrice(
                     subscription = subscription,
-                    periodPrice = Price(15.0, Currency.getInstance("EUR"))
+                    periodPrice = Price(15.0, Currency.getInstance("EUR")),
+                    isSelected = isSelected
                 )
             )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState())
-                assertThat(awaitItem()).isEqualTo(OverviewState(subscriptions = expectedSubscriptions))
+                assertThat(awaitItem()).isEqualTo(OverviewState(periodSubscriptions = expectedSubscriptions))
             }
         }
     }
@@ -76,12 +77,13 @@ class OverviewViewModelTest {
                     OverviewState(
                         subscription.id,
                         listOf(
-                            SubscriptionItem(
+                            SelectableSubscriptionWithPeriodPrice(
                                 subscription = subscription,
                                 periodPrice = Price(
                                     15.0,
                                     Currency.getInstance("EUR")
-                                )
+                                ),
+                                isSelected = isSelected
                             )
                         )
                     )
@@ -113,13 +115,14 @@ class OverviewViewModelTest {
                 tested.consumeDetails()
                 assertThat(awaitItem()).isEqualTo(
                     OverviewState(
-                        subscriptions = listOf(
-                            SubscriptionItem(
+                        periodSubscriptions = listOf(
+                            SelectableSubscriptionWithPeriodPrice(
                                 subscription = subscription,
                                 periodPrice = Price(
                                     15.0,
                                     Currency.getInstance("EUR")
-                                )
+                                ),
+                                isSelected = isSelected
                             )
                         )
                     )

@@ -13,12 +13,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.text.style.LineBreak
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -29,22 +25,21 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
-import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.preview.MultiPreview
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.feature.subscription.overview.SubscriptionItem
+import dev.pott.abonity.feature.subscription.overview.SelectableSubscriptionWithPeriodPrice
 import kotlinx.datetime.LocalDate
 import java.util.Currency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionCard(
-    item: SubscriptionItem,
+    subscription: Subscription,
+    periodPrice: Price,
     onClick: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val subscription = item.subscription
     Card(modifier = modifier, onClick = onClick, enabled = !isSelected) {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -68,7 +63,7 @@ fun SubscriptionCard(
                 )
             }
             Spacer(Modifier.width(8.dp))
-            PaymentInfo(item.subscription.paymentInfo, item.periodPrice)
+            PaymentInfo(subscription.paymentInfo, periodPrice)
         }
         Spacer(modifier = modifier.height(16.dp))
     }
@@ -77,19 +72,19 @@ fun SubscriptionCard(
 @Composable
 private fun PaymentInfo(
     paymentInfo: PaymentInfo,
-    periodPrice: Price,
+    price: Price,
     modifier: Modifier = Modifier
 ) {
     Column(horizontalAlignment = Alignment.End) {
         FormattedPrice(
-            price = periodPrice,
+            price = price,
             style = MaterialTheme.typography.titleLarge,
             modifier = modifier,
             maxLines = 1
         )
 
         val paymentType = paymentInfo.type
-        if (paymentType is PaymentType.Periodic && paymentInfo.price != periodPrice) {
+        if (paymentType is PaymentType.Periodic && paymentInfo.price != price) {
             PeriodicPriceInfo(paymentType, paymentInfo)
         }
     }
@@ -98,20 +93,25 @@ private fun PaymentInfo(
 @MultiPreview
 @Composable
 fun SubscriptionCardPreview(
-    @PreviewParameter(SubscriptionCardPreviewProvider::class) item: SubscriptionItem
+    @PreviewParameter(SubscriptionCardPreviewProvider::class) item: SelectableSubscriptionWithPeriodPrice
 ) {
     AppTheme {
-        SubscriptionCard(item = item, onClick = {}, isSelected = false)
+        SubscriptionCard(
+            subscription = item.subscription,
+            periodPrice = item.periodPrice,
+            onClick = {},
+            isSelected = false
+        )
     }
 }
 
 private class SubscriptionCardPreviewProvider :
-    PreviewParameterProvider<SubscriptionItem> {
-    override val values: Sequence<SubscriptionItem>
+    PreviewParameterProvider<SelectableSubscriptionWithPeriodPrice> {
+    override val values: Sequence<SelectableSubscriptionWithPeriodPrice>
         get() {
             val currency = Currency.getInstance("EUR")
             return sequenceOf(
-                SubscriptionItem(
+                SelectableSubscriptionWithPeriodPrice(
                     Subscription(
                         SubscriptionId(0),
                         "Periodic Subscription",
@@ -131,9 +131,10 @@ private class SubscriptionCardPreviewProvider :
                             )
                         ),
                     ),
-                    Price(999.11, currency)
+                    Price(999.11, currency),
+                    isSelected = false,
                 ),
-                SubscriptionItem(
+                SelectableSubscriptionWithPeriodPrice(
                     Subscription(
                         SubscriptionId(1),
                         "One Time Payment",
@@ -147,7 +148,8 @@ private class SubscriptionCardPreviewProvider :
                             PaymentType.OneTime
                         ),
                     ),
-                    Price(0.99, Currency.getInstance("USD"))
+                    Price(0.99, Currency.getInstance("USD")),
+                    isSelected = true
                 )
             )
         }

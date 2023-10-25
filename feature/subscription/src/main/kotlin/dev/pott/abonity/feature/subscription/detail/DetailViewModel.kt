@@ -38,7 +38,7 @@ class DetailViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         initialValue = DetailState(),
-        started = SharingStarted.WhileSubscribed()
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000)
     )
     fun setId(detailId: SubscriptionId?) {
         currentDetailId.value = detailId
