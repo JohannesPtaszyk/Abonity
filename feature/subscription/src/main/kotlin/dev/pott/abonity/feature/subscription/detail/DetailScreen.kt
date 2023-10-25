@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -19,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,18 +29,18 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.BackButton
 import dev.pott.abonity.feature.subscription.components.FormattedPrice
-import dev.pott.abonity.feature.subscription.components.PeriodicPriceInfo
 
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel,
-    close: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    BackHandler { onBackClick() }
     val state by viewModel.state.collectAsStateWithLifecycle()
     DetailScreen(
         state = state,
-        close = close,
+        close = onBackClick,
         modifier = modifier,
     )
 }
