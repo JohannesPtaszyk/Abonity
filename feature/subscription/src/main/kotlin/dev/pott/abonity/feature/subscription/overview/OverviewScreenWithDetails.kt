@@ -2,12 +2,14 @@ package dev.pott.abonity.feature.subscription.overview
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.AnimationConstants
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
+import com.google.accompanist.adaptive.FoldAwareConfiguration
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.calculateDisplayFeatures
@@ -68,14 +71,18 @@ private fun OverViewScreenWithDetails(
                 visible = detailState.subscription?.id != null,
                 enter = fadeIn(),
                 exit = fadeOut(),
+                modifier = Modifier
+                    .systemBarsPadding()
+                    .padding(vertical = 16.dp)
             ) {
                 DetailScreen(
                     state = detailState,
-                    close = closeDetails
+                    close = closeDetails,
                 )
             }
         },
-        strategy = HorizontalTwoPaneStrategy(0.5f, 24.dp),
-        displayFeatures = calculateDisplayFeatures(activity)
+        strategy = HorizontalTwoPaneStrategy(0.5f),
+        displayFeatures = calculateDisplayFeatures(activity),
+        foldAwareConfiguration = FoldAwareConfiguration.HorizontalFoldsOnly
     )
 }
