@@ -43,7 +43,7 @@ class OverviewViewModelTest {
                 SelectableSubscriptionWithPeriodPrice(
                     subscription = subscription,
                     periodPrice = Price(15.0, Currency.getInstance("EUR")),
-                    isSelected = isSelected
+                    isSelected = false,
                 )
             )
 
@@ -83,7 +83,7 @@ class OverviewViewModelTest {
                                     15.0,
                                     Currency.getInstance("EUR")
                                 ),
-                                isSelected = isSelected
+                                isSelected = true
                             )
                         )
                     )
@@ -122,7 +122,7 @@ class OverviewViewModelTest {
                                     15.0,
                                     Currency.getInstance("EUR")
                                 ),
-                                isSelected = isSelected
+                                isSelected = false
                             )
                         )
                     )
@@ -134,7 +134,6 @@ class OverviewViewModelTest {
     private fun createPeriodicPriceCalculator(): PeriodicPriceCalculator {
         val today = Instant.parse("2021-03-01T00:00:00Z")
         val clock = FakeClock(today)
-        val calculator = PeriodicPriceCalculator(clock)
-        return calculator
+        return PeriodicPriceCalculator(clock)
     }
 }
