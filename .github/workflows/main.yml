@@ -9,7 +9,8 @@ on:
 jobs:
   build:
 
-    runs-on: alvrme/alpine-android:android-34-jdk17
+    runs-on: ubuntu-latest
+    container: alvrme/alpine-android:android-34-jdk17
 
     steps:
     - uses: actions/checkout@v3
