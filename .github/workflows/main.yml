@@ -14,6 +14,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set up environment
+      env:
+        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      run: echo $GOOGLE_SERVICES_JSON > /home/runner/work/abonity/abonity/app/google-services.json
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Run Unit Tests
