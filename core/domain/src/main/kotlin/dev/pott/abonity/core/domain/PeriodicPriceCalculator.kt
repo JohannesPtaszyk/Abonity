@@ -6,49 +6,43 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.until
 import javax.inject.Inject
+
+private const val WEEK_DAYS = 7
 
 class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
     fun calculateForPeriod(
         paymentInfo: PaymentInfo,
-        period: Period
+        targetPeriod: PaymentPeriod
     ): Price {
         val today = getCurrentLocalDate()
-        val (price, firstPayment, type) = paymentInfo
-        val isFirstPaymentInNextPeriod = isFirstPaymentInNextPeriod(
-            today,
-            firstPayment,
-            period
-        )
-        if (isFirstPaymentInNextPeriod) {
-            return Price.free(price.currency)
-        }
-        val isFirstPaymentInCurrentPeriod = isFirstPaymentInCurrentPeriod(
-            today,
-            firstPayment,
-            period,
-        )
-        return when (type) {
+        val price = paymentInfo.price
+        return when (val paymentType = paymentInfo.type) {
             PaymentType.OneTime -> {
-                if (isFirstPaymentInCurrentPeriod) {
-                    price
+                if (isFirstPaymentInCurrentPeriod(
+                        today,
+                        paymentInfo.firstPayment,
+                        targetPeriod
+                    )
+                ) {
+                    paymentInfo.price
                 } else {
-                    Price.free(price.currency)
+                    Price.free(paymentInfo.price.currency)
                 }
             }
 
             is PaymentType.Periodic -> {
                 calculatePeriodicPrice(
                     today,
-                    firstPayment,
-                    period,
-                    type,
+                    paymentInfo.firstPayment,
+                    targetPeriod,
+                    paymentType,
                     price
                 )
             }
@@ -58,78 +52,155 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
     private fun calculatePeriodicPrice(
         today: LocalDate,
         firstPayment: LocalDate,
-        period: Period,
+        targetPeriod: PaymentPeriod,
         type: PaymentType.Periodic,
         price: Price
     ): Price {
-        val yearOffset = today.year - firstPayment.year
-        val currentPeriodPaymentDate = when (period) {
-            Period.MONTH -> {
-                val monthOffset =
-                    today.month.value - firstPayment.month.value
-                firstPayment.plus(
-                    DatePeriod(
-                        years = yearOffset,
-                        months = monthOffset
-                    )
-                )
-            }
+        val paymentsInCurrentPeriod = calculatePaymentsInCurrentPeriod(
+            today,
+            firstPayment,
+            targetPeriod,
+            type
+        )
 
-            Period.YEAR -> {
-                firstPayment.plus(DatePeriod(years = yearOffset))
-            }
-        }
-        val currentPeriodPaymentEndDate = when (period) {
-            Period.MONTH -> LocalDate(today.year, today.month, 1).plus(
-                DatePeriod(months = 1)
-            )
-
-            Period.YEAR -> LocalDate(
-                today.year,
-                1,
-                1
-            ).plus(DatePeriod(years = 1))
-        }
-        val dateTimeUnit = when (type.period) {
-            PaymentPeriod.DAYS -> DateTimeUnit.DAY
-            PaymentPeriod.WEEKS -> DateTimeUnit.WEEK
-            PaymentPeriod.MONTHS -> DateTimeUnit.MONTH
-            PaymentPeriod.YEARS -> DateTimeUnit.YEAR
-        }
-        val occurrencesInPeriod = currentPeriodPaymentDate
-            .until(currentPeriodPaymentEndDate, dateTimeUnit)
-            .coerceAtLeast(1)
-        return price * (occurrencesInPeriod / type.periodCount)
+        return price * paymentsInCurrentPeriod
     }
 
-    private fun isFirstPaymentInNextPeriod(
-        currentDate: LocalDate,
+    private fun calculatePaymentsInCurrentPeriod(
+        today: LocalDate,
         firstPayment: LocalDate,
-        period: Period,
-    ): Boolean {
-        return when (period) {
-            Period.MONTH -> firstPayment.month > currentDate.month
-            Period.YEAR -> firstPayment.year > currentDate.year
+        targetPeriod: PaymentPeriod,
+        type: PaymentType.Periodic
+    ): Int {
+        // Calculate the first and last day of the current period
+        val firstDayOfCurrentPeriod =
+            getFirstDayOfCurrentPeriod(today, targetPeriod)
+        val lastDayOfCurrentPeriod =
+            getLastDayOfCurrentPeriod(today, targetPeriod)
+
+        if (firstPayment > lastDayOfCurrentPeriod) {
+            return 0 // No payments in the current period
         }
+
+        // Calculate the first payment date within the range of the current period
+        var possiblePaymentDate = firstPayment
+
+        while (possiblePaymentDate < firstDayOfCurrentPeriod) {
+            possiblePaymentDate =
+                calculateNextPossiblePaymentDate(possiblePaymentDate, type)
+        }
+
+        if (possiblePaymentDate > lastDayOfCurrentPeriod) {
+            return 0 // No payments in the current period
+        }
+
+        // Calculate the number of payments in the current period
+        var paymentsInCurrentPeriod = 0
+
+        while (possiblePaymentDate <= lastDayOfCurrentPeriod) {
+            paymentsInCurrentPeriod++
+            possiblePaymentDate =
+                calculateNextPossiblePaymentDate(possiblePaymentDate, type)
+        }
+
+        return paymentsInCurrentPeriod
+    }
+
+    private fun calculateNextPossiblePaymentDate(
+        currentPaymentDate: LocalDate,
+        type: PaymentType.Periodic
+    ): LocalDate {
+        return when (type.period) {
+            PaymentPeriod.DAYS -> currentPaymentDate + DatePeriod(days = type.periodCount)
+            PaymentPeriod.WEEKS -> currentPaymentDate + DatePeriod(days = WEEK_DAYS * type.periodCount)
+            PaymentPeriod.MONTHS -> currentPaymentDate + DatePeriod(months = type.periodCount)
+            PaymentPeriod.YEARS -> currentPaymentDate + DatePeriod(years = type.periodCount)
+        }
+    }
+
+
+    private fun getFirstDayOfCurrentPeriod(
+        today: LocalDate,
+        targetPeriod: PaymentPeriod,
+    ): LocalDate {
+        return when (targetPeriod) {
+            PaymentPeriod.DAYS -> today
+            PaymentPeriod.WEEKS -> {
+                today - DatePeriod(days = today.dayOfWeek.ordinal)
+            }
+
+            PaymentPeriod.MONTHS -> LocalDate(today.year, today.month, 1)
+
+            PaymentPeriod.YEARS -> LocalDate(today.year, 1, 1)
+        }
+    }
+
+    private fun getLastDayOfCurrentPeriod(
+        today: LocalDate,
+        targetPeriod: PaymentPeriod
+    ): LocalDate {
+        // Calculate the first day of the current target period
+        val firstDayOfCurrentPeriod = getFirstDayOfCurrentPeriod(today, targetPeriod)
+
+        return when (targetPeriod) {
+            PaymentPeriod.DAYS -> firstDayOfCurrentPeriod
+            PaymentPeriod.WEEKS -> firstDayOfCurrentPeriod + DatePeriod(days = WEEK_DAYS)
+            PaymentPeriod.MONTHS -> firstDayOfCurrentPeriod + DatePeriod(months = 1)
+            PaymentPeriod.YEARS -> firstDayOfCurrentPeriod + DatePeriod(years = 1)
+        } - DatePeriod(days = 1)
     }
 
     private fun isFirstPaymentInCurrentPeriod(
-        currentDate: LocalDate,
+        today: LocalDate,
         firstPayment: LocalDate,
-        period: Period,
+        period: PaymentPeriod
     ): Boolean {
         return when (period) {
-            Period.MONTH -> firstPayment.month == currentDate.month
-            Period.YEAR -> firstPayment.year == currentDate.year
+            PaymentPeriod.DAYS -> firstPayment == today
+            PaymentPeriod.WEEKS -> {
+                val startOfWeek = today.startOfWeek
+                val endOfWeek = today.endOfWeek
+                firstPayment in startOfWeek..endOfWeek
+            }
+
+            PaymentPeriod.MONTHS -> firstPayment.year == today.year && firstPayment.month == today.month
+            PaymentPeriod.YEARS -> firstPayment.year == today.year
         }
     }
+
+    private val LocalDate.startOfWeek: LocalDate
+        get() {
+            val daysUntilStartOfWeek = dayOfWeek.ordinal
+            return this - DatePeriod(days = daysUntilStartOfWeek)
+        }
+
+    private val LocalDate.endOfWeek: LocalDate
+        get() {
+            val daysUntilEndOfWeek =
+                DayOfWeek.SUNDAY.ordinal - dayOfWeek.ordinal
+            return this + DatePeriod(days = daysUntilEndOfWeek)
+        }
 
     private fun getCurrentLocalDate(): LocalDate {
         val timeZone = TimeZone.currentSystemDefault()
         return clock.now().toLocalDateTime(timeZone).date
     }
 
-    enum class Period {
-        MONTH, YEAR
+    fun calculateTotalForPeriod(
+        paymentInfos: List<PaymentInfo>,
+        period: PaymentPeriod
+    ): List<Price> {
+        return paymentInfos.groupBy {
+            it.price.currency
+        }.map { currencyListEntry ->
+            val currency = currencyListEntry.key
+            val value = currencyListEntry.value.sumOf {
+                val periodPrice = calculateForPeriod(it, period)
+                periodPrice.value * 100
+            } / 100
+            Price(value, currency)
+        }.filter {
+            it.value > 0
+        }
     }
 }

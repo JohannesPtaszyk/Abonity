@@ -71,9 +71,7 @@ private fun OverViewScreenWithDetails(
                 visible = detailState.subscription?.id != null,
                 enter = fadeIn(),
                 exit = fadeOut(),
-                modifier = Modifier
-                    .systemBarsPadding()
-                    .padding(vertical = 16.dp)
+                modifier = Modifier.systemBarsPadding()
             ) {
                 DetailScreen(
                     state = detailState,

@@ -34,4 +34,6 @@
     </plurals>
     <string name="common_back_button_content_description">Go back to previous screen</string>
     <string name="common_close_button_content_description">Dismiss current screen</string>
+    <string name="overview_screen_title">Subscriptions</string>
+    <string name="period_overview_card_title">Total</string>
 </resources>

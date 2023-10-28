@@ -107,6 +107,32 @@ object DatabaseModule {
                         null,
                     )
                 )
+                dao.upsertSubscription(
+                    SubscriptionEntity(
+                        6,
+                        "Dollar $",
+                        "US Dollar",
+                        80.0,
+                        "USD",
+                        "2020-02-02",
+                        LocalPaymentType.PERIODICALLY,
+                        1,
+                        LocalPaymentPeriod.MONTHS,
+                    )
+                )
+                dao.upsertSubscription(
+                    SubscriptionEntity(
+                        7,
+                        "Englando Pound",
+                        "Komische Währung aus England",
+                        99.99,
+                        "GBP",
+                        "2020-02-02",
+                        LocalPaymentType.PERIODICALLY,
+                        1,
+                        LocalPaymentPeriod.MONTHS,
+                    )
+                )
             }
         }
     }

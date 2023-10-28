@@ -49,7 +49,10 @@ class OverviewViewModelTest {
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState())
-                assertThat(awaitItem()).isEqualTo(OverviewState(periodSubscriptions = expectedSubscriptions))
+                assertThat(awaitItem()).isEqualTo(OverviewState(
+                    periodSubscriptions = expectedSubscriptions,
+                    periodPrices = listOf(Price(15.0, Currency.getInstance("EUR")))
+                ))
             }
         }
     }
@@ -85,7 +88,8 @@ class OverviewViewModelTest {
                                 ),
                                 isSelected = true
                             )
-                        )
+                        ),
+                        listOf(Price(15.0, Currency.getInstance("EUR")))
                     )
                 )
             }
@@ -124,7 +128,8 @@ class OverviewViewModelTest {
                                 ),
                                 isSelected = false
                             )
-                        )
+                        ),
+                        periodPrices = listOf(Price(15.0, Currency.getInstance("EUR")))
                     )
                 )
             }

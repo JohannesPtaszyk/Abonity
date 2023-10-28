@@ -2,16 +2,15 @@ package dev.pott.abonity.feature.subscription.overview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.PeriodicPriceCalculator
 import dev.pott.abonity.core.domain.SubscriptionRepository
+import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -30,9 +29,11 @@ class OverviewViewModel @Inject constructor(
         OverviewState(
             periodSubscriptions = subscriptions.mapToSubscriptionItems(detailId),
             detailId = detailId,
+            periodPrices = calculator.calculateTotalForPeriod(
+                subscriptions.map { it.paymentInfo },
+                PaymentPeriod.MONTHS
+            )
         )
-    }.onEach {
-        Logger.withTag(this::class.java.simpleName).v { it.toString() }
     }.stateIn(
         scope = viewModelScope,
         initialValue = OverviewState(),
@@ -47,7 +48,7 @@ class OverviewViewModel @Inject constructor(
                 subscription,
                 calculator.calculateForPeriod(
                     paymentInfo = subscription.paymentInfo,
-                    period = PeriodicPriceCalculator.Period.MONTH
+                    targetPeriod = PaymentPeriod.MONTHS
                 ),
                 isSelected = selectedId == subscription.id
             )

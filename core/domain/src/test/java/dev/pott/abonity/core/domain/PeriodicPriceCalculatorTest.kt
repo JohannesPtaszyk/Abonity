@@ -16,7 +16,7 @@ import java.util.Currency
 class PeriodicPriceCalculatorTest {
 
     @TestFactory
-    fun testCalculateMonthyPriceOneTime(): List<DynamicTest> {
+    fun testCalculateMonthlyPriceOneTime(): List<DynamicTest> {
         val testCurrency = Currency.getInstance("EUR")
         val testCases = listOf(
             // One time payment this month
@@ -56,7 +56,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.MONTH
+                    PaymentPeriod.MONTHS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -116,7 +116,209 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.MONTH
+                    PaymentPeriod.MONTHS
+                )
+
+                assertThat(result).isEqualTo(testCase.expectedPrice)
+            }
+        }
+    }
+
+    @TestFactory
+    fun testCalculateMonthlyPriceBiMonthlyBase(): List<DynamicTest> {
+        val testCurrency = Currency.getInstance("EUR")
+        val testCases = listOf(
+            // Bi-Monthly payment starting last month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.MONTHS)
+                ),
+                today = LocalDate(2021, 2, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+
+            // Bi-Monthly payment starting this month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.MONTHS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price(1.0, testCurrency)
+            ),
+
+            // Monthly payment starting next month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 2, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.MONTHS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+
+            // Monthly payment starting two month ago
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.MONTHS)
+                ),
+                today = LocalDate(2021, 3, 1),
+                expectedPrice = Price(1.0, testCurrency)
+            ),
+        )
+        return testCases.mapIndexed { i: Int, testCase: TestCase ->
+            DynamicTest.dynamicTest(
+                """
+                    ($i) GIVEN payment info = ${testCase.paymentInfo}
+                    AND today = ${testCase.today}
+                    EXPECT monthly price = ${testCase.expectedPrice}
+                """.trimIndent()
+            ) {
+                val todayInstant = Instant.parse(
+                    testCase.today.toString() + "T00:00:00Z"
+                )
+                val clock = FakeClock(todayInstant)
+
+                val result = PeriodicPriceCalculator(clock).calculateForPeriod(
+                    testCase.paymentInfo,
+                    PaymentPeriod.MONTHS
+                )
+
+                assertThat(result).isEqualTo(testCase.expectedPrice)
+            }
+        }
+    }
+
+    @TestFactory
+    fun testCalculateMonthlyPriceYearlyBase(): List<DynamicTest> {
+        val testCurrency = Currency.getInstance("EUR")
+        val testCases = listOf(
+            // Yearly payment last month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(1, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 2, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+
+            // Yearly payment this month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(1, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price(1.0, testCurrency)
+            ),
+
+            // Yearly payment next month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 2, 1),
+                    type = PaymentType.Periodic(1, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+        )
+        return testCases.mapIndexed { i: Int, testCase: TestCase ->
+            DynamicTest.dynamicTest(
+                """
+                    ($i) GIVEN payment info = ${testCase.paymentInfo}
+                    AND today = ${testCase.today}
+                    EXPECT monthly price = ${testCase.expectedPrice}
+                """.trimIndent()
+            ) {
+                val todayInstant = Instant.parse(
+                    testCase.today.toString() + "T00:00:00Z"
+                )
+                val clock = FakeClock(todayInstant)
+
+                val result = PeriodicPriceCalculator(clock).calculateForPeriod(
+                    testCase.paymentInfo,
+                    PaymentPeriod.MONTHS
+                )
+
+                assertThat(result).isEqualTo(testCase.expectedPrice)
+            }
+        }
+    }
+
+    @TestFactory
+    fun testCalculateMonthlyPriceBiYearlyBase(): List<DynamicTest> {
+        val testCurrency = Currency.getInstance("EUR")
+        val testCases = listOf(
+            // Bi-Yearly payment last month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 2, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+
+            // Bi-Yearly payment this month and year
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price(1.0, testCurrency)
+            ),
+
+            // Bi-Yearly payment next month
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2021, 2, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+
+            // Bi-Yearly payment this month but 2nd year
+            TestCase(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, testCurrency),
+                    firstPayment = LocalDate(2020, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.YEARS)
+                ),
+                today = LocalDate(2021, 1, 1),
+                expectedPrice = Price.free(testCurrency)
+            ),
+        )
+        return testCases.mapIndexed { i: Int, testCase: TestCase ->
+            DynamicTest.dynamicTest(
+                """
+                    ($i) GIVEN payment info = ${testCase.paymentInfo}
+                    AND today = ${testCase.today}
+                    EXPECT monthly price = ${testCase.expectedPrice}
+                """.trimIndent()
+            ) {
+                val todayInstant = Instant.parse(
+                    testCase.today.toString() + "T00:00:00Z"
+                )
+                val clock = FakeClock(todayInstant)
+
+                val result = PeriodicPriceCalculator(clock).calculateForPeriod(
+                    testCase.paymentInfo,
+                    PaymentPeriod.MONTHS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -135,8 +337,8 @@ class PeriodicPriceCalculatorTest {
                     firstPayment = LocalDate(2021, 1, 1),
                     type = PaymentType.Periodic(1, PaymentPeriod.DAYS)
                 ),
-                today = LocalDate(2021, 3, 1),
-                expectedPrice = Price(31.0, testCurrency)
+                today = LocalDate(2021, 2, 1),
+                expectedPrice = Price(28.0, testCurrency)
             ),
 
             // Daily payment starting beginning of this month
@@ -187,7 +389,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.MONTH
+                    PaymentPeriod.MONTHS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -218,7 +420,7 @@ class PeriodicPriceCalculatorTest {
                     type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
                 ),
                 today = LocalDate(2021, 1, 1),
-                expectedPrice = Price(15.0, testCurrency)
+                expectedPrice = Price(16.0, testCurrency)
             ),
 
             // Bi-Daily payment starting middle of this month
@@ -258,7 +460,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.MONTH
+                    PaymentPeriod.MONTHS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -307,7 +509,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.YEAR
+                    PaymentPeriod.YEARS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -400,7 +602,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.YEAR
+                    PaymentPeriod.YEARS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -471,7 +673,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.YEAR
+                    PaymentPeriod.YEARS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -542,7 +744,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.YEAR
+                    PaymentPeriod.YEARS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)
@@ -562,7 +764,7 @@ class PeriodicPriceCalculatorTest {
                     type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
                 ),
                 today = LocalDate(2021, 1, 1),
-                expectedPrice = Price(182.0, testCurrency)
+                expectedPrice = Price(183.0, testCurrency)
             ),
 
             // Bi-Daily payment starting middle of year
@@ -584,7 +786,7 @@ class PeriodicPriceCalculatorTest {
                     type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
                 ),
                 today = LocalDate(2021, 1, 1),
-                expectedPrice = Price(182.0, testCurrency)
+                expectedPrice = Price(183.0, testCurrency)
             ),
 
             // Bi-Daily payment starting next year
@@ -613,7 +815,7 @@ class PeriodicPriceCalculatorTest {
 
                 val result = PeriodicPriceCalculator(clock).calculateForPeriod(
                     testCase.paymentInfo,
-                    PeriodicPriceCalculator.Period.YEAR
+                    PaymentPeriod.YEARS
                 )
 
                 assertThat(result).isEqualTo(testCase.expectedPrice)

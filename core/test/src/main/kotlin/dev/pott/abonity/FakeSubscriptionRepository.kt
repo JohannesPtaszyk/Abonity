@@ -10,6 +10,7 @@ class FakeSubscriptionRepository(
     private val subscriptionsFlow: Flow<List<Subscription>> = emptyFlow(),
     private val subscriptionFlow: Flow<Subscription> = emptyFlow()
 ) : SubscriptionRepository {
+
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
         return subscriptionsFlow
     }
@@ -17,5 +18,4 @@ class FakeSubscriptionRepository(
     override fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription> {
         return subscriptionFlow
     }
-
 }
