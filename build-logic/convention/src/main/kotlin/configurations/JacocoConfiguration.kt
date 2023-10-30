@@ -12,17 +12,19 @@ import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.util.Locale
 
-private val excludes = listOf(
-    // Android
-    "**/R.class",
-    "**/R\$*.class",
-    "**/BuildConfig.*",
-    "**/Manifest*.*"
-)
+private val excludes =
+    listOf(
+        // Android
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+    )
 
-private fun String.capitalize() = replaceFirstChar {
-    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-}
+private fun String.capitalize() =
+    replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+    }
 
 internal fun Project.configureJacoco(
     androidComponentsExtension: AndroidComponentsExtension<*, *, *>,
@@ -45,18 +47,22 @@ internal fun Project.configureJacoco(
                 }
 
                 classDirectories.setFrom(
-                    fileTree("${layout.buildDirectory.asFile.get()}/tmp/kotlin-classes/${variant.name}") {
+                    fileTree(
+                        "${layout.buildDirectory.asFile.get()}/tmp/kotlin-classes/${variant.name}",
+                    ) {
                         exclude(excludes)
-                    }
+                    },
                 )
 
                 sourceDirectories.setFrom(
                     files(
                         "$projectDir/src/main/java",
-                        "$projectDir/src/main/kotlin"
-                    )
+                        "$projectDir/src/main/kotlin",
+                    ),
                 )
-                executionData.setFrom(file("${layout.buildDirectory.asFile.get()}/jacoco/$testTaskName.exec"))
+                executionData.setFrom(
+                    file("${layout.buildDirectory.asFile.get()}/jacoco/$testTaskName.exec"),
+                )
             }
 
         jacocoTestReport.dependsOn(reportTask)

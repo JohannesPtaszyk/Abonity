@@ -3,7 +3,6 @@ package dev.pott.abonity.feature.subscription.detail
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,11 +49,7 @@ fun DetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
-    state: DetailState,
-    close: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun DetailScreen(state: DetailState, close: () -> Unit, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
@@ -69,39 +63,38 @@ fun DetailScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         val scrollState = rememberScrollState()
         val subscription = state.subscription ?: return@Scaffold
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .verticalScroll(scrollState)
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             PaymentInfoCard(
                 subscription.paymentInfo,
-                Modifier.padding(horizontal = 16.dp)
+                Modifier.padding(horizontal = 16.dp),
             )
         }
     }
 }
 
 @Composable
-private fun PaymentInfoCard(
-    paymentInfo: PaymentInfo,
-    modifier: Modifier = Modifier
-) {
+private fun PaymentInfoCard(paymentInfo: PaymentInfo, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
-            .aspectRatio(2f)
+            .aspectRatio(2f),
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             FormattedPrice(
                 price = paymentInfo.price,
@@ -110,31 +103,36 @@ private fun PaymentInfoCard(
             )
             val paymentType = paymentInfo.type
             if (paymentType is PaymentType.Periodic) {
-                val period = when (paymentType.period) {
-                    PaymentPeriod.DAYS -> pluralStringResource(
-                        id = R.plurals.payment_per_days,
-                        count = paymentType.periodCount,
-                        paymentType.periodCount,
-                    )
+                val period =
+                    when (paymentType.period) {
+                        PaymentPeriod.DAYS ->
+                            pluralStringResource(
+                                id = R.plurals.payment_per_days,
+                                count = paymentType.periodCount,
+                                paymentType.periodCount,
+                            )
 
-                    PaymentPeriod.WEEKS -> pluralStringResource(
-                        id = R.plurals.payment_per_weeks,
-                        count = paymentType.periodCount,
-                        paymentType.periodCount,
-                    )
+                        PaymentPeriod.WEEKS ->
+                            pluralStringResource(
+                                id = R.plurals.payment_per_weeks,
+                                count = paymentType.periodCount,
+                                paymentType.periodCount,
+                            )
 
-                    PaymentPeriod.MONTHS -> pluralStringResource(
-                        id = R.plurals.payment_per_months,
-                        count = paymentType.periodCount,
-                        paymentType.periodCount,
-                    )
+                        PaymentPeriod.MONTHS ->
+                            pluralStringResource(
+                                id = R.plurals.payment_per_months,
+                                count = paymentType.periodCount,
+                                paymentType.periodCount,
+                            )
 
-                    PaymentPeriod.YEARS -> pluralStringResource(
-                        id = R.plurals.payment_per_weeks,
-                        count = paymentType.periodCount,
-                        paymentType.periodCount,
-                    )
-                }
+                        PaymentPeriod.YEARS ->
+                            pluralStringResource(
+                                id = R.plurals.payment_per_weeks,
+                                count = paymentType.periodCount,
+                                paymentType.periodCount,
+                            )
+                    }
                 Text(
                     style = MaterialTheme.typography.labelLarge,
                     text = period,

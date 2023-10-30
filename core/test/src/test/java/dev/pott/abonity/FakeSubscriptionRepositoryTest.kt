@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import org.junit.jupiter.api.Test
 
 class FakeSubscriptionRepositoryTest {
-
     @Test
     fun `getSubscriptionFlow returns constructor parameter`() {
         val flow = emptyFlow<List<Subscription>>()

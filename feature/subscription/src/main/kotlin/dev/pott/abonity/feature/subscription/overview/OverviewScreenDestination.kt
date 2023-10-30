@@ -5,5 +5,5 @@ import dev.pott.abonity.navigation.destination.NoArgNestedDestination
 
 object OverviewScreenDestination : NoArgNestedDestination(
     SubscriptionNavigationDestination,
-    "overview"
+    "overview",
 )

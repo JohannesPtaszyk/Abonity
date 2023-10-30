@@ -16,11 +16,10 @@ import javax.inject.Inject
 
 private const val WEEK_DAYS = 7
 
+private const val PRICE_UNIT_MULTIPLIER = 100
+
 class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
-    fun calculateForPeriod(
-        paymentInfo: PaymentInfo,
-        targetPeriod: PaymentPeriod
-    ): Price {
+    fun calculateForPeriod(paymentInfo: PaymentInfo, targetPeriod: PaymentPeriod): Price {
         val today = getCurrentLocalDate()
         val price = paymentInfo.price
         return when (val paymentType = paymentInfo.type) {
@@ -28,7 +27,7 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
                 if (isFirstPaymentInCurrentPeriod(
                         today,
                         paymentInfo.firstPayment,
-                        targetPeriod
+                        targetPeriod,
                     )
                 ) {
                     paymentInfo.price
@@ -43,7 +42,7 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
                     paymentInfo.firstPayment,
                     targetPeriod,
                     paymentType,
-                    price
+                    price,
                 )
             }
         }
@@ -54,14 +53,15 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
         firstPayment: LocalDate,
         targetPeriod: PaymentPeriod,
         type: PaymentType.Periodic,
-        price: Price
+        price: Price,
     ): Price {
-        val paymentsInCurrentPeriod = calculatePaymentsInCurrentPeriod(
-            today,
-            firstPayment,
-            targetPeriod,
-            type
-        )
+        val paymentsInCurrentPeriod =
+            calculatePaymentsInCurrentPeriod(
+                today,
+                firstPayment,
+                targetPeriod,
+                type,
+            )
 
         return price * paymentsInCurrentPeriod
     }
@@ -70,19 +70,12 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
         today: LocalDate,
         firstPayment: LocalDate,
         targetPeriod: PaymentPeriod,
-        type: PaymentType.Periodic
+        type: PaymentType.Periodic,
     ): Int {
         // Calculate the first and last day of the current period
-        val firstDayOfCurrentPeriod =
-            getFirstDayOfCurrentPeriod(today, targetPeriod)
-        val lastDayOfCurrentPeriod =
-            getLastDayOfCurrentPeriod(today, targetPeriod)
+        val firstDayOfCurrentPeriod = getFirstDayOfCurrentPeriod(today, targetPeriod)
+        val lastDayOfCurrentPeriod = getLastDayOfCurrentPeriod(today, targetPeriod)
 
-        if (firstPayment > lastDayOfCurrentPeriod) {
-            return 0 // No payments in the current period
-        }
-
-        // Calculate the first payment date within the range of the current period
         var possiblePaymentDate = firstPayment
 
         while (possiblePaymentDate < firstDayOfCurrentPeriod) {
@@ -90,11 +83,10 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
                 calculateNextPossiblePaymentDate(possiblePaymentDate, type)
         }
 
-        if (possiblePaymentDate > lastDayOfCurrentPeriod) {
-            return 0 // No payments in the current period
+        if (possiblePaymentDate > lastDayOfCurrentPeriod || firstPayment > lastDayOfCurrentPeriod) {
+            return 0
         }
 
-        // Calculate the number of payments in the current period
         var paymentsInCurrentPeriod = 0
 
         while (possiblePaymentDate <= lastDayOfCurrentPeriod) {
@@ -107,17 +99,27 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
     }
 
     private fun calculateNextPossiblePaymentDate(
-        currentPaymentDate: LocalDate,
-        type: PaymentType.Periodic
+        current: LocalDate,
+        type: PaymentType.Periodic,
     ): LocalDate {
         return when (type.period) {
-            PaymentPeriod.DAYS -> currentPaymentDate + DatePeriod(days = type.periodCount)
-            PaymentPeriod.WEEKS -> currentPaymentDate + DatePeriod(days = WEEK_DAYS * type.periodCount)
-            PaymentPeriod.MONTHS -> currentPaymentDate + DatePeriod(months = type.periodCount)
-            PaymentPeriod.YEARS -> currentPaymentDate + DatePeriod(years = type.periodCount)
+            PaymentPeriod.DAYS -> {
+                current + DatePeriod(days = type.periodCount)
+            }
+
+            PaymentPeriod.WEEKS -> {
+                current + DatePeriod(days = WEEK_DAYS * type.periodCount)
+            }
+
+            PaymentPeriod.MONTHS -> {
+                current + DatePeriod(months = type.periodCount)
+            }
+
+            PaymentPeriod.YEARS -> {
+                current + DatePeriod(years = type.periodCount)
+            }
         }
     }
-
 
     private fun getFirstDayOfCurrentPeriod(
         today: LocalDate,
@@ -137,7 +139,7 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
 
     private fun getLastDayOfCurrentPeriod(
         today: LocalDate,
-        targetPeriod: PaymentPeriod
+        targetPeriod: PaymentPeriod,
     ): LocalDate {
         // Calculate the first day of the current target period
         val firstDayOfCurrentPeriod = getFirstDayOfCurrentPeriod(today, targetPeriod)
@@ -153,7 +155,7 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
     private fun isFirstPaymentInCurrentPeriod(
         today: LocalDate,
         firstPayment: LocalDate,
-        period: PaymentPeriod
+        period: PaymentPeriod,
     ): Boolean {
         return when (period) {
             PaymentPeriod.DAYS -> firstPayment == today
@@ -163,7 +165,12 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
                 firstPayment in startOfWeek..endOfWeek
             }
 
-            PaymentPeriod.MONTHS -> firstPayment.year == today.year && firstPayment.month == today.month
+            PaymentPeriod.MONTHS -> {
+                val isSameYear = firstPayment.year == today.year
+                val isSameMonth = firstPayment.month == today.month
+                isSameYear && isSameMonth
+            }
+
             PaymentPeriod.YEARS -> firstPayment.year == today.year
         }
     }
@@ -188,7 +195,7 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
 
     fun calculateTotalForPeriod(
         paymentInfos: List<PaymentInfo>,
-        period: PaymentPeriod
+        period: PaymentPeriod,
     ): List<Price> {
         return paymentInfos.groupBy {
             it.price.currency
@@ -196,8 +203,8 @@ class PeriodicPriceCalculator @Inject constructor(private val clock: Clock) {
             val currency = currencyListEntry.key
             val value = currencyListEntry.value.sumOf {
                 val periodPrice = calculateForPeriod(it, period)
-                periodPrice.value * 100
-            } / 100
+                periodPrice.value * PRICE_UNIT_MULTIPLIER
+            } / PRICE_UNIT_MULTIPLIER
             Price(value, currency)
         }.filter {
             it.value > 0

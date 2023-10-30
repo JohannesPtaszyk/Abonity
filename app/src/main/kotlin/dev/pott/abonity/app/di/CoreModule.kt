@@ -12,10 +12,11 @@ import dev.pott.abonity.core.local.RoomSubscriptionDataSource
 @Module
 @InstallIn(SingletonComponent::class)
 interface CoreModule {
-
     @Binds
     fun bindsSubscriptionRepository(impl: SubscriptionRepositoryImpl): SubscriptionRepository
 
     @Binds
-    fun bindsSubscriptionLocalDataSource(impl: RoomSubscriptionDataSource): SubscriptionLocalDataSource
+    fun bindsSubscriptionLocalDataSource(
+        impl: RoomSubscriptionDataSource,
+    ): SubscriptionLocalDataSource
 }

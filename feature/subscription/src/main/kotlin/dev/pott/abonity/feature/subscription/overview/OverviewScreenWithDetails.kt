@@ -4,18 +4,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import com.google.accompanist.adaptive.FoldAwareConfiguration
@@ -28,10 +22,12 @@ import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailState
 import dev.pott.abonity.feature.subscription.detail.DetailViewModel
 
+private const val TWO_PANE_FRACTION = 0.5f
+
 @Composable
 fun OverviewScreenWithDetails(
     overviewViewModel: OverviewViewModel,
-    detailViewModel: DetailViewModel
+    detailViewModel: DetailViewModel,
 ) {
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
     val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
@@ -62,7 +58,7 @@ private fun OverViewScreenWithDetails(
         first = {
             OverviewScreen(
                 state = overviewState,
-                onSubscriptionClick = onSubscriptionClicked
+                onSubscriptionClick = onSubscriptionClicked,
             )
         },
         second = {
@@ -71,7 +67,7 @@ private fun OverViewScreenWithDetails(
                 visible = detailState.subscription?.id != null,
                 enter = fadeIn(),
                 exit = fadeOut(),
-                modifier = Modifier.systemBarsPadding()
+                modifier = Modifier.systemBarsPadding(),
             ) {
                 DetailScreen(
                     state = detailState,
@@ -79,8 +75,8 @@ private fun OverViewScreenWithDetails(
                 )
             }
         },
-        strategy = HorizontalTwoPaneStrategy(0.5f),
+        strategy = HorizontalTwoPaneStrategy(TWO_PANE_FRACTION),
         displayFeatures = calculateDisplayFeatures(activity),
-        foldAwareConfiguration = FoldAwareConfiguration.HorizontalFoldsOnly
+        foldAwareConfiguration = FoldAwareConfiguration.HorizontalFoldsOnly,
     )
 }

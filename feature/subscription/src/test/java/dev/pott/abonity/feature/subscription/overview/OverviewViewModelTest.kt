@@ -12,6 +12,7 @@ import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.entities.createTestSubscription
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -22,37 +23,41 @@ import java.util.Currency
 
 @ExtendWith(CoroutinesTestExtension::class)
 class OverviewViewModelTest {
-
     @Test
     fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items`() {
         runTest {
-            val subscription = createTestSubscription(
-                paymentInfo = PaymentInfo(
-                    price = Price(1.0, Currency.getInstance("EUR")),
-                    firstPayment = LocalDate(2021, 1, 1),
-                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
-                ),
-            )
+            val subscription =
+                createTestSubscription(
+                    paymentInfo =
+                    PaymentInfo(
+                        price = Price(1.0, Currency.getInstance("EUR")),
+                        firstPayment = LocalDate(2021, 1, 1),
+                        type = PaymentType.Periodic(2, PaymentPeriod.DAYS),
+                    ),
+                )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
             val calculator = createPeriodicPriceCalculator()
 
             val tested = OverviewViewModel(repository, calculator)
 
-            val expectedSubscriptions = listOf(
-                SelectableSubscriptionWithPeriodPrice(
-                    subscription = subscription,
-                    periodPrice = Price(15.0, Currency.getInstance("EUR")),
-                    isSelected = false,
+            val expectedSubscriptions =
+                listOf(
+                    SelectableSubscriptionWithPeriodPrice(
+                        subscription = subscription,
+                        periodPrice = Price(15.0, Currency.getInstance("EUR")),
+                        isSelected = false,
+                    ),
                 )
-            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState())
-                assertThat(awaitItem()).isEqualTo(OverviewState(
-                    periodSubscriptions = expectedSubscriptions,
-                    periodPrices = listOf(Price(15.0, Currency.getInstance("EUR")))
-                ))
+                assertThat(awaitItem()).isEqualTo(
+                    OverviewState(
+                        periodSubscriptions = expectedSubscriptions,
+                        periodPrices = persistentListOf(Price(15.0, Currency.getInstance("EUR"))),
+                    ),
+                )
             }
         }
     }
@@ -60,13 +65,15 @@ class OverviewViewModelTest {
     @Test
     fun `GIVEN initialized vm WHEN openDetails THEN state contains detail id`() {
         runTest {
-            val subscription = createTestSubscription(
-                paymentInfo = PaymentInfo(
-                    price = Price(1.0, Currency.getInstance("EUR")),
-                    firstPayment = LocalDate(2021, 1, 1),
-                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
-                ),
-            )
+            val subscription =
+                createTestSubscription(
+                    paymentInfo =
+                    PaymentInfo(
+                        price = Price(1.0, Currency.getInstance("EUR")),
+                        firstPayment = LocalDate(2021, 1, 1),
+                        type = PaymentType.Periodic(2, PaymentPeriod.DAYS),
+                    ),
+                )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
             val calculator = createPeriodicPriceCalculator()
@@ -82,15 +89,16 @@ class OverviewViewModelTest {
                         listOf(
                             SelectableSubscriptionWithPeriodPrice(
                                 subscription = subscription,
-                                periodPrice = Price(
+                                periodPrice =
+                                Price(
                                     15.0,
-                                    Currency.getInstance("EUR")
+                                    Currency.getInstance("EUR"),
                                 ),
-                                isSelected = true
-                            )
+                                isSelected = true,
+                            ),
                         ),
-                        listOf(Price(15.0, Currency.getInstance("EUR")))
-                    )
+                        persistentListOf(Price(15.0, Currency.getInstance("EUR"))),
+                    ),
                 )
             }
         }
@@ -99,13 +107,15 @@ class OverviewViewModelTest {
     @Test
     fun `GIVEN initialized vm WHEN openDetails AND consumeDetails THEN state contains no id`() {
         runTest {
-            val subscription = createTestSubscription(
-                paymentInfo = PaymentInfo(
-                    price = Price(1.0, Currency.getInstance("EUR")),
-                    firstPayment = LocalDate(2021, 1, 1),
-                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS)
-                ),
-            )
+            val subscription =
+                createTestSubscription(
+                    paymentInfo =
+                    PaymentInfo(
+                        price = Price(1.0, Currency.getInstance("EUR")),
+                        firstPayment = LocalDate(2021, 1, 1),
+                        type = PaymentType.Periodic(2, PaymentPeriod.DAYS),
+                    ),
+                )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
             val calculator = createPeriodicPriceCalculator()
@@ -119,18 +129,20 @@ class OverviewViewModelTest {
                 tested.consumeDetails()
                 assertThat(awaitItem()).isEqualTo(
                     OverviewState(
-                        periodSubscriptions = listOf(
+                        periodSubscriptions =
+                        listOf(
                             SelectableSubscriptionWithPeriodPrice(
                                 subscription = subscription,
-                                periodPrice = Price(
+                                periodPrice =
+                                Price(
                                     15.0,
-                                    Currency.getInstance("EUR")
+                                    Currency.getInstance("EUR"),
                                 ),
-                                isSelected = false
-                            )
+                                isSelected = false,
+                            ),
                         ),
-                        periodPrices = listOf(Price(15.0, Currency.getInstance("EUR")))
-                    )
+                        periodPrices = persistentListOf(Price(15.0, Currency.getInstance("EUR"))),
+                    ),
                 )
             }
         }

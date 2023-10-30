@@ -18,7 +18,7 @@ import dev.pott.abonity.navigation.destination.navigation
 
 fun NavGraphBuilder.subscriptionGraph(
     state: SubscriptionGraphState,
-    navController: NavController
+    navController: NavController,
 ) {
     navigation(SubscriptionNavigationDestination) {
         composable(OverviewScreenDestination) {
@@ -27,7 +27,7 @@ fun NavGraphBuilder.subscriptionGraph(
                 val detailViewModel = hiltViewModel<DetailViewModel>()
                 OverviewScreenWithDetails(
                     overviewViewModel,
-                    detailViewModel
+                    detailViewModel,
                 )
             } else {
                 OverviewScreen(
@@ -35,16 +35,17 @@ fun NavGraphBuilder.subscriptionGraph(
                     openDetails = { detailId ->
                         val args = DetailScreenDestination.Args(detailId.id)
                         navController.navigate(
-                            DetailScreenDestination.getRouteWithArgs(args)
+                            DetailScreenDestination.getRouteWithArgs(args),
                         )
-                    }
+                    },
                 )
             }
         }
         composable(DetailScreenDestination) {
-            val overviewViewModel = navController.previousBackStackEntry?.let {
-                hiltViewModel<OverviewViewModel>(viewModelStoreOwner = it)
-            }
+            val overviewViewModel =
+                navController.previousBackStackEntry?.let {
+                    hiltViewModel<OverviewViewModel>(viewModelStoreOwner = it)
+                }
             LaunchedEffect(state.showOverviewAsMultiColumn) {
                 if (state.showOverviewAsMultiColumn) {
                     navController.popBackStack()

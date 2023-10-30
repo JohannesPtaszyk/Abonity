@@ -14,22 +14,24 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(CoroutinesTestExtension::class)
 class DetailViewModelTest {
-
     @Test
     fun `GIVEN savedStateHandle with id argument AND valid subscription with same id WHEN initialize THEN subscription is shown`() {
         runTest {
             val subscription = createTestSubscription()
-            val savedStateHandle = SavedStateHandle(
-                mapOf("detail_id" to subscription.id.id)
-            )
-            val subscriptionRepository = FakeSubscriptionRepository(
-                subscriptionFlow = flowOf(subscription)
-            )
+            val savedStateHandle =
+                SavedStateHandle(
+                    mapOf("detail_id" to subscription.id.id),
+                )
+            val subscriptionRepository =
+                FakeSubscriptionRepository(
+                    subscriptionFlow = flowOf(subscription),
+                )
 
-            val tested = DetailViewModel(
-                savedStateHandle,
-                subscriptionRepository
-            )
+            val tested =
+                DetailViewModel(
+                    savedStateHandle,
+                    subscriptionRepository,
+                )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -43,14 +45,16 @@ class DetailViewModelTest {
         runTest {
             val subscription = createTestSubscription()
             val savedStateHandle = SavedStateHandle()
-            val subscriptionRepository = FakeSubscriptionRepository(
-                subscriptionFlow = flowOf(subscription)
-            )
+            val subscriptionRepository =
+                FakeSubscriptionRepository(
+                    subscriptionFlow = flowOf(subscription),
+                )
 
-            val tested = DetailViewModel(
-                savedStateHandle,
-                subscriptionRepository
-            )
+            val tested =
+                DetailViewModel(
+                    savedStateHandle,
+                    subscriptionRepository,
+                )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -59,5 +63,4 @@ class DetailViewModelTest {
             }
         }
     }
-
 }

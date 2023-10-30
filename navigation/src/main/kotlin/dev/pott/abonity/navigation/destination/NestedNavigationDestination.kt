@@ -7,18 +7,17 @@ abstract class NestedNavigationDestination<T>(
     parent: Destination<*>,
     baseRoute: String,
 ) : NavigationDestination<T>(baseRoute) {
-
-    override val route: String = buildString {
-        append("${parent.baseRoute}/$baseRoute")
-        appendArguments()
-    }
+    override val route: String =
+        buildString {
+            append("${parent.baseRoute}/$baseRoute")
+            appendArguments()
+        }
 }
 
 abstract class NoArgNestedNavigationDestination(
     parent: Destination<*>,
     baseRoute: String,
 ) : NestedNavigationDestination<Nothing>(parent, baseRoute) {
-
     override val arguments: List<NamedNavArgument> = emptyList()
 
     override fun getArgs(savedStateHandle: SavedStateHandle): Nothing {

@@ -28,18 +28,21 @@ fun createTestSubscriptionList(size: Int = 5): List<Subscription> {
     val faker = Faker()
     return buildList {
         repeat(size) {
-            val price = createTestPrice(
-                value = random.nextDouble(),
-                currency = Currency.getInstance(Locale.GERMANY)
-            )
-            val subscription = createTestSubscription(
-                name = faker.company.name(),
-                description = faker.subscription.statuses(),
-                paymentInfo = createTestPaymentInfo(
-                    price = price,
-                    firstPayment = createRandomLocalDate(random)
+            val price =
+                createTestPrice(
+                    value = random.nextDouble(),
+                    currency = Currency.getInstance(Locale.GERMANY),
                 )
-            )
+            val subscription =
+                createTestSubscription(
+                    name = faker.company.name(),
+                    description = faker.subscription.statuses(),
+                    paymentInfo =
+                    createTestPaymentInfo(
+                        price = price,
+                        firstPayment = createRandomLocalDate(random),
+                    ),
+                )
             add(subscription)
         }
     }

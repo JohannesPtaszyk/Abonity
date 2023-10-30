@@ -9,7 +9,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 
 enum class NavigationType {
-    DRAWER, RAIL, BOTTOM
+    DRAWER,
+    RAIL,
+    BOTTOM,
 }
 
 @Composable

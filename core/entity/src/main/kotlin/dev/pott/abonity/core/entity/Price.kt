@@ -4,7 +4,7 @@ import java.util.Currency
 
 data class Price(
     val value: Double,
-    val currency: Currency
+    val currency: Currency,
 ) {
     operator fun times(multiplier: Int): Price {
         return copy(value = value * multiplier)

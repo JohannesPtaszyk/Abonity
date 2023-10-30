@@ -17,9 +17,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
+    @Suppress("LongMethod", "MagicNumber")
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
@@ -40,7 +40,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -53,7 +53,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -66,7 +66,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -79,7 +79,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         3,
                         LocalPaymentPeriod.DAYS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -92,7 +92,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         2,
                         LocalPaymentPeriod.WEEKS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -105,7 +105,7 @@ object DatabaseModule {
                         LocalPaymentType.ONE_TIME,
                         null,
                         null,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -118,7 +118,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                    )
+                    ),
                 )
                 dao.upsertSubscription(
                     SubscriptionEntity(
@@ -131,7 +131,7 @@ object DatabaseModule {
                         LocalPaymentType.PERIODICALLY,
                         1,
                         LocalPaymentPeriod.MONTHS,
-                    )
+                    ),
                 )
             }
         }

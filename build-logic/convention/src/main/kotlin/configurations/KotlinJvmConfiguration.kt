@@ -22,9 +22,10 @@ internal fun Project.configureKotlin() {
         kotlinOptions {
             jvmTarget = projectJavaVersion.toString()
             allWarningsAsErrors = true
-            freeCompilerArgs += listOf(
-                "-opt-in=kotlin.RequiresOptIn",
-            )
+            freeCompilerArgs +=
+                listOf(
+                    "-opt-in=kotlin.RequiresOptIn",
+                )
         }
 
         configurations.configureEach {
@@ -32,10 +33,11 @@ internal fun Project.configureKotlin() {
                 dependencies.forEach {
                     if (it.name.contains("kotlinx.coroutines")) {
                         kotlinOptions {
-                            freeCompilerArgs += listOf(
-                                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                                "-opt-in=kotlinx.coroutines.FlowPreview",
-                            )
+                            freeCompilerArgs +=
+                                listOf(
+                                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                                    "-opt-in=kotlinx.coroutines.FlowPreview",
+                                )
                         }
                     }
                 }
@@ -47,10 +49,11 @@ internal fun Project.configureKotlin() {
         useJUnitPlatform()
         failFast = true
         testLogging {
-            events = setOf(
-                TestLogEvent.FAILED,
-                TestLogEvent.SKIPPED,
-            )
+            events =
+                setOf(
+                    TestLogEvent.FAILED,
+                    TestLogEvent.SKIPPED,
+                )
         }
     }
 }

@@ -16,30 +16,34 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(
+class DetailViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: SubscriptionRepository,
 ) : ViewModel() {
-
     private val args = DetailScreenDestination.getArgs(savedStateHandle)
-    private val currentDetailId = MutableStateFlow(
-        args.id?.let { SubscriptionId(it) }
-    )
+    private val currentDetailId =
+        MutableStateFlow(
+            args.id?.let { SubscriptionId(it) },
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state = currentDetailId.flatMapLatest { id ->
-        if (id != null) {
-            repository.getSubscription(id)
-        } else {
-            flowOf(null)
-        }
-    }.map {
-        DetailState(subscription = it)
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = DetailState(),
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000)
-    )
+    val state =
+        currentDetailId.flatMapLatest { id ->
+            if (id != null) {
+                repository.getSubscription(id)
+            } else {
+                flowOf(null)
+            }
+        }.map {
+            DetailState(subscription = it)
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = DetailState(),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        )
+
     fun setId(detailId: SubscriptionId?) {
         currentDetailId.value = detailId
     }

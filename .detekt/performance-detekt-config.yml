@@ -1,0 +1,3 @@
+performance:
+  SpreadOperator:
+    active: false

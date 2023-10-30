@@ -7,7 +7,7 @@ import dev.pott.abonity.core.local.db.entities.SubscriptionEntity
 @Database(
     version = 1,
     entities = [
-        SubscriptionEntity::class
+        SubscriptionEntity::class,
     ],
     exportSchema = true,
 )

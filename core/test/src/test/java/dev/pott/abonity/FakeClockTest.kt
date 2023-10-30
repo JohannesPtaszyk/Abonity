@@ -6,7 +6,6 @@ import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Test
 
 class FakeClockTest {
-
     @Test
     fun `now returns same instant as passed`() {
         val instant = Instant.DISTANT_FUTURE

@@ -25,7 +25,7 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
-import dev.pott.abonity.core.ui.preview.MultiPreview
+import dev.pott.abonity.core.ui.preview.PreviewRelevantConfigs
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.overview.SelectableSubscriptionWithPeriodPrice
 import kotlinx.datetime.LocalDate
@@ -46,7 +46,7 @@ fun SubscriptionCard(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(modifier = Modifier.weight(1f, fill = false)) {
                 Text(
@@ -65,22 +65,17 @@ fun SubscriptionCard(
             Spacer(Modifier.width(8.dp))
             PaymentInfo(subscription.paymentInfo, periodPrice)
         }
-        Spacer(modifier = modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Composable
-private fun PaymentInfo(
-    paymentInfo: PaymentInfo,
-    price: Price,
-    modifier: Modifier = Modifier
-) {
-    Column(horizontalAlignment = Alignment.End) {
+private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifier = Modifier) {
+    Column(horizontalAlignment = Alignment.End, modifier = modifier) {
         FormattedPrice(
             price = price,
             style = MaterialTheme.typography.titleLarge,
-            modifier = modifier,
-            maxLines = 1
+            maxLines = 1,
         )
 
         val paymentType = paymentInfo.type
@@ -90,17 +85,18 @@ private fun PaymentInfo(
     }
 }
 
-@MultiPreview
+@PreviewRelevantConfigs
 @Composable
-fun SubscriptionCardPreview(
-    @PreviewParameter(SubscriptionCardPreviewProvider::class) item: SelectableSubscriptionWithPeriodPrice
+private fun SubscriptionCardPreview(
+    @PreviewParameter(SubscriptionCardPreviewProvider::class)
+    item: SelectableSubscriptionWithPeriodPrice,
 ) {
     AppTheme {
         SubscriptionCard(
             subscription = item.subscription,
             periodPrice = item.periodPrice,
             onClick = {},
-            isSelected = false
+            isSelected = false,
         )
     }
 }
@@ -127,8 +123,8 @@ private class SubscriptionCardPreviewProvider :
                             LocalDate(2022, 12, 12),
                             PaymentType.Periodic(
                                 1,
-                                PaymentPeriod.MONTHS
-                            )
+                                PaymentPeriod.MONTHS,
+                            ),
                         ),
                     ),
                     Price(999.11, currency),
@@ -142,15 +138,15 @@ private class SubscriptionCardPreviewProvider :
                         PaymentInfo(
                             Price(
                                 0.99,
-                                Currency.getInstance("USD")
+                                Currency.getInstance("USD"),
                             ),
                             LocalDate(1999, 1, 1),
-                            PaymentType.OneTime
+                            PaymentType.OneTime,
                         ),
                     ),
                     Price(0.99, Currency.getInstance("USD")),
-                    isSelected = true
-                )
+                    isSelected = true,
+                ),
             )
         }
 }

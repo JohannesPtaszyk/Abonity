@@ -20,37 +20,42 @@ fun PeriodicPriceInfo(
 ) {
     val formattedPeriodPrice by rememberFormattedPrice(
         paymentInfo.price.value,
-        paymentInfo.price.currency
+        paymentInfo.price.currency,
     )
-    val period = when (paymentType.period) {
-        PaymentPeriod.DAYS -> pluralStringResource(
-            id = R.plurals.payment_period_days,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
+    val period =
+        when (paymentType.period) {
+            PaymentPeriod.DAYS ->
+                pluralStringResource(
+                    id = R.plurals.payment_period_days,
+                    count = paymentType.periodCount,
+                    formattedPeriodPrice,
+                    paymentType.periodCount,
+                )
 
-        PaymentPeriod.WEEKS -> pluralStringResource(
-            id = R.plurals.payment_period_weeks,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
+            PaymentPeriod.WEEKS ->
+                pluralStringResource(
+                    id = R.plurals.payment_period_weeks,
+                    count = paymentType.periodCount,
+                    formattedPeriodPrice,
+                    paymentType.periodCount,
+                )
 
-        PaymentPeriod.MONTHS -> pluralStringResource(
-            id = R.plurals.payment_period_months,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
+            PaymentPeriod.MONTHS ->
+                pluralStringResource(
+                    id = R.plurals.payment_period_months,
+                    count = paymentType.periodCount,
+                    formattedPeriodPrice,
+                    paymentType.periodCount,
+                )
 
-        PaymentPeriod.YEARS -> pluralStringResource(
-            id = R.plurals.payment_period_weeks,
-            count = paymentType.periodCount,
-            formattedPeriodPrice,
-            paymentType.periodCount,
-        )
-    }
+            PaymentPeriod.YEARS ->
+                pluralStringResource(
+                    id = R.plurals.payment_period_weeks,
+                    count = paymentType.periodCount,
+                    formattedPeriodPrice,
+                    paymentType.periodCount,
+                )
+        }
     Text(
         style = MaterialTheme.typography.labelSmall,
         text = period,

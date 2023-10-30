@@ -56,25 +56,25 @@ fun OverviewScreen(
                 title = {
                     Text(text = stringResource(id = R.string.overview_screen_title))
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
                 PeriodOverviewCard(
                     state.periodPrices,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             items(
                 state.periodSubscriptions,
                 key = { it.subscription.id.id },
-                contentType = { "Subscription Card" }
+                contentType = { "Subscription Card" },
             ) { subscriptionWithPeriodPrice ->
                 SubscriptionCard(
                     subscriptionWithPeriodPrice.subscription,
@@ -83,7 +83,7 @@ fun OverviewScreen(
                     onClick = {
                         onSubscriptionClick(subscriptionWithPeriodPrice.subscription.id)
                     },
-                    isSelected = subscriptionWithPeriodPrice.isSelected
+                    isSelected = subscriptionWithPeriodPrice.isSelected,
                 )
             }
         }

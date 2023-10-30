@@ -13,6 +13,6 @@ fun createTestPaymentInfo(
     return PaymentInfo(
         price,
         firstPayment,
-        type
+        type,
     )
 }

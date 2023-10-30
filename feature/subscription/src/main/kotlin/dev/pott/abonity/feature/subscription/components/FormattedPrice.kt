@@ -25,8 +25,6 @@ import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.ui.util.getDefaultLocale
 import java.text.NumberFormat
 import java.util.Currency
-import java.util.Locale
-
 
 @Composable
 fun FormattedPrice(
@@ -46,11 +44,11 @@ fun FormattedPrice(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     val formatted by rememberFormattedPrice(
         value = price.value,
-        currency = price.currency
+        currency = price.currency,
     )
     Text(
         text = formatted,
@@ -69,19 +67,17 @@ fun FormattedPrice(
         maxLines = maxLines,
         minLines = minLines,
         onTextLayout = onTextLayout,
-        style = style
+        style = style,
     )
 }
 
 @Composable
-fun rememberFormattedPrice(
-    value: Double,
-    currency: Currency,
-): State<String> {
+fun rememberFormattedPrice(value: Double, currency: Currency): State<String> {
     val locale = getDefaultLocale()
-    val format = remember(locale) {
-        NumberFormat.getCurrencyInstance(locale)
-    }
+    val format =
+        remember(locale) {
+            NumberFormat.getCurrencyInstance(locale)
+        }
     return remember(value, currency) {
         derivedStateOf {
             format.currency = currency
@@ -93,7 +89,7 @@ fun rememberFormattedPrice(
 @Preview(locale = "de")
 @Composable
 private fun DeFormattedPricePreview(
-    @PreviewParameter(FormattedPricePreviewProvider::class) price: Price
+    @PreviewParameter(FormattedPricePreviewProvider::class) price: Price,
 ) {
     FormattedPrice(price = price)
 }
@@ -101,7 +97,7 @@ private fun DeFormattedPricePreview(
 @Preview(locale = "en")
 @Composable
 private fun EnFormattedPricePreview(
-    @PreviewParameter(FormattedPricePreviewProvider::class) price: Price
+    @PreviewParameter(FormattedPricePreviewProvider::class) price: Price,
 ) {
     FormattedPrice(price = price)
 }
@@ -115,7 +111,7 @@ private class FormattedPricePreviewProvider : PreviewParameterProvider<Price> {
                 Price(99.99, Currency.getInstance("USD")),
                 Price(99.99, Currency.getInstance("CLF")),
                 Price(99.99, Currency.getInstance("GBP")),
-                Price(99.99, Currency.getInstance("MOP"))
+                Price(99.99, Currency.getInstance("MOP")),
             )
         }
 }

@@ -10,12 +10,12 @@ private const val DETAIL_ID_KEY = "detail_id"
 private const val DETAIL_ROUTE = "subscription/detail"
 
 object DetailScreenDestination : Destination<DetailScreenDestination.Args>(
-    DETAIL_ROUTE
+    DETAIL_ROUTE,
 ) {
-
-    override val arguments: List<NamedNavArgument> = listOf(
-        navArgument(DETAIL_ID_KEY) { type = NavType.LongType }
-    )
+    override val arguments: List<NamedNavArgument> =
+        listOf(
+            navArgument(DETAIL_ID_KEY) { type = NavType.LongType },
+        )
 
     override fun getArgs(savedStateHandle: SavedStateHandle): Args {
         val id = savedStateHandle.get<Long>(DETAIL_ID_KEY)
@@ -24,7 +24,7 @@ object DetailScreenDestination : Destination<DetailScreenDestination.Args>(
 
     override fun getParamsFromArgs(args: Args): Map<String, Any> {
         return mapOf(
-            DETAIL_ID_KEY to (args.id ?: -1)
+            DETAIL_ID_KEY to (args.id ?: -1),
         )
     }
 

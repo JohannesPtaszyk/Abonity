@@ -9,14 +9,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
 class SubscriptionRepositoryImplTest {
-
     @Test
     fun `GIVEN local returns a subscriptions flow WHEN getSubscriptionFlow THEN return the same flow`() {
         runTest {
             val localSubscriptions = flowOf(createTestSubscriptionList())
-            val fakeLocalDataSource = FakeSubscriptionLocalDataSource(
-                localSubscriptions
-            )
+            val fakeLocalDataSource =
+                FakeSubscriptionLocalDataSource(
+                    localSubscriptions,
+                )
             val tested = SubscriptionRepositoryImpl(fakeLocalDataSource)
 
             val result = tested.getSubscriptionsFlow()

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubscriptionDao {
-
     @Upsert
     suspend fun upsertSubscription(subscription: SubscriptionEntity)
 

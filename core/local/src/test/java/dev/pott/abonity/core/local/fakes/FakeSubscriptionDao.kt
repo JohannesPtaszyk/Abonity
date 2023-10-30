@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
 
 class FakeSubscriptionDao(
-    initialEntities: List<SubscriptionEntity> = emptyList()
+    initialEntities: List<SubscriptionEntity> = emptyList(),
 ) : SubscriptionDao {
-
-    private val entities: Channel<List<SubscriptionEntity>> = Channel(
-        capacity = Channel.UNLIMITED
-    )
+    private val entities: Channel<List<SubscriptionEntity>> =
+        Channel(
+            capacity = Channel.UNLIMITED,
+        )
 
     init {
         entities.trySendBlocking(initialEntities)
@@ -39,7 +39,8 @@ class FakeSubscriptionDao(
     override fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity> {
         return entities.receiveAsFlow()
             .mapNotNull {
-                    subscriptionEntities -> subscriptionEntities.find { it.id == id }
+                    subscriptionEntities ->
+                subscriptionEntities.find { it.id == id }
             }
     }
 }

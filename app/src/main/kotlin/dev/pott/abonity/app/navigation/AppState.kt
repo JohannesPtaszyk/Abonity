@@ -2,6 +2,7 @@ package dev.pott.abonity.app.navigation
 
 import android.app.Activity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import co.touchlab.kermit.Logger
+import com.google.firebase.crashlytics.internal.model.ImmutableList
 import dev.pott.abonity.app.navigation.components.NavigationType
 import dev.pott.abonity.app.navigation.components.rememberNavigationType
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
@@ -20,16 +22,14 @@ import dev.pott.abonity.feature.subscription.SubscriptionGraphState
 data class AppState(
     val navigationType: NavigationType,
     val selectedNavigationItem: NavigationItem,
-    val navigationItems: List<NavigationItem>,
-    val subscriptionGraphState: SubscriptionGraphState
+    val navigationItems: ImmutableList<NavigationItem>,
+    val subscriptionGraphState: SubscriptionGraphState,
 )
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Suppress("SpreadOperator")
 @Composable
-fun rememberAppState(
-    activity: Activity,
-    navController: NavController
-): State<AppState> {
+fun rememberAppState(activity: Activity, navController: NavController): State<AppState> {
     val windowSizeClass = calculateWindowSizeClass(activity)
     val navigationType by rememberNavigationType(windowSizeClass)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -45,14 +45,23 @@ fun rememberAppState(
     }
     return remember(selectedNavigationItem) {
         derivedStateOf {
+            val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
+            val items = ImmutableList.from(*navigationItems)
             AppState(
                 navigationType,
-                selectedNavigationItem ?: NavigationItem.SUBSCRIPTION,
-                navigationItems.toList(),
-                SubscriptionGraphState(windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium)
+                selected,
+                items,
+                getSubscriptionGraphState(windowSizeClass),
             ).also {
                 Logger.withTag("AppState").v { it.toString() }
             }
         }
     }
+}
+
+private fun getSubscriptionGraphState(windowSizeClass: WindowSizeClass): SubscriptionGraphState {
+    val twoPane = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
+    return SubscriptionGraphState(
+        showOverviewAsMultiColumn = twoPane,
+    )
 }

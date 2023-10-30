@@ -1,0 +1,9 @@
+style:
+  MaxLineLength:
+    excludes: '**/test/**'
+
+complexity:
+  LongMethod:
+    excludes: '**/test/**'
+  LargeClass:
+    excludes: '**/test/**'

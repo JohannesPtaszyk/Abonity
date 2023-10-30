@@ -13,16 +13,16 @@ import dev.pott.abonity.navigation.destination.Destination
 enum class NavigationItem(
     @StringRes val titleRes: Int,
     val icon: ImageVector,
-    val destination: Destination<*>
+    val destination: Destination<*>,
 ) {
     SUBSCRIPTION(
         R.string.navigation_item_subscription,
-        dev.pott.abonity.core.ui.theme.AppIcons.Home,
-        SubscriptionNavigationDestination
+        AppIcons.Home,
+        SubscriptionNavigationDestination,
     ),
     SETTINGS(
         R.string.navigation_item_settings,
-        dev.pott.abonity.core.ui.theme.AppIcons.Settings,
-        SettingsScreenDestination
-    )
+        AppIcons.Settings,
+        SettingsScreenDestination,
+    ),
 }

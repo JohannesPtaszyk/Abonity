@@ -5,7 +5,9 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class SubscriptionRepositoryImpl @Inject constructor(
+class SubscriptionRepositoryImpl
+@Inject
+constructor(
     private val localDataSource: SubscriptionLocalDataSource,
 ) : SubscriptionRepository {
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {

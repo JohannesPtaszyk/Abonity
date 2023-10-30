@@ -33,7 +33,7 @@ arrow = "1.2.1"
 detekt = "1.23.1"
 detektComposeRules = "0.3.0"
 faker = "1.15.0"
-firebaseBom = "32.4.0"
+firebaseBom = "32.4.1"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
 gmsPlugin = "4.4.0"
@@ -46,9 +46,11 @@ javaxInject = "1"
 junitBom = "5.10.0"
 kermit = "1.2.3"
 kotlin = "1.9.10"
+kotlinCollections = "0.3.6"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
 kotlinxSerializationJson = "1.6.0"
+ktlint = "1.0.1"
 ksp = "1.9.10-1.0.13"
 okhttp = "4.11.0"
 protobuf = "3.24.0"
@@ -57,7 +59,7 @@ retrofit = "2.9.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 robolectric = "4.10.3"
 room = "2.6.0"
-secrets = "2.0.1"
+spotless = "6.22.0"
 turbine = "1.0.0"
 
 [libraries]
@@ -96,7 +98,6 @@ assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref 
 arrow-bom = { group = "io.arrow-kt", name = "arrow-stack", version.ref = "arrow" }
 arrow-core = { group = "io.arrow-kt", name = "arrow-core" }
 arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines" }
-detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-composeRules = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektComposeRules" }
 faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "faker" }
@@ -121,6 +122,7 @@ junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engi
 junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit"}
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollections" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
@@ -140,12 +142,14 @@ firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "fir
 firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

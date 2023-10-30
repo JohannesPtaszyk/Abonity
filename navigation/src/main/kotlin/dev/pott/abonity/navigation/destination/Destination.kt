@@ -6,7 +6,6 @@ import androidx.navigation.NavDeepLink
 import co.touchlab.kermit.Logger
 
 abstract class Destination<T>(val baseRoute: String) {
-
     open val route: String by lazy {
         buildString {
             append(baseRoute)
@@ -60,7 +59,6 @@ abstract class Destination<T>(val baseRoute: String) {
 
 open class NoArgDestination(baseRoute: String) :
     Destination<Nothing>(baseRoute) {
-
     override val arguments: List<NamedNavArgument> = emptyList()
 
     override fun getArgs(savedStateHandle: SavedStateHandle): Nothing {

@@ -8,7 +8,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
 class FakeSubscriptionLocalDataSourceTest {
-
     @Test
     fun `GIVEN subscriptions WHEN getSubscriptionFlow THEN return it as flow `() {
         runTest {

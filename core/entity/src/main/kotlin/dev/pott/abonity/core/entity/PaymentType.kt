@@ -1,7 +1,6 @@
 package dev.pott.abonity.core.entity
 
 sealed interface PaymentType {
-
     data object OneTime : PaymentType
 
     data class Periodic(

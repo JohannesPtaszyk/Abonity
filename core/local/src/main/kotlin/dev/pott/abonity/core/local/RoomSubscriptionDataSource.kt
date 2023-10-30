@@ -17,8 +17,10 @@ import kotlinx.datetime.LocalDate
 import java.util.Currency
 import javax.inject.Inject
 
-class RoomSubscriptionDataSource @Inject constructor(
-    private val dao: SubscriptionDao
+class RoomSubscriptionDataSource
+@Inject
+constructor(
+    private val dao: SubscriptionDao,
 ) : SubscriptionLocalDataSource {
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
         return dao.getSubscriptionsFlow().map { subscriptions ->
@@ -36,15 +38,17 @@ class RoomSubscriptionDataSource @Inject constructor(
         val currency = Currency.getInstance(currency)
         val price = Price(price, currency)
         val firstPayment = LocalDate.parse(firstPaymentLocalDate)
-        val paymentType = paymentType.toDomain(
-            periodCount = periodCount,
-            period = period,
-        )
-        val paymentInfo = PaymentInfo(
-            price = price,
-            firstPayment = firstPayment,
-            type = paymentType
-        )
+        val paymentType =
+            paymentType.toDomain(
+                periodCount = periodCount,
+                period = period,
+            )
+        val paymentInfo =
+            PaymentInfo(
+                price = price,
+                firstPayment = firstPayment,
+                type = paymentType,
+            )
 
         return Subscription(
             id = SubscriptionId(id),
@@ -56,7 +60,7 @@ class RoomSubscriptionDataSource @Inject constructor(
 
     private fun LocalPaymentType.toDomain(
         periodCount: Int?,
-        period: LocalPaymentPeriod?
+        period: LocalPaymentPeriod?,
     ): PaymentType {
         return when (this) {
             LocalPaymentType.ONE_TIME -> {
@@ -64,18 +68,21 @@ class RoomSubscriptionDataSource @Inject constructor(
             }
 
             LocalPaymentType.PERIODICALLY -> {
-                val nonNullPeriodCount = checkNotNull(periodCount) {
-                    "Period count must never be null for periodic payments"
-                }
-                val localPaymentPeriod = checkNotNull(period) {
-                    "Period must never be null for periodic payments"
-                }
-                val paymentPeriod = when (localPaymentPeriod) {
-                    LocalPaymentPeriod.DAYS -> PaymentPeriod.DAYS
-                    LocalPaymentPeriod.WEEKS -> PaymentPeriod.WEEKS
-                    LocalPaymentPeriod.MONTHS -> PaymentPeriod.MONTHS
-                    LocalPaymentPeriod.YEARS -> PaymentPeriod.YEARS
-                }
+                val nonNullPeriodCount =
+                    checkNotNull(periodCount) {
+                        "Period count must never be null for periodic payments"
+                    }
+                val localPaymentPeriod =
+                    checkNotNull(period) {
+                        "Period must never be null for periodic payments"
+                    }
+                val paymentPeriod =
+                    when (localPaymentPeriod) {
+                        LocalPaymentPeriod.DAYS -> PaymentPeriod.DAYS
+                        LocalPaymentPeriod.WEEKS -> PaymentPeriod.WEEKS
+                        LocalPaymentPeriod.MONTHS -> PaymentPeriod.MONTHS
+                        LocalPaymentPeriod.YEARS -> PaymentPeriod.YEARS
+                    }
                 PaymentType.Periodic(nonNullPeriodCount, paymentPeriod)
             }
         }

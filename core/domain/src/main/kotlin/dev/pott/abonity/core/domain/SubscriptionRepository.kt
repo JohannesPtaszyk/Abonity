@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SubscriptionRepository {
     fun getSubscriptionsFlow(): Flow<List<Subscription>>
+
     fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription>
 }
