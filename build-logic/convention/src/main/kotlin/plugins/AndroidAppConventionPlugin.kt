@@ -1,19 +1,17 @@
 package plugins
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
 import configurations.applyDetekt
+import configurations.applyKoverAndroid
 import configurations.configureAndroidCompose
 import configurations.configureGradleManagedDevices
-import configurations.configureJacoco
 import extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 @Suppress("unused")
 class AndroidAppConventionPlugin : Plugin<Project> {
@@ -24,7 +22,6 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("com.google.firebase.crashlytics")
                 apply("com.google.firebase.firebase-perf")
                 apply("dev.pott.android.lint")
-                apply("org.gradle.jacoco")
                 apply("org.jetbrains.kotlin.android")
                 apply("com.google.gms.google-services")
                 apply("com.google.android.gms.oss-licenses-plugin")
@@ -47,9 +44,8 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 }
             }
 
-            extensions.getByType<ApplicationAndroidComponentsExtension>().apply {
-                configureJacoco(this)
-            }
+            applyDetekt()
+            applyKoverAndroid()
 
             dependencies {
                 val bom = libs.findLibrary("firebase-bom").get()
@@ -58,8 +54,6 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("firebase.crashlytics").get())
                 "implementation"(libs.findLibrary("firebase.performance").get())
             }
-
-            applyDetekt()
         }
     }
 }

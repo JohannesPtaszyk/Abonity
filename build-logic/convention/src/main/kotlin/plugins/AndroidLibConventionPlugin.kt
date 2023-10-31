@@ -1,18 +1,16 @@
 package plugins
 
-import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
 import configurations.applyDetekt
+import configurations.applyKoverAndroid
 import configurations.configureGradleManagedDevices
-import configurations.configureJacoco
 import configurations.configureKotlinJvm
 import extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.kotlin
 
 @Suppress("unused")
@@ -22,7 +20,6 @@ class AndroidLibConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("dev.pott.android.lint")
-                apply("org.gradle.jacoco")
                 apply("org.jetbrains.kotlin.android")
             }
             extensions.configure<LibraryExtension> {
@@ -34,11 +31,9 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                     generateBuildConfigProvider?.configure { enabled = false }
                 }
             }
-            extensions.getByType<LibraryAndroidComponentsExtension>().apply {
-                configureJacoco(this)
-            }
             configureKotlinJvm()
             applyDetekt()
+            applyKoverAndroid()
             dependencies {
                 add("testImplementation", kotlin("test"))
                 add("androidTestImplementation", kotlin("test"))

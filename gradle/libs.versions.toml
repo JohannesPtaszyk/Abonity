@@ -41,7 +41,6 @@ googleOss = "17.0.1"
 googleOssPlugin = "0.10.6"
 hilt = "2.48.1"
 hiltExt = "1.0.0"
-jacoco = "0.8.7"
 javaxInject = "1"
 junitBom = "5.10.0"
 kermit = "1.2.3"
@@ -50,6 +49,7 @@ kotlinCollections = "0.3.6"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
 kotlinxSerializationJson = "1.6.0"
+kover = "0.7.4"
 ktlint = "1.0.1"
 ksp = "1.9.10-1.0.13"
 okhttp = "4.11.0"
@@ -141,6 +141,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
@@ -155,5 +156,6 @@ firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "fireb
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }

@@ -1,6 +1,7 @@
 package plugins
 
 import configurations.applyDetekt
+import configurations.applyKover
 import configurations.configureKotlinJvm
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,6 +16,7 @@ class JvmLibConventionPlugin : Plugin<Project> {
             }
             configureKotlinJvm()
             applyDetekt()
+            applyKover()
         }
     }
 }
