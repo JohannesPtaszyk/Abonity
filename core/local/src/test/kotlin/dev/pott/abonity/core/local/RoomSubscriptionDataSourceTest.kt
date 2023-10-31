@@ -8,8 +8,8 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.local.fakes.FakeSubscriptionDao
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithOneTimePayment
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithPeriodicPayment
-import dev.pott.abonity.entities.createTestPaymentInfo
-import dev.pott.abonity.entities.createTestSubscription
+import dev.pott.abonity.core.test.entities.createTestPaymentInfo
+import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 

@@ -2,11 +2,11 @@ package dev.pott.abonity.core.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import dev.pott.abonity.FakeClock
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.test.FakeClock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DynamicTest

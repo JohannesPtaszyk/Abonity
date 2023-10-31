@@ -1,4 +1,4 @@
-package dev.pott.abonity
+package dev.pott.abonity.core.test
 
 import assertk.assertThat
 import assertk.assertions.isSameAs

@@ -1,4 +1,4 @@
-package dev.pott.abonity.entities
+package dev.pott.abonity.core.test.entities
 
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType

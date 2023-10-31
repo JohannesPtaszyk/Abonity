@@ -1,4 +1,4 @@
-package dev.pott.abonity
+package dev.pott.abonity.core.test
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

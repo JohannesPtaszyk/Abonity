@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import dev.pott.abonity.FakeSubscriptionRepository
 import dev.pott.abonity.common.test.CoroutinesTestExtension
-import dev.pott.abonity.entities.createTestSubscription
+import dev.pott.abonity.core.test.FakeSubscriptionRepository
+import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
