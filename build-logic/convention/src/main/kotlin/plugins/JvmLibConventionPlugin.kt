@@ -1,6 +1,5 @@
 package plugins
 
-import configurations.applyDetekt
 import configurations.applyKover
 import configurations.configureKotlinJvm
 import org.gradle.api.Plugin
@@ -15,7 +14,6 @@ class JvmLibConventionPlugin : Plugin<Project> {
                 apply("dev.pott.android.lint")
             }
             configureKotlinJvm()
-            applyDetekt()
             applyKover()
         }
     }

@@ -24,6 +24,7 @@ dependencies {
     compileOnly(libs.kover.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
+    compileOnly(libs.sonar.gradlePlugin)
 }
 
 gradlePlugin {

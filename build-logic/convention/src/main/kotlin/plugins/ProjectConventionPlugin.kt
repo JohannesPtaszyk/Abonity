@@ -1,6 +1,8 @@
 package plugins
 
+import configurations.applyDetekt
 import configurations.applyKoverProject
+import configurations.applySonar
 import configurations.applySpotless
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,6 +13,8 @@ class ProjectConventionPlugin : Plugin<Project> {
         with(target) {
             applySpotless()
             applyKoverProject()
+            applyDetekt()
+            applySonar()
         }
     }
 }

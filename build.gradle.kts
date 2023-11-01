@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        gradlePluginPortal()
     }
     dependencies {
         classpath(libs.google.oss.licenses.plugin) {
@@ -22,5 +23,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.kover) apply false
+    alias(libs.plugins.sonar) apply false
     id("dev.pott.project")
 }
