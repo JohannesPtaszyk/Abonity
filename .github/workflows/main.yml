@@ -8,7 +8,6 @@ on:
 
 jobs:
   verify:
-    needs: setup
     runs-on: ubuntu-latest
     container: alvrme/alpine-android:android-34-jdk17
 
@@ -38,7 +37,6 @@ jobs:
         run: ./gradlew sonar --info
 
   build:
-    needs: setup
     runs-on: ubuntu-latest
     container: alvrme/alpine-android:android-34-jdk17
 
