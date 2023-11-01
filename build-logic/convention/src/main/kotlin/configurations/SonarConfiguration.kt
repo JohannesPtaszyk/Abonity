@@ -22,6 +22,16 @@ fun Project.applySonar() {
                 "sonar.coverage.jacoco.xmlReportPaths",
                 layout.buildDirectory.file("reports/kover/report.xml").get().asFile.path,
             )
+            property(
+                "sonar.androidLint.reportPaths",
+                findProject(":app")?.layout
+                    ?.buildDirectory
+                    ?.file("reports/lint/result.xml")
+                    ?.get()
+                    ?.asFile
+                    ?.path
+                    ?: error("Could not find app project")
+            )
         }
     }
 }

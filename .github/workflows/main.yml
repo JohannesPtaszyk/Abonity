@@ -27,6 +27,9 @@ jobs:
       - name: Verify Detekt
         run: ./gradlew detekt
 
+      - name: Run Android Lint
+        run: ./gradlew :app:lint
+
       - name: Run Unit Tests
         run: ./gradlew koverXmlReport
 

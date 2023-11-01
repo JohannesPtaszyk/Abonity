@@ -14,14 +14,14 @@ class AndroidLintConventionPlugin : Plugin<Project> {
         with(target) {
             when {
                 pluginManager.hasPlugin("com.android.application") ->
-                    configure<ApplicationExtension> { lint(Lint::configureLint) }
+                    configure<ApplicationExtension> { configureLint(lint) }
 
                 pluginManager.hasPlugin("com.android.library") ->
-                    configure<LibraryExtension> { lint(Lint::configureLint) }
+                    configure<LibraryExtension> { configureLint(lint) }
 
                 else -> {
                     pluginManager.apply("com.android.lint")
-                    configure(Lint::configureLint)
+                    configure<Lint> { configureLint(this) }
                 }
             }
         }
