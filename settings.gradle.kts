@@ -1,4 +1,6 @@
 rootProject.name = "Abonity"
+// https://github.com/SonarSource/sonar-scanning-examples/issues/169#issuecomment-1769854089
+System.setProperty("sonar.gradle.skipCompile", "true")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

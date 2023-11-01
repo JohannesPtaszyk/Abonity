@@ -7,35 +7,51 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  verify:
     runs-on: ubuntu-latest
     container: alvrme/alpine-android:android-34-jdk17
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up environment
-      env:
-        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      run: |
-        echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
-        chmod +x gradlew
+      - name: Set up environment
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+          chmod +x gradlew
 
-    - name: Verify Spotless
-      run: ./gradlew spotlessCheck
+      - name: Verify Spotless
+        run: ./gradlew spotlessCheck
 
-    - name: Verify Detekt
-      run: ./gradlew detekt
+      - name: Verify Detekt
+        run: ./gradlew detekt
 
-    - name: Run Unit Tests
-      run: ./gradlew koverXmlReport
+      - name: Run Android Lint
+        run: ./gradlew :app:lint
 
-    - name: Run Sonar Cloud Scan
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonar --info
+      - name: Run Unit Tests
+        run: ./gradlew koverXmlReport
 
-    - name: Assemble Debug APK
-      run: ./gradlew assembleDebug
+      - name: Run Sonar Cloud Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar --info
+
+  build:
+    runs-on: ubuntu-latest
+    container: alvrme/alpine-android:android-34-jdk17
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up environment
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+          chmod +x gradlew
+
+      - name: Assemble Debug APK
+        run: ./gradlew assembleDebug
