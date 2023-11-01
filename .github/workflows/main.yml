@@ -7,12 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  setup:
+  verify:
+    needs: setup
     runs-on: ubuntu-latest
     container: alvrme/alpine-android:android-34-jdk17
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up environment
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
@@ -20,12 +22,6 @@ jobs:
           echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
           chmod +x gradlew
 
-  verify:
-    needs: setup
-    runs-on: ubuntu-latest
-    container: alvrme/alpine-android:android-34-jdk17
-
-    steps:
       - name: Verify Spotless
         run: ./gradlew spotlessCheck
 
@@ -47,5 +43,14 @@ jobs:
     container: alvrme/alpine-android:android-34-jdk17
 
     steps:
-    - name: Assemble Debug APK
-      run: ./gradlew assembleDebug
+      - uses: actions/checkout@v3
+
+      - name: Set up environment
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+          chmod +x gradlew
+
+      - name: Assemble Debug APK
+        run: ./gradlew assembleDebug
