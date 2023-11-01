@@ -14,8 +14,14 @@ fun Project.applySonar() {
             property("sonar.projectKey", "JohannesPtaszyk_Abonity")
             property("sonar.organization", "johannesptaszyk")
             property("sonar.host.url", "https://sonarcloud.io")
-            property("sonar.kotlin.detekt.reportPaths", layout.buildDirectory.file("reports/detekt/merge.xml").get().asFile.path)
-            property("sonar.coverage.jacoco.xmlReportPaths", layout.buildDirectory.file("reports/kover/report.xml").get().asFile.path)
+            property(
+                "sonar.kotlin.detekt.reportPaths",
+                layout.buildDirectory.file("reports/detekt/merge.xml").get().asFile.path,
+            )
+            property(
+                "sonar.coverage.jacoco.xmlReportPaths",
+                layout.buildDirectory.file("reports/kover/report.xml").get().asFile.path,
+            )
         }
     }
 }
