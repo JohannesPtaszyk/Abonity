@@ -9,6 +9,7 @@ Get an overview of your subscriptions/regular expenses.
 
 ### SonarCloud
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
 
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
@@ -21,5 +22,3 @@ Get an overview of your subscriptions/regular expenses.
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=coverage)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
-
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
