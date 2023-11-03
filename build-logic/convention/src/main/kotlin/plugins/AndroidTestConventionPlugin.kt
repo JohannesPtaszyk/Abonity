@@ -1,7 +1,7 @@
 package plugins
 
 import com.android.build.gradle.TestExtension
-import com.google.samples.apps.nowinandroid.configureKotlinAndroid
+import configurations.configureKotlinAndroid
 import configurations.configureGradleManagedDevices
 import extensions.libs
 import org.gradle.api.Plugin

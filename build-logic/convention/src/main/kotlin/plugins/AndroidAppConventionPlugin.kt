@@ -2,7 +2,7 @@ package plugins
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-import com.google.samples.apps.nowinandroid.configureKotlinAndroid
+import configurations.configureKotlinAndroid
 import configurations.applyKoverAndroid
 import configurations.configureAndroidCompose
 import configurations.configureGradleManagedDevices
