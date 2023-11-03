@@ -1,7 +1,7 @@
 package plugins
 
 import com.android.build.gradle.LibraryExtension
-import com.google.samples.apps.nowinandroid.configureKotlinAndroid
+import configurations.configureKotlinAndroid
 import configurations.applyKoverAndroid
 import configurations.configureGradleManagedDevices
 import configurations.configureKotlinJvm
