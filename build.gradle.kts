@@ -11,6 +11,15 @@ buildscript {
     }
 }
 
+// Remove after https://github.com/touchlab/Kermit/issues/383
+subprojects {
+    configurations
+        .matching { it.name.endsWith("TestRuntimeClasspath") }
+        .configureEach {
+            exclude(group = "org.jetbrains.kotlin", module = "kotlin-test-junit")
+        }
+}
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.jvm) apply false
