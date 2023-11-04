@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class OverviewViewModel
-@Inject
-constructor(
+class OverviewViewModel @Inject constructor(
     repository: SubscriptionRepository,
     private val calculator: PeriodicPriceCalculator,
 ) : ViewModel() {

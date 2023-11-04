@@ -10,6 +10,14 @@ class FakeSubscriptionLocalDataSource(
     private val testSubscriptionsFlow: Flow<List<Subscription>> = emptyFlow(),
     private val testSubscriptionFlow: Flow<Subscription> = emptyFlow(),
 ) : SubscriptionLocalDataSource {
+
+    val addedSubscriptions = mutableListOf<Subscription>()
+
+    override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
+        addedSubscriptions.add(subscription)
+        return subscription
+    }
+
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
         return testSubscriptionsFlow
     }

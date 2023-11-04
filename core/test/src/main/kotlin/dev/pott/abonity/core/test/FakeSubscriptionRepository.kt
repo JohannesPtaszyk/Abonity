@@ -10,11 +10,18 @@ class FakeSubscriptionRepository(
     private val subscriptionsFlow: Flow<List<Subscription>> = emptyFlow(),
     private val subscriptionFlow: Flow<Subscription> = emptyFlow(),
 ) : SubscriptionRepository {
+
+    val addedSubscriptions = mutableListOf<Subscription>()
+
+    override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
+        addedSubscriptions.add(subscription)
+        return subscription
+    }
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
         return subscriptionsFlow
     }
 
-    override fun getSubscription(subscriptionId: SubscriptionId): Flow<Subscription> {
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
         return subscriptionFlow
     }
 }

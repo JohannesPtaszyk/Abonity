@@ -25,7 +25,7 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
-import dev.pott.abonity.core.ui.preview.PreviewRelevantConfigs
+import dev.pott.abonity.core.ui.preview.PreviewCommonUiConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.overview.SelectableSubscriptionWithPeriodPrice
 import kotlinx.datetime.LocalDate
@@ -85,7 +85,7 @@ private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifi
     }
 }
 
-@PreviewRelevantConfigs
+@PreviewCommonUiConfig
 @Composable
 private fun SubscriptionCardPreview(
     @PreviewParameter(SubscriptionCardPreviewProvider::class)

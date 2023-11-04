@@ -18,11 +18,22 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.pott.abonity.core.entity.PaymentInfo
+import dev.pott.abonity.core.entity.PaymentPeriod
+import dev.pott.abonity.core.entity.PaymentType
+import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
+import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.feature.subscription.components.PeriodOverviewCard
 import dev.pott.abonity.feature.subscription.components.SubscriptionCard
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import java.util.Currency
 
 @Composable
 fun OverviewScreen(
@@ -87,5 +98,50 @@ fun OverviewScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+@PreviewCommonScreenConfig
+private fun OverviewScreenPreview() {
+    val description =
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, " +
+            "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna " +
+            "aliquyam erat, sed diam voluptua. At vero eos et accusam et justo " +
+            "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+            "sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, " +
+            "consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt " +
+            "ut labore et dolore magna aliquyam erat, sed diam voluptua. " +
+            "At vero eos et accusam et justo duo dolores et ea rebum. " +
+            "Stet clita kasd gubergren, no sea takimata sanctus est " +
+            "Lorem ipsum dolor sit amet."
+
+    AppTheme {
+        OverviewScreen(
+            state = OverviewState(
+                periodSubscriptions = buildList {
+                    repeat(5) { id ->
+                        SelectableSubscriptionWithPeriodPrice(
+                            subscription = Subscription(
+                                SubscriptionId(id.toLong()),
+                                "Name",
+                                description,
+                                paymentInfo = PaymentInfo(
+                                    Price(99.99, Currency.getInstance("EUR")),
+                                    Clock.System.now()
+                                        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                                    PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                                ),
+                            ),
+                            periodPrice = Price(99.99, Currency.getInstance("EUR")),
+                            false,
+                        ).also { add(it) }
+                    }
+                },
+            ),
+            onSubscriptionClick = {
+                // On Subscription click
+            },
+        )
     }
 }

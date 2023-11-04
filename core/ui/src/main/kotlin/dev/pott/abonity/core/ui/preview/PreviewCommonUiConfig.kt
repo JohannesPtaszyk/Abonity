@@ -1,6 +1,7 @@
 package dev.pott.abonity.core.ui.preview
 
 import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 
@@ -87,4 +88,22 @@ import androidx.compose.ui.tooling.preview.Wallpapers
     wallpaper = Wallpapers.YELLOW_DOMINATED_EXAMPLE,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
-annotation class PreviewRelevantConfigs
+annotation class PreviewCommonUiConfig
+
+@Preview(
+    name = "1. Mobile",
+    device = Devices.DEFAULT,
+)
+@Preview(
+    name = "2. Foldable",
+    device = Devices.FOLDABLE,
+)
+@Preview(
+    name = "3. Tablet",
+    device = Devices.TABLET,
+)
+@Preview(
+    name = "4. Desktop",
+    device = Devices.DESKTOP,
+)
+annotation class PreviewCommonScreenConfig

@@ -5,7 +5,8 @@ style:
   UnusedPrivateMember:
     ignoreAnnotated:
       - 'Preview'
-      - 'PreviewRelevantConfigs'
+      - 'PreviewCommonUiConfig'
+      - 'PreviewCommonScreenConfig'
 
 naming:
   FunctionNaming:

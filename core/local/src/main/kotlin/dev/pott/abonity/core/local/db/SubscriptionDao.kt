@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubscriptionDao {
     @Upsert
-    suspend fun upsertSubscription(subscription: SubscriptionEntity)
+    suspend fun upsertSubscription(subscription: SubscriptionEntity): Long
 
     @Query("SELECT * FROM subscription_entity")
     fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>>

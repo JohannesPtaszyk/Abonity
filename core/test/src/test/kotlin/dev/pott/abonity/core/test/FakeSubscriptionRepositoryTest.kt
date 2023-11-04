@@ -3,14 +3,42 @@ package dev.pott.abonity.core.test
 import assertk.assertThat
 import assertk.assertions.isSameAs
 import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
 class FakeSubscriptionRepositoryTest {
+
+    @Test
+    fun `getSubscriptionsFlow returns constructor parameter`() {
+        val flow = emptyFlow<List<Subscription>>()
+
+        val tested = FakeSubscriptionRepository(subscriptionsFlow = flow)
+
+        assertThat(tested.getSubscriptionsFlow()).isSameAs(flow)
+    }
+
     @Test
     fun `getSubscriptionFlow returns constructor parameter`() {
-        val flow = emptyFlow<List<Subscription>>()
-        val tested = FakeSubscriptionRepository(flow)
-        assertThat(tested.getSubscriptionsFlow()).isSameAs(flow)
+        val subscription = createTestSubscription()
+        val flow = flowOf(subscription)
+
+        val tested = FakeSubscriptionRepository(subscriptionFlow = flow)
+
+        assertThat(tested.getSubscriptionFlow(subscription.id)).isSameAs(flow)
+    }
+
+    @Test
+    fun `addOrUpdateSubscription returns subscription and adds it to addedSubscriptions`() {
+        runTest {
+            val subscription = createTestSubscription()
+
+            val tested = FakeSubscriptionRepository()
+
+            assertThat(tested.addOrUpdateSubscription(subscription)).isSameAs(subscription)
+            assertThat(tested.addedSubscriptions.first()).isSameAs(subscription)
+        }
     }
 }

@@ -28,9 +28,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
+import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.BackButton
+import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
+import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.components.FormattedPrice
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import java.util.Currency
 
 @Composable
 fun DetailScreen(
@@ -140,5 +149,38 @@ private fun PaymentInfoCard(paymentInfo: PaymentInfo, modifier: Modifier = Modif
                 )
             }
         }
+    }
+}
+
+@Composable
+@PreviewCommonScreenConfig
+private fun DetailScreenPreview() {
+    AppTheme {
+        DetailScreen(
+            state = DetailState(
+                subscription = Subscription(
+                    SubscriptionId(0),
+                    "Name",
+                    "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, " +
+                        "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna " +
+                        "aliquyam erat, sed diam voluptua. At vero eos et accusam et justo " +
+                        "duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata " +
+                        "sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, " +
+                        "consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt " +
+                        "ut labore et dolore magna aliquyam erat, sed diam voluptua. " +
+                        "At vero eos et accusam et justo duo dolores et ea rebum. " +
+                        "Stet clita kasd gubergren, no sea takimata sanctus est " +
+                        "Lorem ipsum dolor sit amet.",
+                    paymentInfo = PaymentInfo(
+                        Price(99.99, Currency.getInstance("EUR")),
+                        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                        PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                    ),
+                ),
+            ),
+            close = {
+                // Close Screen
+            },
+        )
     }
 }

@@ -17,11 +17,15 @@ import kotlinx.datetime.LocalDate
 import java.util.Currency
 import javax.inject.Inject
 
-class RoomSubscriptionDataSource
-@Inject
-constructor(
+class RoomSubscriptionDataSource @Inject constructor(
     private val dao: SubscriptionDao,
 ) : SubscriptionLocalDataSource {
+
+    override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
+        val id = dao.upsertSubscription(subscription.toEntity())
+        return subscription.copy(id = SubscriptionId(id))
+    }
+
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
         return dao.getSubscriptionsFlow().map { subscriptions ->
             subscriptions.map { entity ->
@@ -32,6 +36,26 @@ constructor(
 
     override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
         return dao.getSubscriptionFlow(subscriptionId.id).map { it.toDomain() }
+    }
+
+    private fun Subscription.toEntity(): SubscriptionEntity {
+        val paymentType = paymentInfo.type
+        val (period, periodCount) = if (paymentType is PaymentType.Periodic) {
+            paymentType.period.toEntity() to paymentType.periodCount
+        } else {
+            null to null
+        }
+        return SubscriptionEntity(
+            id.id,
+            name,
+            description,
+            paymentInfo.price.value,
+            paymentInfo.price.currency.currencyCode,
+            paymentInfo.firstPayment.toString(),
+            paymentType.toEntity(),
+            periodCount,
+            period,
+        )
     }
 
     private fun SubscriptionEntity.toDomain(): Subscription {
@@ -63,28 +87,38 @@ constructor(
         period: LocalPaymentPeriod?,
     ): PaymentType {
         return when (this) {
-            LocalPaymentType.ONE_TIME -> {
-                PaymentType.OneTime
-            }
-
+            LocalPaymentType.ONE_TIME -> PaymentType.OneTime
             LocalPaymentType.PERIODICALLY -> {
-                val nonNullPeriodCount =
-                    checkNotNull(periodCount) {
-                        "Period count must never be null for periodic payments"
-                    }
-                val localPaymentPeriod =
-                    checkNotNull(period) {
-                        "Period must never be null for periodic payments"
-                    }
-                val paymentPeriod =
-                    when (localPaymentPeriod) {
-                        LocalPaymentPeriod.DAYS -> PaymentPeriod.DAYS
-                        LocalPaymentPeriod.WEEKS -> PaymentPeriod.WEEKS
-                        LocalPaymentPeriod.MONTHS -> PaymentPeriod.MONTHS
-                        LocalPaymentPeriod.YEARS -> PaymentPeriod.YEARS
-                    }
-                PaymentType.Periodic(nonNullPeriodCount, paymentPeriod)
+                val nonNullPeriodCount = checkNotNull(periodCount) {
+                    "Period count must never be null for periodic payments"
+                }
+                val localPaymentPeriod = checkNotNull(period) {
+                    "Period must never be null for periodic payments"
+                }
+                PaymentType.Periodic(nonNullPeriodCount, localPaymentPeriod.toDomain())
             }
         }
     }
+
+    private fun PaymentType.toEntity() =
+        when (this) {
+            PaymentType.OneTime -> LocalPaymentType.ONE_TIME
+            is PaymentType.Periodic -> LocalPaymentType.PERIODICALLY
+        }
+
+    private fun LocalPaymentPeriod.toDomain() =
+        when (this) {
+            LocalPaymentPeriod.DAYS -> PaymentPeriod.DAYS
+            LocalPaymentPeriod.WEEKS -> PaymentPeriod.WEEKS
+            LocalPaymentPeriod.MONTHS -> PaymentPeriod.MONTHS
+            LocalPaymentPeriod.YEARS -> PaymentPeriod.YEARS
+        }
+
+    private fun PaymentPeriod.toEntity(): LocalPaymentPeriod =
+        when (this) {
+            PaymentPeriod.DAYS -> LocalPaymentPeriod.DAYS
+            PaymentPeriod.WEEKS -> LocalPaymentPeriod.WEEKS
+            PaymentPeriod.MONTHS -> LocalPaymentPeriod.MONTHS
+            PaymentPeriod.YEARS -> LocalPaymentPeriod.YEARS
+        }
 }

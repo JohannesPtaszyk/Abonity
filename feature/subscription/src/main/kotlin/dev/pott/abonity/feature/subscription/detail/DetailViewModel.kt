@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel
-@Inject
-constructor(
+class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: SubscriptionRepository,
 ) : ViewModel() {
@@ -32,7 +30,7 @@ constructor(
     val state =
         currentDetailId.flatMapLatest { id ->
             if (id != null) {
-                repository.getSubscription(id)
+                repository.getSubscriptionFlow(id)
             } else {
                 flowOf(null)
             }

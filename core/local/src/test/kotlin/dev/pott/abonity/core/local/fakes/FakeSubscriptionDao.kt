@@ -20,7 +20,7 @@ class FakeSubscriptionDao(
         entities.trySendBlocking(initialEntities)
     }
 
-    override suspend fun upsertSubscription(subscription: SubscriptionEntity) {
+    override suspend fun upsertSubscription(subscription: SubscriptionEntity): Long {
         val currentEntities = entities.tryReceive().getOrThrow().toMutableList()
         val indexOfEntity =
             currentEntities.indexOfFirst { it.id == subscription.id }
@@ -30,6 +30,7 @@ class FakeSubscriptionDao(
             currentEntities.add(subscription)
         }
         entities.trySendBlocking(currentEntities)
+        return currentEntities.size.toLong()
     }
 
     override fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>> {
