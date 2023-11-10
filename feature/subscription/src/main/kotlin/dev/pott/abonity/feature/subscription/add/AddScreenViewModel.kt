@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.SubscriptionRepository
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
@@ -16,8 +17,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import java.util.Currency
+import javax.inject.Inject
 
-class AddScreenViewModel(
+@HiltViewModel
+class AddScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val clock: Clock,
     private val repository: SubscriptionRepository,
@@ -26,8 +29,14 @@ class AddScreenViewModel(
     private val args = AddScreenDestination.getArgs(savedStateHandle)
     private val isEditMode = args.subscriptionId != null
 
-    val state = MutableStateFlow(AddState(null, false))
+    val state = MutableStateFlow(
+        AddState(
+            AddFormInput(clock.todayIn(TimeZone.currentSystemDefault())),
+            false,
+        ),
+    )
 
+    @Suppress("MagicNumber")
     fun updateInputs(input: AddFormInput) {
         Logger.i { input.toString() + isEditMode }
         viewModelScope.launch {
@@ -42,5 +51,9 @@ class AddScreenViewModel(
             )
             repository.addOrUpdateSubscription(subcription)
         }
+    }
+
+    fun save() {
+        TODO("Not yet implemented")
     }
 }

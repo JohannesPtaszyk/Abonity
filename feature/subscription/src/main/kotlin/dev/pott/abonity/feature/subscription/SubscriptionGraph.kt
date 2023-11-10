@@ -26,8 +26,21 @@ fun NavGraphBuilder.subscriptionGraph(
             if (state.showOverviewAsMultiColumn) {
                 val detailViewModel = hiltViewModel<DetailViewModel>()
                 OverviewScreenWithDetails(
-                    overviewViewModel,
-                    detailViewModel,
+                    overviewViewModel = overviewViewModel,
+                    detailViewModel = detailViewModel,
+                    onEditClick = {
+                        val args = AddScreenDestination.Args(it.id)
+                        navController.navigate(
+                            AddScreenDestination.getRouteWithArgs(args),
+                        )
+                    },
+                    openAdd = {
+                        navController.navigate(
+                            AddScreenDestination.getRouteWithArgs(
+                                AddScreenDestination.Args(),
+                            ),
+                        )
+                    },
                 )
             } else {
                 OverviewScreen(
@@ -38,29 +51,43 @@ fun NavGraphBuilder.subscriptionGraph(
                             DetailScreenDestination.getRouteWithArgs(args),
                         )
                     },
+                    openAdd = {
+                        navController.navigate(
+                            AddScreenDestination.getRouteWithArgs(
+                                AddScreenDestination.Args(),
+                            ),
+                        )
+                    },
                 )
             }
         }
         composable(DetailScreenDestination) {
-            val overviewViewModel =
-                navController.previousBackStackEntry?.let {
-                    hiltViewModel<OverviewViewModel>(viewModelStoreOwner = it)
-                }
+            val overviewViewModel = navController.previousBackStackEntry?.let {
+                hiltViewModel<OverviewViewModel>(viewModelStoreOwner = it)
+            }
             LaunchedEffect(state.showOverviewAsMultiColumn) {
                 if (state.showOverviewAsMultiColumn) {
                     navController.popBackStack()
                 }
             }
             DetailScreen(
-                hiltViewModel(),
+                viewModel = hiltViewModel(),
                 onBackClick = {
                     overviewViewModel?.consumeDetails()
                     navController.popBackStack()
                 },
+                onEditClick = {
+                    val args = AddScreenDestination.Args(it.id)
+                    navController.navigate(
+                        AddScreenDestination.getRouteWithArgs(args),
+                    )
+                },
             )
         }
         composable(AddScreenDestination) {
-            AddScreen()
+            AddScreen(
+                close = { navController.popBackStack() },
+            )
         }
     }
 }

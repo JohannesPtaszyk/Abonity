@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +38,7 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.BackButton
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
+import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.components.FormattedPrice
 import kotlinx.datetime.Clock
@@ -45,6 +50,7 @@ import java.util.Currency
 fun DetailScreen(
     viewModel: DetailViewModel,
     onBackClick: () -> Unit,
+    onEditClick: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler { onBackClick() }
@@ -52,13 +58,19 @@ fun DetailScreen(
     DetailScreen(
         state = state,
         close = onBackClick,
+        onEditClick = onEditClick,
         modifier = modifier,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(state: DetailState, close: () -> Unit, modifier: Modifier = Modifier) {
+fun DetailScreen(
+    state: DetailState,
+    close: () -> Unit,
+    onEditClick: (SubscriptionId) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
@@ -68,6 +80,17 @@ fun DetailScreen(state: DetailState, close: () -> Unit, modifier: Modifier = Mod
                 },
                 navigationIcon = {
                     BackButton(close)
+                },
+                actions = {
+                    state.subscription?.let { subscription ->
+                        IconButton(onClick = { onEditClick(subscription.id) }) {
+                            Icon(
+                                painter = rememberVectorPainter(image = AppIcons.Edit),
+                                // TODO Add content description
+                                contentDescription = null,
+                            )
+                        }
+                    }
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -152,6 +175,7 @@ private fun PaymentInfoCard(paymentInfo: PaymentInfo, modifier: Modifier = Modif
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 @PreviewCommonScreenConfig
 private fun DetailScreenPreview() {
@@ -180,6 +204,9 @@ private fun DetailScreenPreview() {
             ),
             close = {
                 // Close Screen
+            },
+            onEditClick = {
+                // Open Edit Screen
             },
         )
     }

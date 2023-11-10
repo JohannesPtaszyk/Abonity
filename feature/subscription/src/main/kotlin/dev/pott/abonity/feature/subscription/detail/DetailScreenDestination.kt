@@ -9,6 +9,7 @@ import dev.pott.abonity.navigation.destination.NestedDestination
 
 private const val DETAIL_ROUTE = "detail"
 private const val DETAIL_ID_KEY = "detail_id"
+private const val NO_SUBSCRIPTION_PASSED_ID = -1L
 
 object DetailScreenDestination : NestedDestination<DetailScreenDestination.Args>(
     SubscriptionNavigationDestination,
@@ -20,15 +21,17 @@ object DetailScreenDestination : NestedDestination<DetailScreenDestination.Args>
         )
 
     override fun getArgs(savedStateHandle: SavedStateHandle): Args {
-        val id = savedStateHandle.get<Long>(DETAIL_ID_KEY)
+        val id = savedStateHandle.get<Long>(DETAIL_ID_KEY)?.takeIf {
+            it != NO_SUBSCRIPTION_PASSED_ID
+        }
         return Args(id)
     }
 
     override fun getParamsFromArgs(args: Args): Map<String, Any> {
         return mapOf(
-            DETAIL_ID_KEY to (args.id ?: -1),
+            DETAIL_ID_KEY to (args.subscriptionId ?: NO_SUBSCRIPTION_PASSED_ID),
         )
     }
 
-    data class Args(val id: Long?)
+    data class Args(val subscriptionId: Long?)
 }

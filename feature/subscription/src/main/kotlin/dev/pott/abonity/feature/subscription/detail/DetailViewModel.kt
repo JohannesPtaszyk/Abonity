@@ -23,7 +23,7 @@ class DetailViewModel @Inject constructor(
     private val args = DetailScreenDestination.getArgs(savedStateHandle)
     private val currentDetailId =
         MutableStateFlow(
-            args.id?.let { SubscriptionId(it) },
+            args.subscriptionId?.let { SubscriptionId(it) },
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)

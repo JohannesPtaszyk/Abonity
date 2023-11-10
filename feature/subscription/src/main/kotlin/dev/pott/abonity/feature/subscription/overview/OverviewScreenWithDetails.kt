@@ -29,7 +29,9 @@ import dev.pott.abonity.core.ui.util.getActivity
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailState
 import dev.pott.abonity.feature.subscription.detail.DetailViewModel
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -41,6 +43,8 @@ private const val TWO_PANE_FRACTION = 0.5f
 fun OverviewScreenWithDetails(
     overviewViewModel: OverviewViewModel,
     detailViewModel: DetailViewModel,
+    onEditClick: (id: SubscriptionId) -> Unit,
+    openAdd: () -> Unit,
 ) {
     val activity = LocalContext.current.getActivity()
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
@@ -56,8 +60,10 @@ fun OverviewScreenWithDetails(
         overviewState,
         detailState,
         overviewViewModel::openDetails,
+        onEditClick,
         overviewViewModel::consumeDetails,
-        calculateDisplayFeatures(activity),
+        openAdd,
+        calculateDisplayFeatures(activity).toImmutableList(),
     )
 }
 
@@ -66,14 +72,17 @@ private fun OverViewScreenWithDetails(
     overviewState: OverviewState,
     detailState: DetailState,
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
+    onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
-    displayFeatures: List<DisplayFeature>,
+    openAdd: () -> Unit,
+    displayFeatures: ImmutableList<DisplayFeature>,
 ) {
     TwoPane(
         first = {
             OverviewScreen(
                 state = overviewState,
                 onSubscriptionClick = onSubscriptionClicked,
+                onAddClick = openAdd,
             )
         },
         second = {
@@ -87,6 +96,7 @@ private fun OverViewScreenWithDetails(
                 DetailScreen(
                     state = detailState,
                     close = closeDetails,
+                    onEditClick = onEditClick,
                 )
             }
         },
@@ -96,6 +106,7 @@ private fun OverViewScreenWithDetails(
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 @PreviewCommonScreenConfig
 private fun OverviewWithDetailScreenPreview() {
@@ -151,9 +162,11 @@ private fun OverviewWithDetailScreenPreview() {
                     ),
                 ),
             ),
-            {},
-            {},
-            listOf(),
+            onSubscriptionClicked = {},
+            onEditClick = {},
+            closeDetails = {},
+            openAdd = {},
+            displayFeatures = persistentListOf(),
         )
     }
 }

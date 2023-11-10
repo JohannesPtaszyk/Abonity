@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
 import dev.pott.abonity.navigation.destination.NestedDestination
 
@@ -20,7 +19,6 @@ object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
     override val arguments: List<NamedNavArgument> = listOf(
         navArgument(SUBSCRIPTION_ID_KEY) {
             type = NavType.LongType
-            nullable = false
             defaultValue = NO_SUBSCRIPTION_PASSED_ID
         },
     )
@@ -28,17 +26,15 @@ object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
     override fun getArgs(savedStateHandle: SavedStateHandle): Args {
         val subscriptionId = savedStateHandle.get<Long>(SUBSCRIPTION_ID_KEY)?.takeIf {
             it != NO_SUBSCRIPTION_PASSED_ID
-        }?.let {
-            SubscriptionId(it)
         }
         return Args(subscriptionId)
     }
 
     override fun getParamsFromArgs(args: Args): Map<String, Any> {
         return buildMap {
-            args.subscriptionId?.let { id -> put(SUBSCRIPTION_ID_KEY, id) }
+            put(SUBSCRIPTION_ID_KEY, args.subscriptionId ?: NO_SUBSCRIPTION_PASSED_ID)
         }
     }
 
-    data class Args(val subscriptionId: SubscriptionId?)
+    data class Args(val subscriptionId: Long? = null)
 }

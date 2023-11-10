@@ -7,11 +7,12 @@ abstract class NestedNavigationDestination<T>(
     parent: Destination<*>,
     baseRoute: String,
 ) : NavigationDestination<T>(baseRoute) {
-    override val route: String =
+    override val route: String by lazy {
         buildString {
             append("${parent.baseRoute}/$baseRoute")
             appendArguments()
         }
+    }
 }
 
 abstract class NoArgNestedNavigationDestination(

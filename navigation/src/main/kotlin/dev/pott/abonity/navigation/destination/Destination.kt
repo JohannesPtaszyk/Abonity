@@ -3,17 +3,13 @@ package dev.pott.abonity.navigation.destination
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
-import co.touchlab.kermit.Logger
 
 abstract class Destination<T>(val baseRoute: String) {
+
     open val route: String by lazy {
         buildString {
             append(baseRoute)
             appendArguments()
-        }.also {
-            Logger.withTag(this::class.java.simpleName).v {
-                "Created route: $it for destination: $this"
-            }
         }
     }
 
@@ -27,7 +23,11 @@ abstract class Destination<T>(val baseRoute: String) {
 
     fun getRouteWithArgs(args: T): String {
         val params = getParamsFromArgs(args)
-        return replaceParamsInRoute(params)
+        return if (params.isEmpty()) {
+            route
+        } else {
+            replaceParamsInRoute(params)
+        }
     }
 
     private fun replaceParamsInRoute(params: Map<String, Any>): String {
