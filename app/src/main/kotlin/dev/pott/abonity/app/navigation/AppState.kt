@@ -16,8 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.firebase.crashlytics.internal.model.ImmutableList
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 data class AppState(
@@ -49,7 +50,7 @@ fun rememberAppState(navController: NavController): State<AppState> {
     return remember(selectedNavigationItem) {
         derivedStateOf {
             val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
-            val items = ImmutableList.from(*navigationItems)
+            val items = persistentListOf(*navigationItems)
             AppState(
                 calculateFromAdaptiveInfo(adaptiveInfo),
                 selected,
