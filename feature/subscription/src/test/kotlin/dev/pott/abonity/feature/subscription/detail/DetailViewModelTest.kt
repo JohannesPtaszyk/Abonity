@@ -1,12 +1,11 @@
 package dev.pott.abonity.feature.subscription.detail
 
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.test.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.entities.createTestSubscription
+import dev.pott.abonity.core.test.entities.createTestSubscriptionList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
@@ -14,52 +13,25 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(CoroutinesTestExtension::class)
 class DetailViewModelTest {
-    @Test
-    fun `GIVEN savedStateHandle with id argument AND valid subscription with same id WHEN initialize THEN subscription is shown`() {
-        runTest {
-            val subscription = createTestSubscription()
-            val savedStateHandle =
-                SavedStateHandle(
-                    mapOf("detail_id" to subscription.id.id),
-                )
-            val subscriptionRepository =
-                FakeSubscriptionRepository(
-                    subscriptionFlow = flowOf(subscription),
-                )
-
-            val tested =
-                DetailViewModel(
-                    savedStateHandle,
-                    subscriptionRepository,
-                )
-
-            tested.state.test {
-                assertThat(awaitItem()).isEqualTo(DetailState())
-                assertThat(awaitItem()).isEqualTo(DetailState(subscription = subscription))
-            }
-        }
-    }
 
     @Test
     fun `GIVEN empty savedStateHandle AND valid subscription with same id WHEN setId with existing id THEN subscription is shown`() {
         runTest {
-            val subscription = createTestSubscription()
-            val savedStateHandle = SavedStateHandle()
+            val subscriptions = createTestSubscriptionList(2).toTypedArray()
             val subscriptionRepository =
                 FakeSubscriptionRepository(
-                    subscriptionFlow = flowOf(subscription),
+                    subscriptionFlow = flowOf(*subscriptions),
                 )
 
-            val tested =
-                DetailViewModel(
-                    savedStateHandle,
-                    subscriptionRepository,
-                )
+            val tested = DetailViewModel(subscriptionRepository)
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
-                tested.setId(subscription.id)
-                assertThat(awaitItem()).isEqualTo(DetailState(subscription = subscription))
+                tested.setId(subscriptions.first().id)
+                assertThat(awaitItem()).isEqualTo(DetailState(subscription = subscriptions.first()))
+
+                tested.setId(subscriptions[1].id)
+                assertThat(awaitItem()).isEqualTo(DetailState(subscription = subscriptions[1]))
             }
         }
     }

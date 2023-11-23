@@ -1,6 +1,6 @@
-package dev.pott.abonity.core.ui.components
+package dev.pott.abonity.core.ui.components.navigation
 
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -11,12 +11,12 @@ import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
 
 @Composable
-fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun CloseButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            painter = rememberVectorPainter(image = AppIcons.ArrowBack),
+            painter = rememberVectorPainter(image = AppIcons.Close),
             contentDescription = stringResource(
-                id = R.string.common_back_button_content_description,
+                id = R.string.common_close_button_content_description,
             ),
         )
     }

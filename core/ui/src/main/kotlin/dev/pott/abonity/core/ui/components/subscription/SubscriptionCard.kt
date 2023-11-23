@@ -1,4 +1,4 @@
-package dev.pott.abonity.feature.subscription.components
+package dev.pott.abonity.core.ui.components.subscription
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -25,9 +29,10 @@ import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.preview.PreviewCommonUiConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.feature.subscription.overview.SelectableSubscriptionWithPeriodPrice
 import kotlinx.datetime.LocalDate
 import java.util.Currency
 
@@ -65,22 +70,41 @@ fun SubscriptionCard(
             Spacer(Modifier.width(8.dp))
             PaymentInfo(subscription.paymentInfo, periodPrice)
         }
+        Spacer(Modifier.height(16.dp))
+        FirstPayment(subscription.paymentInfo.firstPayment)
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Composable
-private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifier = Modifier) {
-    Column(horizontalAlignment = Alignment.End, modifier = modifier) {
-        FormattedPrice(
-            price = price,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-        )
+private fun FirstPayment(date: LocalDate) {
+    CompositionLocalProvider(
+        LocalContentColor provides MaterialTheme.colorScheme.secondary,
+        LocalTextStyle provides MaterialTheme.typography.labelSmall,
+    ) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Text(text = stringResource(id = R.string.subscription_card_first_payment_label))
+            FormattedDate(date = date)
+        }
+    }
+}
 
-        val paymentType = paymentInfo.type
-        if (paymentType is PaymentType.Periodic && paymentInfo.price != price) {
-            PeriodicPriceInfo(paymentType, paymentInfo)
+@Composable
+private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifier = Modifier) {
+    CompositionLocalProvider(
+        LocalContentColor provides MaterialTheme.colorScheme.primary,
+    ) {
+        Column(horizontalAlignment = Alignment.End, modifier = modifier) {
+            FormattedPrice(
+                price = price,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+            )
+
+            val paymentType = paymentInfo.type
+            if (paymentType is PaymentType.Periodic && paymentInfo.price != price) {
+                PeriodicPriceInfo(paymentType, paymentInfo)
+            }
         }
     }
 }
@@ -89,7 +113,7 @@ private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifi
 @Composable
 private fun SubscriptionCardPreview(
     @PreviewParameter(SubscriptionCardPreviewProvider::class)
-    item: SelectableSubscriptionWithPeriodPrice,
+    item: SubscriptionWithPeriodInfo,
 ) {
     AppTheme {
         SubscriptionCard(
@@ -102,12 +126,12 @@ private fun SubscriptionCardPreview(
 }
 
 private class SubscriptionCardPreviewProvider :
-    PreviewParameterProvider<SelectableSubscriptionWithPeriodPrice> {
-    override val values: Sequence<SelectableSubscriptionWithPeriodPrice>
+    PreviewParameterProvider<SubscriptionWithPeriodInfo> {
+    override val values: Sequence<SubscriptionWithPeriodInfo>
         get() {
             val currency = Currency.getInstance("EUR")
             return sequenceOf(
-                SelectableSubscriptionWithPeriodPrice(
+                SubscriptionWithPeriodInfo(
                     Subscription(
                         SubscriptionId(0),
                         "Periodic Subscription",
@@ -128,9 +152,9 @@ private class SubscriptionCardPreviewProvider :
                         ),
                     ),
                     Price(999.11, currency),
-                    isSelected = false,
+                    LocalDate(2023, 12, 12),
                 ),
-                SelectableSubscriptionWithPeriodPrice(
+                SubscriptionWithPeriodInfo(
                     Subscription(
                         SubscriptionId(1),
                         "One Time Payment",
@@ -145,7 +169,7 @@ private class SubscriptionCardPreviewProvider :
                         ),
                     ),
                     Price(0.99, Currency.getInstance("USD")),
-                    isSelected = true,
+                    LocalDate(2023, 12, 12),
                 ),
             )
         }

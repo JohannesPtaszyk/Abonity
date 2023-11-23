@@ -35,6 +35,11 @@
     <string name="common_back_button_content_description">Go back to previous screen</string>
     <string name="common_close_button_content_description">Dismiss current screen</string>
     <string name="overview_screen_title">Subscriptions</string>
-    <string name="period_overview_card_title">Total</string>
+    <string name="subscription_overview_price_overview_title">Total</string>
     <string name="add_subscription_title">New subscription</string>
+    <string name="navigation_item_home">Home</string>
+    <string name="app_name">Abonity</string>
+    <string name="navigation_item_subscription">Subscriptions</string>
+    <string name="navigation_item_settings">Settings</string>
+    <string name="subscription_card_first_payment_label">First Payment:</string>
 </resources>

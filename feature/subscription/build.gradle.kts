@@ -12,13 +12,12 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 
-    implementation(libs.accompanist.adaptive)
-
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.lifecycle.runtimeCompose)
 
     implementation(libs.kermit)

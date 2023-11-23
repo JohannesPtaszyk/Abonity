@@ -35,6 +35,7 @@ include(
 
 include(
     ":common:test",
+    ":common:extensions"
 )
 
 include(":navigation")
@@ -42,4 +43,5 @@ include(":navigation")
 include(
     ":feature:subscription",
     ":feature:settings",
+    ":feature:home",
 )

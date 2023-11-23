@@ -2,6 +2,7 @@ package dev.pott.abonity.feature.subscription.add
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
@@ -37,4 +38,12 @@ object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
     }
 
     data class Args(val subscriptionId: Long? = null)
+}
+
+fun NavController.navigateToAddScreen() {
+    navigate(
+        AddScreenDestination.getRouteWithArgs(
+            AddScreenDestination.Args(),
+        ),
+    )
 }

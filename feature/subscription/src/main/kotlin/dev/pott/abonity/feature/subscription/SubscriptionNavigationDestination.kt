@@ -5,5 +5,6 @@ import dev.pott.abonity.navigation.destination.Destination
 import dev.pott.abonity.navigation.destination.NoArgNavigationDestination
 
 object SubscriptionNavigationDestination : NoArgNavigationDestination("subscription") {
+
     override val startDestination: Destination<*> = OverviewScreenDestination
 }

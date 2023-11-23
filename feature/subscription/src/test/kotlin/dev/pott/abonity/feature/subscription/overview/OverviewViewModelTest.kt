@@ -4,18 +4,20 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
-import dev.pott.abonity.core.domain.PeriodicPriceCalculator
+import dev.pott.abonity.core.domain.PaymentDateCalculator
+import dev.pott.abonity.core.domain.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.usecase.GetSubscriptionsWithPeriodPrice
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,7 +26,7 @@ import java.util.Currency
 @ExtendWith(CoroutinesTestExtension::class)
 class OverviewViewModelTest {
     @Test
-    fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items`() {
+    fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items AND period prices`() {
         runTest {
             val subscription =
                 createTestSubscription(
@@ -37,18 +39,21 @@ class OverviewViewModelTest {
                 )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val calculator = createPeriodicPriceCalculator()
+            val clock = FakeClock()
+            val dateCalculator = PaymentDateCalculator(clock)
+            val infoCalculator = PaymentInfoCalculator(dateCalculator, clock)
+            val useCase =
+                GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(repository, calculator)
+            val tested = OverviewViewModel(useCase, infoCalculator)
 
-            val expectedSubscriptions =
-                listOf(
-                    SelectableSubscriptionWithPeriodPrice(
-                        subscription = subscription,
-                        periodPrice = Price(15.0, Currency.getInstance("EUR")),
-                        isSelected = false,
-                    ),
-                )
+            val expectedSubscriptions = persistentListOf(
+                SubscriptionWithPeriodInfo(
+                    subscription = subscription,
+                    periodPrice = Price(15.0, Currency.getInstance("EUR")),
+                    nextPaymentDate = LocalDate(2021, 3, 3),
+                ),
+            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState())
@@ -76,9 +81,13 @@ class OverviewViewModelTest {
                 )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val calculator = createPeriodicPriceCalculator()
+            val clock = FakeClock()
+            val dateCalculator = PaymentDateCalculator(clock)
+            val infoCalculator = PaymentInfoCalculator(dateCalculator, clock)
+            val useCase =
+                GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(repository, calculator)
+            val tested = OverviewViewModel(useCase, infoCalculator)
 
             tested.state.test {
                 skipItems(2) // Skip initial state and first subscription emit
@@ -86,15 +95,14 @@ class OverviewViewModelTest {
                 assertThat(awaitItem()).isEqualTo(
                     OverviewState(
                         subscription.id,
-                        listOf(
-                            SelectableSubscriptionWithPeriodPrice(
+                        persistentListOf(
+                            SubscriptionWithPeriodInfo(
                                 subscription = subscription,
-                                periodPrice =
-                                Price(
+                                periodPrice = Price(
                                     15.0,
                                     Currency.getInstance("EUR"),
                                 ),
-                                isSelected = true,
+                                nextPaymentDate = LocalDate(2021, 3, 3),
                             ),
                         ),
                         persistentListOf(Price(15.0, Currency.getInstance("EUR"))),
@@ -118,9 +126,13 @@ class OverviewViewModelTest {
                 )
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val repository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val calculator = createPeriodicPriceCalculator()
+            val clock = FakeClock()
+            val dateCalculator = PaymentDateCalculator(clock)
+            val infoCalculator = PaymentInfoCalculator(dateCalculator, clock)
+            val useCase =
+                GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(repository, calculator)
+            val tested = OverviewViewModel(useCase, infoCalculator)
 
             tested.state.test {
                 skipItems(2) // Skip initial state and first subscription emit
@@ -129,16 +141,14 @@ class OverviewViewModelTest {
                 tested.consumeDetails()
                 assertThat(awaitItem()).isEqualTo(
                     OverviewState(
-                        periodSubscriptions =
-                        listOf(
-                            SelectableSubscriptionWithPeriodPrice(
+                        periodSubscriptions = persistentListOf(
+                            SubscriptionWithPeriodInfo(
                                 subscription = subscription,
-                                periodPrice =
-                                Price(
+                                periodPrice = Price(
                                     15.0,
                                     Currency.getInstance("EUR"),
                                 ),
-                                isSelected = false,
+                                nextPaymentDate = LocalDate(2021, 3, 3),
                             ),
                         ),
                         periodPrices = persistentListOf(Price(15.0, Currency.getInstance("EUR"))),
@@ -146,11 +156,5 @@ class OverviewViewModelTest {
                 )
             }
         }
-    }
-
-    private fun createPeriodicPriceCalculator(): PeriodicPriceCalculator {
-        val today = Instant.parse("2021-03-01T00:00:00Z")
-        val clock = FakeClock(today)
-        return PeriodicPriceCalculator(clock)
     }
 }

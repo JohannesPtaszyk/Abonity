@@ -7,7 +7,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.entity)
+    implementation(projects.core.domain)
+
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.runtime)

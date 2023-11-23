@@ -93,17 +93,25 @@ annotation class PreviewCommonUiConfig
 @Preview(
     name = "1. Mobile",
     device = Devices.DEFAULT,
+    showSystemUi = true,
 )
 @Preview(
     name = "2. Foldable",
     device = Devices.FOLDABLE,
+    showSystemUi = true,
 )
 @Preview(
     name = "3. Tablet",
     device = Devices.TABLET,
+    showSystemUi = true,
 )
 @Preview(
     name = "4. Desktop",
     device = Devices.DESKTOP,
+    showSystemUi = true,
 )
 annotation class PreviewCommonScreenConfig
+
+@Preview(locale = "en-US")
+@Preview(locale = "de-DE")
+annotation class PreviewCommonLocaleConfig

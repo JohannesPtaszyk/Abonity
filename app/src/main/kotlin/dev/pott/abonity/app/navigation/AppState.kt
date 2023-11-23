@@ -1,10 +1,13 @@
 package dev.pott.abonity.app.navigation
 
-import android.app.Activity
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
+import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteType
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -13,25 +16,25 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
-import co.touchlab.kermit.Logger
 import com.google.firebase.crashlytics.internal.model.ImmutableList
-import dev.pott.abonity.app.navigation.components.NavigationType
-import dev.pott.abonity.app.navigation.components.rememberNavigationType
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
 
+@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 data class AppState(
-    val navigationType: NavigationType,
+    val navigationType: NavigationSuiteType,
     val selectedNavigationItem: NavigationItem,
     val navigationItems: ImmutableList<NavigationItem>,
     val subscriptionGraphState: SubscriptionGraphState,
 )
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(
+    ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3AdaptiveNavigationSuiteApi::class,
+)
 @Suppress("SpreadOperator")
 @Composable
-fun rememberAppState(activity: Activity, navController: NavController): State<AppState> {
-    val windowSizeClass = calculateWindowSizeClass(activity)
-    val navigationType by rememberNavigationType(windowSizeClass)
+fun rememberAppState(navController: NavController): State<AppState> {
+    val adaptiveInfo = currentWindowAdaptiveInfo()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navigationItems = remember { NavigationItem.values() }
     val selectedNavigationItem by remember(navBackStackEntry?.destination) {
@@ -48,15 +51,41 @@ fun rememberAppState(activity: Activity, navController: NavController): State<Ap
             val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
             val items = ImmutableList.from(*navigationItems)
             AppState(
-                navigationType,
+                calculateFromAdaptiveInfo(adaptiveInfo),
                 selected,
                 items,
-                getSubscriptionGraphState(windowSizeClass),
-            ).also {
-                Logger.withTag("AppState").v { it.toString() }
-            }
+                getSubscriptionGraphState(adaptiveInfo.windowSizeClass),
+            )
         }
     }
+}
+
+@OptIn(
+    ExperimentalMaterial3AdaptiveNavigationSuiteApi::class,
+    ExperimentalMaterial3AdaptiveApi::class,
+)
+private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
+    return with(adaptiveInfo) {
+        if (showNavigationBar()) {
+            NavigationSuiteType.NavigationBar
+        } else if (showDrawer()) {
+            NavigationSuiteType.NavigationDrawer
+        } else {
+            NavigationSuiteType.NavigationRail
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun WindowAdaptiveInfo.showNavigationBar(): Boolean {
+    return windowPosture.isTabletop ||
+        windowSizeClass.heightSizeClass == WindowHeightSizeClass.Medium
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun WindowAdaptiveInfo.showDrawer(): Boolean {
+    return windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+        windowSizeClass.heightSizeClass == WindowHeightSizeClass.Expanded
 }
 
 private fun getSubscriptionGraphState(windowSizeClass: WindowSizeClass): SubscriptionGraphState {

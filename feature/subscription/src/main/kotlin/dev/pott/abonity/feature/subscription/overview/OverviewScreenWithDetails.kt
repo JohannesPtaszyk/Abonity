@@ -1,111 +1,69 @@
 package dev.pott.abonity.feature.subscription.overview
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.ListDetailPaneScaffoldState
+import androidx.compose.material3.adaptive.rememberListDetailPaneScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.layout.DisplayFeature
-import co.touchlab.kermit.Logger
-import com.google.accompanist.adaptive.FoldAwareConfiguration
-import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
-import com.google.accompanist.adaptive.TwoPane
-import com.google.accompanist.adaptive.calculateDisplayFeatures
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.core.ui.util.getActivity
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailState
-import dev.pott.abonity.feature.subscription.detail.DetailViewModel
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 
-private const val TWO_PANE_FRACTION = 0.5f
-
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun OverviewScreenWithDetails(
-    overviewViewModel: OverviewViewModel,
-    detailViewModel: DetailViewModel,
-    onEditClick: (id: SubscriptionId) -> Unit,
-    openAdd: () -> Unit,
-) {
-    val activity = LocalContext.current.getActivity()
-    val detailState by detailViewModel.state.collectAsStateWithLifecycle()
-    val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
-    BackHandler(enabled = overviewState.detailId != null) {
-        Logger.i("Consume details ${overviewState.detailId}")
-        overviewViewModel.consumeDetails()
-    }
-    LaunchedEffect(overviewState.detailId) {
-        detailViewModel.setId(overviewState.detailId)
-    }
-    OverViewScreenWithDetails(
-        overviewState,
-        detailState,
-        overviewViewModel::openDetails,
-        onEditClick,
-        overviewViewModel::consumeDetails,
-        openAdd,
-        calculateDisplayFeatures(activity).toImmutableList(),
-    )
-}
-
-@Composable
-private fun OverViewScreenWithDetails(
     overviewState: OverviewState,
     detailState: DetailState,
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
     onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
     openAdd: () -> Unit,
-    displayFeatures: ImmutableList<DisplayFeature>,
+    scaffoldState: ListDetailPaneScaffoldState = rememberListDetailPaneScaffoldState(),
 ) {
-    TwoPane(
-        first = {
+    ListDetailPaneScaffold(
+        scaffoldState = scaffoldState,
+        listPane = {
             OverviewScreen(
                 state = overviewState,
-                onSubscriptionClick = onSubscriptionClicked,
+                onSubscriptionClick = {
+                    onSubscriptionClicked(it)
+                    scaffoldState.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                },
                 onAddClick = openAdd,
             )
         },
-        second = {
-            AnimatedVisibility(
-                label = "Detail animated visibility",
-                visible = detailState.subscription?.id != null,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.systemBarsPadding(),
-            ) {
+        detailPane = {
+            if (overviewState.detailId != null) {
                 DetailScreen(
                     state = detailState,
-                    close = closeDetails,
+                    close = {
+                        closeDetails()
+                        scaffoldState.navigateBack()
+                    },
                     onEditClick = onEditClick,
                 )
             }
         },
-        strategy = HorizontalTwoPaneStrategy(TWO_PANE_FRACTION),
-        displayFeatures = displayFeatures,
-        foldAwareConfiguration = FoldAwareConfiguration.HorizontalFoldsOnly,
     )
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Suppress("MagicNumber")
 @Composable
 @PreviewCommonScreenConfig
@@ -125,7 +83,7 @@ private fun OverviewWithDetailScreenPreview() {
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val periodSubscriptions = buildList {
             repeat(5) { id ->
-                SelectableSubscriptionWithPeriodPrice(
+                SubscriptionWithPeriodInfo(
                     subscription = Subscription(
                         SubscriptionId(id.toLong()),
                         "Name",
@@ -137,12 +95,13 @@ private fun OverviewWithDetailScreenPreview() {
                         ),
                     ),
                     periodPrice = Price(99.99, currency),
-                    false,
+                    nextPaymentDate = LocalDate(2023, 12, 12),
                 ).also { add(it) }
             }
-        }
-        OverViewScreenWithDetails(
+        }.toImmutableList()
+        OverviewScreenWithDetails(
             overviewState = OverviewState(
+                detailId = SubscriptionId(0),
                 periodSubscriptions = periodSubscriptions,
                 periodPrices = persistentListOf(
                     Price(99.99, currency),
@@ -166,7 +125,6 @@ private fun OverviewWithDetailScreenPreview() {
             onEditClick = {},
             closeDetails = {},
             openAdd = {},
-            displayFeatures = persistentListOf(),
         )
     }
 }

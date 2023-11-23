@@ -9,54 +9,38 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.subscription.PriceOverview
+import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.plus
-import dev.pott.abonity.feature.subscription.components.PeriodOverviewCard
-import dev.pott.abonity.feature.subscription.components.SubscriptionCard
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
-
-@Composable
-fun OverviewScreen(
-    viewModel: OverviewViewModel,
-    openDetails: (id: SubscriptionId) -> Unit,
-    openAdd: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    val detailId = state.detailId
-    LaunchedEffect(detailId) {
-        if (detailId == null) return@LaunchedEffect
-        openDetails(detailId)
-    }
-
-    OverviewScreen(state, viewModel::openDetails, openAdd, modifier)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,8 +77,16 @@ fun OverviewScreen(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
-                PeriodOverviewCard(
+                PriceOverview(
                     state.periodPrices,
+                    title = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_overview_price_overview_title,
+                            ),
+                            style = MaterialTheme.typography.headlineMedium,
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -102,15 +94,15 @@ fun OverviewScreen(
                 state.periodSubscriptions,
                 key = { it.subscription.id.id },
                 contentType = { "Subscription Card" },
-            ) { subscriptionWithPeriodPrice ->
+            ) { subscription ->
                 SubscriptionCard(
-                    subscriptionWithPeriodPrice.subscription,
-                    subscriptionWithPeriodPrice.periodPrice,
+                    subscription.subscription,
+                    subscription.periodPrice,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        onSubscriptionClick(subscriptionWithPeriodPrice.subscription.id)
+                        onSubscriptionClick(subscription.subscription.id)
                     },
-                    isSelected = subscriptionWithPeriodPrice.isSelected,
+                    isSelected = subscription.subscription.id == state.detailId,
                 )
             }
         }
@@ -138,7 +130,7 @@ private fun OverviewScreenPreview() {
             state = OverviewState(
                 periodSubscriptions = buildList {
                     repeat(5) { id ->
-                        SelectableSubscriptionWithPeriodPrice(
+                        SubscriptionWithPeriodInfo(
                             subscription = Subscription(
                                 SubscriptionId(id.toLong()),
                                 "Name",
@@ -151,10 +143,10 @@ private fun OverviewScreenPreview() {
                                 ),
                             ),
                             periodPrice = Price(99.99, Currency.getInstance("EUR")),
-                            false,
+                            nextPaymentDate = LocalDate(22, 12, 22),
                         ).also { add(it) }
                     }
-                },
+                }.toImmutableList(),
             ),
             onSubscriptionClick = {
                 // On Subscription click

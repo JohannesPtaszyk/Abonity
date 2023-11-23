@@ -1,6 +1,5 @@
 package dev.pott.abonity.feature.subscription.detail
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,7 +27,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
@@ -36,32 +34,15 @@ import dev.pott.abonity.core.entity.Price
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
-import dev.pott.abonity.core.ui.components.BackButton
+import dev.pott.abonity.core.ui.components.navigation.BackButton
+import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.feature.subscription.components.FormattedPrice
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
-
-@Composable
-fun DetailScreen(
-    viewModel: DetailViewModel,
-    onBackClick: () -> Unit,
-    onEditClick: (SubscriptionId) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    BackHandler { onBackClick() }
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    DetailScreen(
-        state = state,
-        close = onBackClick,
-        onEditClick = onEditClick,
-        modifier = modifier,
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

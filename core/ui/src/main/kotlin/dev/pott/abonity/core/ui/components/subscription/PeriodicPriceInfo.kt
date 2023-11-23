@@ -1,4 +1,4 @@
-package dev.pott.abonity.feature.subscription.components
+package dev.pott.abonity.core.ui.components.subscription
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

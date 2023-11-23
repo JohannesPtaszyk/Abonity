@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.pott.abonity.core.ui.R
-import dev.pott.abonity.core.ui.components.CloseButton
+import dev.pott.abonity.core.ui.components.navigation.CloseButton
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.util.getDefaultLocale

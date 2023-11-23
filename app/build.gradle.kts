@@ -33,11 +33,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
@@ -46,6 +41,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.entity)
     implementation(projects.core.ui)
+    implementation(projects.feature.home)
     implementation(projects.feature.subscription)
     implementation(projects.feature.settings)
     implementation(projects.navigation)
@@ -57,6 +53,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
