@@ -3,7 +3,9 @@ package dev.pott.abonity.feature.subscription.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pott.abonity.core.domain.PaymentDateCalculator
 import dev.pott.abonity.core.domain.SubscriptionRepository
+import dev.pott.abonity.core.entity.PaymentType
 import dev.pott.abonity.core.entity.SubscriptionId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repository: SubscriptionRepository,
+    private val calculator: PaymentDateCalculator,
 ) : ViewModel() {
     private val currentDetailId: MutableStateFlow<SubscriptionId?> = MutableStateFlow(null)
 
@@ -27,8 +30,17 @@ class DetailViewModel @Inject constructor(
         } else {
             flowOf(null)
         }
-    }.map {
-        DetailState(subscription = it)
+    }.map { subscription ->
+        val type = subscription?.paymentInfo?.type
+        val nextPayment = if (type is PaymentType.Periodic) {
+            calculator.calculateNextPossiblePaymentDate(type)
+        } else {
+            null
+        }
+        DetailState(
+            subscription = subscription,
+            nextPayment = nextPayment,
+        )
     }.stateIn(
         scope = viewModelScope,
         initialValue = DetailState(),

@@ -5,19 +5,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,7 +27,6 @@ import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.PriceOverview
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
-import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.plus
 import kotlinx.collections.immutable.toImmutableList
@@ -47,7 +41,6 @@ import java.util.Currency
 fun OverviewScreen(
     state: OverviewState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
-    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -60,15 +53,6 @@ fun OverviewScreen(
                 },
                 scrollBehavior = scrollBehavior,
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAddClick) {
-                Icon(
-                    painter = rememberVectorPainter(image = AppIcons.Add),
-                    // TODO Add content description
-                    contentDescription = null,
-                )
-            }
         },
     ) { paddingValues ->
         LazyColumn(
@@ -92,7 +76,7 @@ fun OverviewScreen(
             }
             items(
                 state.periodSubscriptions,
-                key = { it.subscription.id.id },
+                key = { it.subscription.id.value },
                 contentType = { "Subscription Card" },
             ) { subscription ->
                 SubscriptionCard(
@@ -150,9 +134,6 @@ private fun OverviewScreenPreview() {
             ),
             onSubscriptionClick = {
                 // On Subscription click
-            },
-            onAddClick = {
-                // On Add click
             },
         )
     }

@@ -35,7 +35,7 @@ class RoomSubscriptionDataSource @Inject constructor(
     }
 
     override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
-        return dao.getSubscriptionFlow(subscriptionId.id).map { it.toDomain() }
+        return dao.getSubscriptionFlow(subscriptionId.value).map { it.toDomain() }
     }
 
     private fun Subscription.toEntity(): SubscriptionEntity {
@@ -46,7 +46,7 @@ class RoomSubscriptionDataSource @Inject constructor(
             null to null
         }
         return SubscriptionEntity(
-            id.id,
+            id.value,
             name,
             description,
             paymentInfo.price.value,

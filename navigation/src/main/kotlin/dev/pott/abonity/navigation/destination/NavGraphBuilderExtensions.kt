@@ -5,11 +5,9 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import co.touchlab.kermit.Logger
 
@@ -37,36 +35,6 @@ fun NavGraphBuilder.composable(
         popEnterTransition = popEnterTransition,
         popExitTransition = popExitTransition,
         content = content,
-    )
-}
-
-fun NavGraphBuilder.dialog(
-    destination: Destination<*>,
-    content: @Composable (NavBackStackEntry) -> Unit,
-) {
-    dialog(
-        route = destination.route,
-        arguments = destination.arguments,
-        deepLinks = destination.deeplinks,
-        content = content,
-    )
-}
-
-fun NavGraphBuilder.fullscreenDialog(
-    destination: Destination<*>,
-    content: @Composable (NavBackStackEntry) -> Unit,
-) {
-    dialog(
-        route = destination.route,
-        arguments = destination.arguments,
-        deepLinks = destination.deeplinks,
-        content = {
-            content(it)
-        },
-        dialogProperties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
-        ),
     )
 }
 

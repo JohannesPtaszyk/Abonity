@@ -8,9 +8,8 @@ import dev.pott.abonity.navigation.destination.composable
 fun NavGraphBuilder.homeGraph(openDetails: (subscriptionId: SubscriptionId) -> Unit) {
     composable(HomeScreenDestination) {
         HomeScreen(
-            viewModel = hiltViewModel<HomeScreenViewModel>(),
+            viewModel = hiltViewModel(),
             openDetails = openDetails,
-            openAdd = { /*TODO*/ },
         )
     }
 }

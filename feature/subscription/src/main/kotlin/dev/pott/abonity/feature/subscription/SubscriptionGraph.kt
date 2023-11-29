@@ -15,7 +15,15 @@ fun NavGraphBuilder.subscriptionGraph(
 ) {
     navigation(SubscriptionNavigationDestination) {
         composable(OverviewScreenDestination) {
-            OverviewRoute(state.showOverviewAsMultiColumn, navController)
+            OverviewRoute(
+                showAsMultiColumn = state.showOverviewAsMultiColumn,
+                onEditClicked = {
+                    val args = AddScreenDestination.Args(it.value)
+                    navController.navigate(
+                        AddScreenDestination.getRouteWithArgs(args),
+                    )
+                },
+            )
         }
         composable(AddScreenDestination) {
             AddScreen(close = { navController.popBackStack() })

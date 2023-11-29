@@ -42,4 +42,10 @@
     <string name="navigation_item_subscription">Subscriptions</string>
     <string name="navigation_item_settings">Settings</string>
     <string name="subscription_card_first_payment_label">First Payment:</string>
+    <string name="subscription_detail_name_label">Name</string>
+    <string name="subscription_detail_description_label">Description</string>
+    <string name="subscription_first_payment_date_label">First Payment</string>
+    <string name="subscription_next_payment_date_label">Next Payment</string>
+    <string name="subscription_id_label">ID</string>
+
 </resources>

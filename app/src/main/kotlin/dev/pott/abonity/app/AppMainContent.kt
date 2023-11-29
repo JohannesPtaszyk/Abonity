@@ -1,8 +1,5 @@
 package dev.pott.abonity.app
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
 import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
@@ -46,7 +43,6 @@ fun AppMainContent(modifier: Modifier = Modifier) {
             NavHost(
                 navController = navController,
                 startDestination = startRoute,
-                modifier = Modifier.consumeWindowInsets(WindowInsets.navigationBars),
             ) {
                 appNavGraph(state, navController)
             }

@@ -2,9 +2,8 @@ package dev.pott.abonity.feature.subscription.overview
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.ListDetailPaneScaffoldState
-import androidx.compose.material3.adaptive.rememberListDetailPaneScaffoldState
+import androidx.compose.material3.adaptive.ThreePaneScaffoldState
+import androidx.compose.material3.adaptive.calculateListDetailPaneScaffoldState
 import androidx.compose.runtime.Composable
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
@@ -33,8 +32,7 @@ fun OverviewScreenWithDetails(
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
     onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
-    openAdd: () -> Unit,
-    scaffoldState: ListDetailPaneScaffoldState = rememberListDetailPaneScaffoldState(),
+    scaffoldState: ThreePaneScaffoldState = calculateListDetailPaneScaffoldState(),
 ) {
     ListDetailPaneScaffold(
         scaffoldState = scaffoldState,
@@ -43,9 +41,7 @@ fun OverviewScreenWithDetails(
                 state = overviewState,
                 onSubscriptionClick = {
                     onSubscriptionClicked(it)
-                    scaffoldState.navigateTo(ListDetailPaneScaffoldRole.Detail)
                 },
-                onAddClick = openAdd,
             )
         },
         detailPane = {
@@ -54,7 +50,6 @@ fun OverviewScreenWithDetails(
                     state = detailState,
                     close = {
                         closeDetails()
-                        scaffoldState.navigateBack()
                     },
                     onEditClick = onEditClick,
                 )
@@ -124,7 +119,6 @@ private fun OverviewWithDetailScreenPreview() {
             onSubscriptionClicked = {},
             onEditClick = {},
             closeDetails = {},
-            openAdd = {},
         )
     }
 }

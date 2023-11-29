@@ -2,29 +2,33 @@ package dev.pott.abonity.feature.subscription.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.PaymentInfo
@@ -35,6 +39,7 @@ import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.navigation.BackButton
+import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
@@ -88,6 +93,58 @@ fun DetailScreen(
             PaymentInfoCard(
                 subscription.paymentInfo,
                 Modifier.padding(horizontal = 16.dp),
+            )
+            Spacer(Modifier.height(16.dp))
+            HorizontalDivider()
+            ListItem(
+                headlineContent = {
+                    Text(text = subscription.name)
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_detail_name_label))
+                },
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = {
+                    Text(text = subscription.description)
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_detail_description_label))
+                },
+            )
+            HorizontalDivider()
+            ListItem(
+                headlineContent = {
+                    FormattedDate(date = subscription.paymentInfo.firstPayment)
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_first_payment_date_label))
+                },
+            )
+            state.nextPayment?.let { nextPayment ->
+                HorizontalDivider()
+                ListItem(
+                    headlineContent = {
+                        FormattedDate(date = nextPayment)
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_next_payment_date_label,
+                            ),
+                        )
+                    },
+                )
+            }
+            HorizontalDivider()
+            ListItem(
+                headlineContent = {
+                    Text(text = subscription.id.value.toString())
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_id_label))
+                },
             )
         }
     }
