@@ -29,6 +29,7 @@ androidxUiAutomator = "2.2.0"
 androidxWindowManager = "1.2.0"
 assertk = "0.27.0"
 arrow = "1.2.1"
+composeCompilerReport = "1.1.0"
 detekt = "1.23.4"
 detektComposeRules = "0.3.5"
 faker = "1.15.0"
@@ -47,15 +48,9 @@ kotlin = "1.9.10"
 kotlinCollections = "0.3.6"
 kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.5.0"
-kotlinxSerializationJson = "1.6.2"
 kover = "0.7.5"
 ktlint = "1.0.1"
 ksp = "1.9.21-1.0.15"
-okhttp = "4.11.0"
-protobuf = "3.24.0"
-protobufPlugin = "0.9.4"
-retrofit = "2.9.0"
-retrofitKotlinxSerializationJson = "1.0.0"
 robolectric = "4.11.1"
 room = "2.6.1"
 spotless = "6.22.0"
@@ -129,7 +124,6 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 robolectric-shadows = { group = "org.robolectric", name = "shadows-framework", version.ref = "robolectric" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -151,6 +145,7 @@ sonar-gradlePlugin = { group = "org.sonarsource.scanner.gradle", name = "sonarqu
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+compose-compiler-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "composeCompilerReport"}
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 sonar = { id = "org.sonarqube", version.ref = "sonar"}
@@ -158,7 +153,6 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }

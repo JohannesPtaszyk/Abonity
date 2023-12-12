@@ -24,7 +24,6 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.detekt) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.firebase.perf) apply false
     alias(libs.plugins.gms) apply false
@@ -33,5 +32,6 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.kover) apply false
     alias(libs.plugins.sonar) apply false
+    alias(libs.plugins.compose.compiler.report) apply false
     id("dev.pott.project")
 }

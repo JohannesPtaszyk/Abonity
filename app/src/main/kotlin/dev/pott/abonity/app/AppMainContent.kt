@@ -1,8 +1,12 @@
 package dev.pott.abonity.app
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
 import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -43,8 +47,16 @@ fun AppMainContent(modifier: Modifier = Modifier) {
             NavHost(
                 navController = navController,
                 startDestination = startRoute,
+                modifier = if (state.navigationType == NavigationSuiteType.NavigationBar) {
+                    Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+                } else {
+                    Modifier
+                },
             ) {
-                appNavGraph(state, navController)
+                appNavGraph(
+                    state,
+                    navController,
+                )
             }
         }
     }

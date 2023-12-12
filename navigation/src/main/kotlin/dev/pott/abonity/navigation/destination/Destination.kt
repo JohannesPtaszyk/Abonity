@@ -3,6 +3,9 @@ package dev.pott.abonity.navigation.destination
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
 
 abstract class Destination<T>(val baseRoute: String) {
 
@@ -13,13 +16,13 @@ abstract class Destination<T>(val baseRoute: String) {
         }
     }
 
-    open val deeplinks: List<NavDeepLink> = emptyList()
+    open val deeplinks: ImmutableList<NavDeepLink> = persistentListOf()
 
-    abstract val arguments: List<NamedNavArgument>
+    abstract val arguments: ImmutableList<NamedNavArgument>
 
     abstract fun getArgs(savedStateHandle: SavedStateHandle): T
 
-    protected abstract fun getParamsFromArgs(args: T): Map<String, Any>
+    protected abstract fun getParamsFromArgs(args: T): ImmutableMap<String, Any>
 
     fun getRouteWithArgs(args: T): String {
         val params = getParamsFromArgs(args)
@@ -58,13 +61,13 @@ abstract class Destination<T>(val baseRoute: String) {
 }
 
 open class NoArgDestination(baseRoute: String) : Destination<Nothing>(baseRoute) {
-    override val arguments: List<NamedNavArgument> = emptyList()
+    override val arguments: ImmutableList<NamedNavArgument> = persistentListOf()
 
     override fun getArgs(savedStateHandle: SavedStateHandle): Nothing {
         throw NoArgumentsException()
     }
 
-    override fun getParamsFromArgs(args: Nothing): Map<String, Any> {
+    override fun getParamsFromArgs(args: Nothing): ImmutableMap<String, Any> {
         throw NoArgumentsException()
     }
 }

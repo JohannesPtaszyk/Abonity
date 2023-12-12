@@ -3,7 +3,6 @@ package dev.pott.abonity.core.ui.components.subscription
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -18,7 +17,7 @@ fun PeriodicPriceInfo(
     paymentInfo: PaymentInfo,
     modifier: Modifier = Modifier,
 ) {
-    val formattedPeriodPrice by rememberFormattedPrice(
+    val formattedPeriodPrice = rememberFormattedPrice(
         paymentInfo.price.value,
         paymentInfo.price.currency,
     )

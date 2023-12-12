@@ -16,14 +16,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dev.pott.abonity.core.ui.preview.PreviewCommonLocaleConfig
-import dev.pott.abonity.core.ui.util.getDefaultLocale
+import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
-
-private var formatterToLocale: Pair<DateTimeFormatter, Locale>? = null
 
 @Composable
 fun FormattedDate(
@@ -45,15 +42,10 @@ fun FormattedDate(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
 ) {
-    val locale = getDefaultLocale()
+    val locale = rememberDefaultLocale()
     val localizedDate = remember(locale, date) {
-        var formatter = formatterToLocale
-        if (formatter == null || formatter.second != locale) {
-            formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) to locale
-            formatterToLocale = formatter
-        }
-
-        date.toJavaLocalDate().format(formatter.first)
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+        date.toJavaLocalDate().format(formatter)
     }
     Text(
         text = localizedDate,

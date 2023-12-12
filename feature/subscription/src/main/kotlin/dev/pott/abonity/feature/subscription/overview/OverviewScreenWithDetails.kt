@@ -1,10 +1,13 @@
 package dev.pott.abonity.feature.subscription.overview
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.ThreePaneScaffoldState
 import androidx.compose.material3.adaptive.calculateListDetailPaneScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
@@ -32,9 +35,12 @@ fun OverviewScreenWithDetails(
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
     onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
+    modifier: Modifier = Modifier,
     scaffoldState: ThreePaneScaffoldState = calculateListDetailPaneScaffoldState(),
+    listState: LazyListState = rememberLazyListState(),
 ) {
     ListDetailPaneScaffold(
+        modifier = modifier,
         scaffoldState = scaffoldState,
         listPane = {
             OverviewScreen(
@@ -42,6 +48,7 @@ fun OverviewScreenWithDetails(
                 onSubscriptionClick = {
                     onSubscriptionClicked(it)
                 },
+                listState = listState,
             )
         },
         detailPane = {

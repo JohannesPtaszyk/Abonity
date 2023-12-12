@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import dev.pott.abonity.feature.subscription.add.AddScreen
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination
+import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 import dev.pott.abonity.feature.subscription.overview.OverviewRoute
 import dev.pott.abonity.feature.subscription.overview.OverviewScreenDestination
 import dev.pott.abonity.navigation.destination.composable
@@ -17,11 +18,12 @@ fun NavGraphBuilder.subscriptionGraph(
         composable(OverviewScreenDestination) {
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
-                onEditClicked = {
-                    val args = AddScreenDestination.Args(it.value)
-                    navController.navigate(
-                        AddScreenDestination.getRouteWithArgs(args),
-                    )
+                showAddFloatingActionButton = state.showAddFloatingActionButton,
+                onEditClick = {
+                    navController.navigateToAddScreen(it.value)
+                },
+                onAddClick = {
+                    navController.navigateToAddScreen()
                 },
             )
         }

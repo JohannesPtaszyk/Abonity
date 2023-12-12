@@ -12,6 +12,7 @@ class AndroidLibComposeConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("dev.pott.android.lib")
+                apply("dev.shreyaspatil.compose-compiler-report-generator")
             }
             extensions.getByType<LibraryExtension>().apply {
                 configureAndroidCompose(this)

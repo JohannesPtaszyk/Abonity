@@ -51,11 +51,12 @@ fun rememberAppState(navController: NavController): State<AppState> {
         derivedStateOf {
             val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
             val items = persistentListOf(*navigationItems)
+            val navigationSuiteType = calculateFromAdaptiveInfo(adaptiveInfo)
             AppState(
-                calculateFromAdaptiveInfo(adaptiveInfo),
+                navigationSuiteType,
                 selected,
                 items,
-                getSubscriptionGraphState(adaptiveInfo.windowSizeClass),
+                getSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType),
             )
         }
     }
@@ -89,9 +90,14 @@ private fun WindowAdaptiveInfo.showDrawer(): Boolean {
         windowSizeClass.heightSizeClass == WindowHeightSizeClass.Expanded
 }
 
-private fun getSubscriptionGraphState(windowSizeClass: WindowSizeClass): SubscriptionGraphState {
+@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
+private fun getSubscriptionGraphState(
+    windowSizeClass: WindowSizeClass,
+    navigationSuiteType: NavigationSuiteType,
+): SubscriptionGraphState {
     val twoPane = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
     return SubscriptionGraphState(
         showOverviewAsMultiColumn = twoPane,
+        showAddFloatingActionButton = navigationSuiteType == NavigationSuiteType.NavigationBar,
     )
 }

@@ -31,7 +31,7 @@ import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.navigation.CloseButton
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
-import dev.pott.abonity.core.ui.util.getDefaultLocale
+import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -116,7 +116,7 @@ fun AddScreen(
                         expanded = !expanded
                     },
                 ) {
-                    val locale = getDefaultLocale()
+                    val locale = rememberDefaultLocale()
                     TextField(
                         readOnly = true,
                         value = selectedOptionText.getDisplayName(locale),

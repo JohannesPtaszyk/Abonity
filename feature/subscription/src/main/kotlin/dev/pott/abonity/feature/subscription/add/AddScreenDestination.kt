@@ -7,6 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
 import dev.pott.abonity.navigation.destination.NestedDestination
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentMap
 
 private const val ADD_ROUTE = "add"
 private const val SUBSCRIPTION_ID_KEY = "subscription_id"
@@ -17,7 +21,7 @@ object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
     ADD_ROUTE,
 ) {
 
-    override val arguments: List<NamedNavArgument> = listOf(
+    override val arguments: ImmutableList<NamedNavArgument> = persistentListOf(
         navArgument(SUBSCRIPTION_ID_KEY) {
             type = NavType.LongType
             defaultValue = NO_SUBSCRIPTION_PASSED_ID
@@ -31,19 +35,19 @@ object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
         return Args(subscriptionId)
     }
 
-    override fun getParamsFromArgs(args: Args): Map<String, Any> {
+    override fun getParamsFromArgs(args: Args): ImmutableMap<String, Any> {
         return buildMap {
             put(SUBSCRIPTION_ID_KEY, args.subscriptionId ?: NO_SUBSCRIPTION_PASSED_ID)
-        }
+        }.toPersistentMap()
     }
 
     data class Args(val subscriptionId: Long? = null)
 }
 
-fun NavController.navigateToAddScreen() {
+fun NavController.navigateToAddScreen(subscriptionId: Long? = null) {
     navigate(
         AddScreenDestination.getRouteWithArgs(
-            AddScreenDestination.Args(),
+            AddScreenDestination.Args(subscriptionId),
         ),
     )
 }

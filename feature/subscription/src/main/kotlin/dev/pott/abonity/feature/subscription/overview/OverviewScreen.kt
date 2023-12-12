@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -12,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -42,23 +45,25 @@ fun OverviewScreen(
     state: OverviewState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
+    floatingActionButton: @Composable () -> Unit = {},
+    listState: LazyListState = rememberLazyListState(),
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.overview_screen_title))
-                },
+                title = { Text(text = stringResource(id = R.string.overview_screen_title)) },
                 scrollBehavior = scrollBehavior,
             )
         },
+        floatingActionButton = floatingActionButton,
     ) { paddingValues ->
         LazyColumn(
-            contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
+            contentPadding = paddingValues + PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            state = listState,
         ) {
             item {
                 PriceOverview(
@@ -79,6 +84,9 @@ fun OverviewScreen(
                 key = { it.subscription.id.value },
                 contentType = { "Subscription Card" },
             ) { subscription ->
+                val isSelected = remember(subscription.subscription, state.detailId) {
+                    subscription.subscription.id == state.detailId
+                }
                 SubscriptionCard(
                     subscription.subscription,
                     subscription.periodPrice,
@@ -86,7 +94,7 @@ fun OverviewScreen(
                     onClick = {
                         onSubscriptionClick(subscription.subscription.id)
                     },
-                    isSelected = subscription.subscription.id == state.detailId,
+                    isSelected = isSelected,
                 )
             }
         }

@@ -3,9 +3,6 @@ package dev.pott.abonity.core.ui.components.subscription
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +19,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.TextUnit
 import dev.pott.abonity.core.entity.Price
-import dev.pott.abonity.core.ui.util.getDefaultLocale
+import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import java.text.NumberFormat
 import java.util.Currency
 
@@ -46,7 +43,7 @@ fun FormattedPrice(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
 ) {
-    val formatted by rememberFormattedPrice(
+    val formatted = rememberFormattedPrice(
         value = price.value,
         currency = price.currency,
     )
@@ -72,17 +69,14 @@ fun FormattedPrice(
 }
 
 @Composable
-fun rememberFormattedPrice(value: Double, currency: Currency): State<String> {
-    val locale = getDefaultLocale()
-    val format =
-        remember(locale) {
-            NumberFormat.getCurrencyInstance(locale)
-        }
+fun rememberFormattedPrice(value: Double, currency: Currency): String {
+    val locale = rememberDefaultLocale()
+    val format = remember(locale) {
+        NumberFormat.getCurrencyInstance(locale)
+    }
     return remember(value, currency) {
-        derivedStateOf {
-            format.currency = currency
-            format.format(value)
-        }
+        format.currency = currency
+        format.format(value)
     }
 }
 

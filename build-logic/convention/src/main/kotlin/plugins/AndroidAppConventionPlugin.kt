@@ -2,10 +2,10 @@ package plugins
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-import configurations.configureKotlinAndroid
 import configurations.applyKoverAndroid
 import configurations.configureAndroidCompose
 import configurations.configureGradleManagedDevices
+import configurations.configureKotlinAndroid
 import extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -24,6 +24,7 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
                 apply("com.google.gms.google-services")
                 apply("com.google.android.gms.oss-licenses-plugin")
+                apply("dev.shreyaspatil.compose-compiler-report-generator")
             }
 
             extensions.configure<ApplicationExtension> {
