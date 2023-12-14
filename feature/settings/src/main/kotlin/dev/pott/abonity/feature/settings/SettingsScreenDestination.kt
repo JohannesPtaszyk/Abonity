@@ -1,5 +1,7 @@
 package dev.pott.abonity.feature.settings
 
-import dev.pott.abonity.navigation.destination.NoArgDestination
+import dev.pott.abonity.navigation.destination.Destination
 
-object SettingsScreenDestination : NoArgDestination("settings")
+object SettingsScreenDestination : Destination {
+    override val route: String = "settings"
+}

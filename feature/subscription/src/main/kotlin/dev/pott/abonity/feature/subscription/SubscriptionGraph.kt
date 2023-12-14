@@ -14,7 +14,10 @@ fun NavGraphBuilder.subscriptionGraph(
     state: SubscriptionGraphState,
     navController: NavController,
 ) {
-    navigation(SubscriptionNavigationDestination) {
+    navigation(
+        destination = SubscriptionNavigationDestination,
+        startDestination = OverviewScreenDestination,
+    ) {
         composable(OverviewScreenDestination) {
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,

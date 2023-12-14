@@ -10,12 +10,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import co.touchlab.kermit.Logger
+import kotlinx.collections.immutable.persistentListOf
 
 typealias Enter = AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
 typealias Exit = AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
 
 fun NavGraphBuilder.composable(
-    destination: Destination<*>,
+    destination: Destination,
     enterTransition: (@JvmSuppressWildcards Enter)? = null,
     exitTransition: (@JvmSuppressWildcards Exit)? = null,
     popEnterTransition: (@JvmSuppressWildcards Enter)? = enterTransition,
@@ -28,8 +29,16 @@ fun NavGraphBuilder.composable(
                 "Added destination with route $it ($destination)"
             }
         },
-        arguments = destination.arguments,
-        deepLinks = destination.deeplinks,
+        arguments = if (destination is ArgumentDestination<*>) {
+            destination.requiredArguments
+        } else {
+            persistentListOf()
+        },
+        deepLinks = if (destination is DeeplinkDestination) {
+            destination.deeplinks
+        } else {
+            persistentListOf()
+        },
         enterTransition = enterTransition,
         exitTransition = exitTransition,
         popEnterTransition = popEnterTransition,
@@ -39,11 +48,12 @@ fun NavGraphBuilder.composable(
 }
 
 fun NavGraphBuilder.navigation(
-    destination: NavigationDestination<*>,
+    destination: Destination,
+    startDestination: Destination,
     builder: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
-        startDestination = destination.startDestination.route,
+        startDestination = startDestination.route,
         route = destination.route,
         builder = builder,
     )

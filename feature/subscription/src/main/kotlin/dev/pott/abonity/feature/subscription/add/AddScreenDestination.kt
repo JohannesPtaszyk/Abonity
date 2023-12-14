@@ -5,48 +5,49 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
-import dev.pott.abonity.navigation.destination.NestedDestination
+import dev.pott.abonity.navigation.destination.ArgumentDestination
+import dev.pott.abonity.navigation.destination.Arguments
+import dev.pott.abonity.navigation.destination.SavedStateArgumentParser
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentMap
 
 private const val ADD_ROUTE = "add"
 private const val SUBSCRIPTION_ID_KEY = "subscription_id"
 private const val NO_SUBSCRIPTION_PASSED_ID = -1L
 
-object AddScreenDestination : NestedDestination<AddScreenDestination.Args>(
-    SubscriptionNavigationDestination,
-    ADD_ROUTE,
-) {
+object AddScreenDestination :
+    ArgumentDestination<AddScreenDestination.Args>,
+    SavedStateArgumentParser<AddScreenDestination.Args> {
 
-    override val arguments: ImmutableList<NamedNavArgument> = persistentListOf(
+    override val baseRoute: String = ADD_ROUTE
+
+    override val requiredArguments: ImmutableList<NamedNavArgument> = persistentListOf(
         navArgument(SUBSCRIPTION_ID_KEY) {
             type = NavType.LongType
             defaultValue = NO_SUBSCRIPTION_PASSED_ID
         },
     )
 
-    override fun getArgs(savedStateHandle: SavedStateHandle): Args {
+    override fun parse(savedStateHandle: SavedStateHandle): Args {
         val subscriptionId = savedStateHandle.get<Long>(SUBSCRIPTION_ID_KEY)?.takeIf {
             it != NO_SUBSCRIPTION_PASSED_ID
         }
         return Args(subscriptionId)
     }
 
-    override fun getParamsFromArgs(args: Args): ImmutableMap<String, Any> {
-        return buildMap {
-            put(SUBSCRIPTION_ID_KEY, args.subscriptionId ?: NO_SUBSCRIPTION_PASSED_ID)
-        }.toPersistentMap()
+    data class Args(val subscriptionId: Long? = null) : Arguments {
+        override fun toMap(): Map<String, String> =
+            buildMap {
+                if (subscriptionId != null) {
+                    put(SUBSCRIPTION_ID_KEY, subscriptionId.toString())
+                }
+            }
     }
-
-    data class Args(val subscriptionId: Long? = null)
 }
 
 fun NavController.navigateToAddScreen(subscriptionId: Long? = null) {
     navigate(
-        AddScreenDestination.getRouteWithArgs(
+        AddScreenDestination.routeWithArgs(
             AddScreenDestination.Args(subscriptionId),
         ),
     )
