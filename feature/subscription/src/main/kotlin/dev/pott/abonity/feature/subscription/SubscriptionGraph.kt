@@ -23,7 +23,7 @@ fun NavGraphBuilder.subscriptionGraph(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
                 showAddFloatingActionButton = state.showAddFloatingActionButton,
                 onEditClick = {
-                    navController.navigateToAddScreen(it.value)
+                    navController.navigateToAddScreen(it)
                 },
                 onAddClick = {
                     navController.navigateToAddScreen()

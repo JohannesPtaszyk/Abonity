@@ -30,7 +30,7 @@ fun NavGraphBuilder.composable(
             }
         },
         arguments = if (destination is ArgumentDestination<*>) {
-            destination.requiredArguments
+            destination.requiredArguments + destination.optionalArguments
         } else {
             persistentListOf()
         },

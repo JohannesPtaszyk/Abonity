@@ -6,7 +6,7 @@ import java.util.Currency
 import java.util.Locale
 
 data class AddFormInput(
-    val firstPaymentDate: LocalDate?,
+    val firstPaymentDate: LocalDate? = null,
     val name: String = "",
     val description: String = "",
     val priceValue: String = "",

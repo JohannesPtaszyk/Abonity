@@ -1,8 +1,11 @@
 package dev.pott.abonity.feature.subscription.add
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.rounded.Save
@@ -17,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
@@ -31,6 +36,7 @@ import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.navigation.CloseButton
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
+import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
@@ -45,6 +51,11 @@ fun AddScreen(
     viewModel: AddScreenViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(state.savingState) {
+        if (state.savingState == AddState.SavingState.SAVED) {
+            close()
+        }
+    }
     AddScreen(
         state = state,
         onInputChanged = viewModel::updateInputs,
@@ -88,78 +99,82 @@ fun AddScreen(
             )
         },
     ) { paddingValues ->
-        LazyColumn(contentPadding = paddingValues) {
-            item {
-                TextField(
-                    label = { Text(text = "Name") },
-                    value = state.input.name,
-                    onValueChange = { onInputChanged(state.input.copy(name = it)) },
-                )
-            }
-            item {
-                Row {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(
+                contentPadding = paddingValues + PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item {
+                    TextField(
+                        label = { Text(text = "Name") },
+                        value = state.input.name,
+                        onValueChange = { onInputChanged(state.input.copy(name = it)) },
+                    )
+                }
+                item {
                     TextField(
                         label = { Text(text = "Price") },
                         value = state.input.description,
                         onValueChange = { onInputChanged(state.input.copy(description = it)) },
                     )
                 }
-            }
-            item {
-                val options = remember { Currency.getAvailableCurrencies().toImmutableList() }
-                var expanded by remember { mutableStateOf(false) }
-                var selectedOptionText by remember { mutableStateOf(options[0]) }
+                item {
+                    val options = remember { Currency.getAvailableCurrencies().toImmutableList() }
+                    var expanded by remember { mutableStateOf(false) }
+                    var selectedOptionText by remember { mutableStateOf(options[0]) }
 
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    },
-                ) {
-                    val locale = rememberDefaultLocale()
-                    TextField(
-                        readOnly = true,
-                        value = selectedOptionText.getDisplayName(locale),
-                        onValueChange = {
-                            // As this is read-only, we do not need to do anyhthing
-                        },
-                        label = { Text("Currency") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expanded,
-                            )
-                        },
-                        modifier = Modifier.clickable { expanded != expanded },
-                    )
-                    ExposedDropdownMenu(
+                    ExposedDropdownMenuBox(
                         expanded = expanded,
-                        onDismissRequest = {
-                            expanded = false
+                        onExpandedChange = {
+                            expanded = !expanded
                         },
                     ) {
-                        options.forEach { selectionOption ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    selectedOptionText = selectionOption
-                                    expanded = false
-                                },
-                                text = {
-                                    Text(text = selectionOption.getDisplayName(locale))
-                                },
-                                trailingIcon = {
-                                    Text(text = selectionOption.getSymbol(locale))
-                                },
-                            )
+                        val locale = rememberDefaultLocale()
+                        TextField(
+                            readOnly = true,
+                            value = selectedOptionText.getDisplayName(locale),
+                            onValueChange = {
+                                // As this is read-only, we do not need to do anyhthing
+                            },
+                            label = { Text("Currency") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(
+                                    expanded = expanded,
+                                )
+                            },
+                            modifier = Modifier.clickable { expanded != expanded },
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = {
+                                expanded = false
+                            },
+                        ) {
+                            options.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    onClick = {
+                                        selectedOptionText = selectionOption
+                                        expanded = false
+                                    },
+                                    text = {
+                                        Text(text = selectionOption.getDisplayName(locale))
+                                    },
+                                    trailingIcon = {
+                                        Text(text = selectionOption.getSymbol(locale))
+                                    },
+                                )
+                            }
                         }
                     }
                 }
-            }
-            item {
-                TextField(
-                    label = { Text(text = "Description") },
-                    value = state.input.description,
-                    onValueChange = { onInputChanged(state.input.copy(description = it)) },
-                )
+                item {
+                    TextField(
+                        label = { Text(text = "Description") },
+                        value = state.input.description,
+                        onValueChange = { onInputChanged(state.input.copy(description = it)) },
+                    )
+                }
             }
         }
     }
@@ -171,6 +186,7 @@ private fun AddScreenPreview() {
     AddScreen(
         state = AddState(
             AddFormInput(Clock.System.todayIn(TimeZone.currentSystemDefault())),
+            AddState.SavingState.IDLE,
             false,
         ),
         onInputChanged = {},

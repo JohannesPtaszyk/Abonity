@@ -15,7 +15,7 @@ import dev.pott.abonity.navigation.destination.Destination
 enum class NavigationItem(
     @StringRes val titleRes: Int,
     val icon: ImageVector,
-    val destination: Destination<*>,
+    val destination: Destination,
 ) {
     HOME(
         R.string.navigation_item_home,
