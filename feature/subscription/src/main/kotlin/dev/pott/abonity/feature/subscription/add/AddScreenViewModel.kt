@@ -34,11 +34,11 @@ class AddScreenViewModel @Inject constructor(
     private val args = AddScreenDestination.Args.parse(savedStateHandle)
 
     private val inputState = MutableStateFlow(
-        if(args.subscriptionId != null) {
+        if (args.subscriptionId != null) {
             AddFormInput()
         } else {
             AddFormInput(firstPaymentDate = clock.todayIn(TimeZone.currentSystemDefault()))
-        }
+        },
     )
 
     private val savingState = MutableStateFlow(AddState.SavingState.IDLE)
@@ -48,6 +48,7 @@ class AddScreenViewModel @Inject constructor(
     val state: StateFlow<AddState> = if (args.subscriptionId != null) {
         val prefilledInputState = flow {
             val subscription = repository.getSubscriptionFlow(args.subscriptionId).first()
+            val periodicType = (subscription.paymentInfo.type as? PaymentType.Periodic)
             inputState.value = AddFormInput(
                 subscription.paymentInfo.firstPayment,
                 name = subscription.name,
@@ -55,8 +56,8 @@ class AddScreenViewModel @Inject constructor(
                 priceValue = subscription.paymentInfo.price.value.toString(),
                 currency = subscription.paymentInfo.price.currency,
                 isOneTimePayment = subscription.paymentInfo.type == PaymentType.OneTime,
-                paymentPeriod = (subscription.paymentInfo.type as? PaymentType.Periodic)?.period,
-                paymentPeriodCount = (subscription.paymentInfo.type as? PaymentType.Periodic)?.periodCount,
+                paymentPeriod = periodicType?.period,
+                paymentPeriodCount = periodicType?.periodCount,
             )
             emitAll(inputState)
         }
@@ -70,17 +71,16 @@ class AddScreenViewModel @Inject constructor(
     } else {
         combine(
             inputState,
-            savingState
+            savingState,
         ) { input, saving ->
             AddState(input, saving, false)
         }
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        AddState(loading = loadingState.value)
+        AddState(loading = loadingState.value),
     )
 
-    @Suppress("MagicNumber")
     fun updateInputs(input: AddFormInput) {
         inputState.value = input
     }
