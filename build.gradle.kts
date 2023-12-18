@@ -14,7 +14,7 @@ buildscript {
 // Remove after https://github.com/touchlab/Kermit/issues/383
 subprojects {
     configurations
-        .matching { it.name.endsWith("TestRuntimeClasspath") }
+        .matching { it.name.endsWith("RuntimeClasspath") }
         .configureEach {
             exclude(group = "org.jetbrains.kotlin", module = "kotlin-test-junit")
         }
