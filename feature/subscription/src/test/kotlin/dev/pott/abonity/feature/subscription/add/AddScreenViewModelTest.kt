@@ -40,7 +40,7 @@ class AddScreenViewModelTest {
             val savedStateHandle = SavedStateHandle(
                 mapOf(AddScreenDestination.Args.SUBSCRIPTION_ID_KEY to subscription.id.value),
             )
-            val tested = getAddVieModel(
+            val tested = createViewModel(
                 repository = repository,
                 savedStateHandle = savedStateHandle,
             )
@@ -78,7 +78,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPrice with dot THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             tested.state.test {
                 val priceValue = "9.99"
@@ -95,7 +95,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPrice with comma THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             tested.state.test {
                 val priceValue = "9,99"
@@ -112,7 +112,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPeriodic true THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             tested.state.test {
                 tested.setPeriodic(true)
@@ -128,7 +128,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPeriodic false THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             tested.state.test {
                 tested.setPeriodic(false)
@@ -144,7 +144,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPaymentPeriodCount empty THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             tested.state.test {
                 tested.setPaymentPeriodCount("")
@@ -164,7 +164,7 @@ class AddScreenViewModelTest {
             ) {
                 runTest {
                     val repository = FakeSubscriptionRepository()
-                    val tested = getAddVieModel(repository = repository)
+                    val tested = createViewModel(repository = repository)
 
                     tested.state.test {
                         val period = PaymentPeriod.WEEKS
@@ -182,7 +182,7 @@ class AddScreenViewModelTest {
     fun `GIVEN full periodic input WHEN save THEN periodic subscription is created`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()
@@ -242,7 +242,7 @@ class AddScreenViewModelTest {
     fun `GIVEN full one time input WHEN save THEN periodic subscription is created`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = getAddVieModel(repository = repository)
+            val tested = createViewModel(repository = repository)
 
             val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()
@@ -295,9 +295,11 @@ class AddScreenViewModelTest {
         }
     }
 
-    private fun getAddVieModel(
+    private fun createViewModel(
         clock: Clock = FakeClock(),
         repository: SubscriptionRepository = FakeSubscriptionRepository(),
         savedStateHandle: SavedStateHandle = SavedStateHandle(),
-    ) = AddScreenViewModel(savedStateHandle, clock, repository)
+    ): AddScreenViewModel {
+        return AddScreenViewModel(savedStateHandle, clock, repository)
+    }
 }
