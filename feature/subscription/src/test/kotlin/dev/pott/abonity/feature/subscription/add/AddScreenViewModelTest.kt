@@ -184,7 +184,7 @@ class AddScreenViewModelTest {
             val repository = FakeSubscriptionRepository()
             val tested = getAddVieModel(repository = repository)
 
-            val now = Clock.System.now()
+            val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()
             val name = "Test Subscription"
             val description = "Test Description"
@@ -244,7 +244,7 @@ class AddScreenViewModelTest {
             val repository = FakeSubscriptionRepository()
             val tested = getAddVieModel(repository = repository)
 
-            val now = Clock.System.now()
+            val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()
             val name = "Test Subscription"
             val description = "Test Description"
