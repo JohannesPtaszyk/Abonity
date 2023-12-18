@@ -79,4 +79,5 @@
     <string name="subscription_add_label_description">Comment</string>
     <string name="dialog_btn_confirm_default">OK</string>
     <string name="dialog_btn_dismiss_default">Cancel</string>
+    <string name="subscription_detail_edit_label">Edit Subscription: %s</string>
 </resources>
