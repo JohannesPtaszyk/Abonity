@@ -18,17 +18,24 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
 class AddScreenViewModelTest {
+
+    @BeforeEach
+    fun setUp() {
+        Locale.setDefault(Locale("de", "DE"))
+    }
 
     @Test
     fun `GIVEN id argument WHEN init THEN state is updated with existing subscription`() {

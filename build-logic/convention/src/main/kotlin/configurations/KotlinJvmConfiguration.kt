@@ -53,10 +53,8 @@ internal fun Project.configureKotlin() {
             events = setOf(
                 TestLogEvent.SKIPPED,
                 TestLogEvent.FAILED,
-                TestLogEvent.STANDARD_ERROR,
-                TestLogEvent.STANDARD_OUT,
             )
-            exceptionFormat = TestExceptionFormat.FULL
+            exceptionFormat = TestExceptionFormat.SHORT
         }
     }
 }
