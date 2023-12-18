@@ -1,7 +1,7 @@
 package dev.pott.abonity.feature.subscription.add
 
 data class AddState(
-    val input: AddFormInput = AddFormInput(),
+    val input: AddFormState = AddFormState(),
     val savingState: SavingState = SavingState.IDLE,
     val loading: Boolean,
 ) {

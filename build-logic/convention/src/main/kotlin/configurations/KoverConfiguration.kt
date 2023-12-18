@@ -61,7 +61,6 @@ fun Project.applyKoverAndroid() {
     }
 }
 
-
 fun Project.applyKoverProject() {
     pluginManager.apply(KoverGradlePlugin::class)
     configure<KoverReportExtension> {

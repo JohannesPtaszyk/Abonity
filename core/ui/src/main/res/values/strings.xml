@@ -13,7 +13,7 @@
         <item quantity="other">%1$s /\u00A0%2$d\u00A0months</item>
     </plurals>
     <plurals name="payment_period_years">
-        <item quantity="one">/\u00A0year</item>
+        <item quantity="one">%1$s /\u00A0year</item>
         <item quantity="other">%1$s /\u00A0%2$d\u00A0years</item>
     </plurals>
     <plurals name="payment_per_days">
@@ -32,6 +32,22 @@
         <item quantity="one">/\u00A0year</item>
         <item quantity="other">/\u00A0%1$d\u00A0years</item>
     </plurals>
+    <plurals name="payment_period_dropdown_days">
+        <item quantity="one">Day</item>
+        <item quantity="other">Days</item>
+    </plurals>
+    <plurals name="payment_period_dropdown_weeks">
+        <item quantity="one">Week</item>
+        <item quantity="other">Weeks</item>
+    </plurals>
+    <plurals name="payment_period_dropdown_months">
+        <item quantity="one">Month</item>
+        <item quantity="other">Months</item>
+    </plurals>
+    <plurals name="payment_period_dropdown_years">
+        <item quantity="one">Year</item>
+        <item quantity="other">Years</item>
+    </plurals>
     <string name="common_back_button_content_description">Go back to previous screen</string>
     <string name="common_close_button_content_description">Dismiss current screen</string>
     <string name="overview_screen_title">Subscriptions</string>
@@ -48,5 +64,19 @@
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
     <string name="subscription_id_label">ID</string>
-
+    <string name="subscription_add_label_name">Name</string>
+    <string name="subscription_add_label_price">Price</string>
+    <string name="subscription_add_currency_label">Currency</string>
+    <string name="subscription_add_btn_periodic">Periodic</string>
+    <string name="subscription_add_btn_one_time">One Time</string>
+    <string name="subscription_add_save">One Time</string>
+    <string name="subscription_add_label_first_payment_date">First Payment</string>
+    <string name="subscription_add_label_date">Due date</string>
+    <string name="subscription_add_label_period_count">Occurs every</string>
+    <string name="subscription_add_label_period">Period</string>
+    <string name="subscription_add_label_period_click">Change Period</string>
+    <string name="subscription_add_label_period_dropdown_item_click">Period</string>
+    <string name="subscription_add_label_description">Comment</string>
+    <string name="dialog_btn_confirm_default">OK</string>
+    <string name="dialog_btn_dismiss_default">Cancel</string>
 </resources>

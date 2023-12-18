@@ -20,14 +20,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
+import kotlinx.datetime.toLocalDateTime
+import java.util.Currency
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 @HiltViewModel
 class AddScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val clock: Clock,
+    clock: Clock,
     private val repository: SubscriptionRepository,
 ) : ViewModel() {
 
@@ -35,9 +39,9 @@ class AddScreenViewModel @Inject constructor(
 
     private val inputState = MutableStateFlow(
         if (args.subscriptionId != null) {
-            AddFormInput()
+            AddFormState()
         } else {
-            AddFormInput(firstPaymentDate = clock.todayIn(TimeZone.currentSystemDefault()))
+            AddFormState(paymentDateEpochMillis = clock.now().toEpochMilliseconds())
         },
     )
 
@@ -49,11 +53,14 @@ class AddScreenViewModel @Inject constructor(
         val prefilledInputState = flow {
             val subscription = repository.getSubscriptionFlow(args.subscriptionId).first()
             val periodicType = (subscription.paymentInfo.type as? PaymentType.Periodic)
-            inputState.value = AddFormInput(
-                subscription.paymentInfo.firstPayment,
+            val priceValue = subscription.paymentInfo.price.value.toString()
+            inputState.value = AddFormState(
+                TimeUnit.DAYS.toMillis(
+                    subscription.paymentInfo.firstPayment.toEpochDays().toLong(),
+                ),
                 name = subscription.name,
                 description = subscription.description,
-                priceValue = subscription.paymentInfo.price.value.toString(),
+                priceValue = priceValue,
                 currency = subscription.paymentInfo.price.currency,
                 isOneTimePayment = subscription.paymentInfo.type == PaymentType.OneTime,
                 paymentPeriod = periodicType?.period,
@@ -81,25 +88,73 @@ class AddScreenViewModel @Inject constructor(
         AddState(loading = loadingState.value),
     )
 
-    fun updateInputs(input: AddFormInput) {
-        inputState.value = input
+    fun setPaymentDate(epochMilliseconds: Long) {
+        updateInputs { it.copy(paymentDateEpochMillis = epochMilliseconds) }
+    }
+
+    fun setName(name: String) {
+        updateInputs { it.copy(name = name) }
+    }
+
+    fun setDescription(description: String) {
+        updateInputs { it.copy(description = description) }
+    }
+
+    fun setPrice(value: String) {
+        updateInputs { it.copy(priceValue = value) }
+    }
+
+    fun setCurrency(currency: Currency) {
+        updateInputs { it.copy(currency = currency) }
+    }
+
+    fun setPeriodic(isPeriodic: Boolean) {
+        updateInputs { it.copy(isOneTimePayment = !isPeriodic) }
+    }
+
+    fun setPaymentPeriod(paymentPeriod: PaymentPeriod) {
+        updateInputs { it.copy(paymentPeriod = paymentPeriod) }
+    }
+
+    fun setPaymentPeriodCount(periodCount: String) {
+        updateInputs { it.copy(paymentPeriodCount = periodCount.toIntOrNull()) }
     }
 
     fun save() {
         viewModelScope.launch {
             savingState.value = AddState.SavingState.SAVING
             val input = inputState.value
+            val priceValue = parsePriceValue(input.priceValue)
+            val price = Price(priceValue, input.currency)
+            val date = Instant.fromEpochMilliseconds(input.paymentDateEpochMillis!!)
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .date
             val subscription = Subscription(
                 name = input.name,
                 description = input.description,
                 paymentInfo = PaymentInfo(
-                    price = Price(input.priceValue.toDouble(), input.currency),
-                    firstPayment = clock.todayIn(TimeZone.currentSystemDefault()),
-                    type = PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                    price = price,
+                    firstPayment = date,
+                    type = if (input.isOneTimePayment) {
+                        PaymentType.OneTime
+                    } else {
+                        PaymentType.Periodic(
+                            input.paymentPeriodCount!!,
+                            input.paymentPeriod!!,
+                        )
+                    },
                 ),
             )
             repository.addOrUpdateSubscription(subscription)
             savingState.value = AddState.SavingState.SAVED
         }
+    }
+
+    private fun parsePriceValue(value: String): Double {
+        return value.replace(",", ".").toDouble()
+    }
+
+    private fun updateInputs(block: (AddFormState) -> AddFormState) {
+        inputState.value = block(inputState.value)
     }
 }

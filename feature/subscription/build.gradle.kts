@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(projects.navigation)
+    implementation(projects.common.compose)
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 
@@ -19,6 +20,8 @@ dependencies {
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(platform(libs.arrow.bom))
+    implementation(libs.arrow.core)
 
     implementation(libs.kermit)
 

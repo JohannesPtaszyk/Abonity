@@ -30,7 +30,7 @@ fun Project.applySonar() {
                     ?.get()
                     ?.asFile
                     ?.path
-                    ?: error("Could not find app project")
+                    ?: error("Could not find app project"),
             )
         }
     }

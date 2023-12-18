@@ -35,7 +35,8 @@ include(
 
 include(
     ":common:test",
-    ":common:extensions"
+    ":common:extensions",
+    ":common:compose",
 )
 
 include(":navigation")
