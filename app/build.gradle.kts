@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    ksp(libs.hilt.compiler)
 
     implementation(projects.core.local)
     implementation(projects.core.domain)
@@ -60,10 +61,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window.manager)
     implementation(libs.google.oss.licenses)
-
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
     implementation(libs.kermit)
 
     debugImplementation(libs.androidx.compose.ui.tooling)

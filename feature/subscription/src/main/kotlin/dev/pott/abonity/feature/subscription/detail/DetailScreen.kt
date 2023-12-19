@@ -72,8 +72,10 @@ fun DetailScreen(
                         IconButton(onClick = { onEditClick(subscription.id) }) {
                             Icon(
                                 painter = rememberVectorPainter(image = AppIcons.Edit),
-                                // TODO Add content description
-                                contentDescription = null,
+                                contentDescription = stringResource(
+                                    id = R.string.subscription_detail_edit_label,
+                                    subscription.name,
+                                ),
                             )
                         }
                     }

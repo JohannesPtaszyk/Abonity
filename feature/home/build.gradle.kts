@@ -24,10 +24,12 @@ dependencies {
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
 }
