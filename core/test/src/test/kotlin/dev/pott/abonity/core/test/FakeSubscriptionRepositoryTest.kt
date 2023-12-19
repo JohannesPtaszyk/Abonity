@@ -1,7 +1,7 @@
 package dev.pott.abonity.core.test
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import dev.pott.abonity.core.entity.Subscription
 import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.coroutines.flow.emptyFlow
@@ -17,7 +17,7 @@ class FakeSubscriptionRepositoryTest {
 
         val tested = FakeSubscriptionRepository(subscriptionsFlow = flow)
 
-        assertThat(tested.getSubscriptionsFlow()).isSameAs(flow)
+        assertThat(tested.getSubscriptionsFlow()).isSameInstanceAs(flow)
     }
 
     @Test
@@ -27,7 +27,7 @@ class FakeSubscriptionRepositoryTest {
 
         val tested = FakeSubscriptionRepository(subscriptionFlow = flow)
 
-        assertThat(tested.getSubscriptionFlow(subscription.id)).isSameAs(flow)
+        assertThat(tested.getSubscriptionFlow(subscription.id)).isSameInstanceAs(flow)
     }
 
     @Test
@@ -37,8 +37,8 @@ class FakeSubscriptionRepositoryTest {
 
             val tested = FakeSubscriptionRepository()
 
-            assertThat(tested.addOrUpdateSubscription(subscription)).isSameAs(subscription)
-            assertThat(tested.addedSubscriptions.first()).isSameAs(subscription)
+            assertThat(tested.addOrUpdateSubscription(subscription)).isSameInstanceAs(subscription)
+            assertThat(tested.addedSubscriptions.first()).isSameInstanceAs(subscription)
         }
     }
 }
