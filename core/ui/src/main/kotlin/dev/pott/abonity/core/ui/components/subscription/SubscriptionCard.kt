@@ -73,9 +73,7 @@ fun SubscriptionCard(
 
 @Composable
 private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifier = Modifier) {
-    CompositionLocalProvider(
-        LocalContentColor provides MaterialTheme.colorScheme.primary,
-    ) {
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
         Column(horizontalAlignment = Alignment.End, modifier = modifier) {
             FormattedPrice(
                 price = price,

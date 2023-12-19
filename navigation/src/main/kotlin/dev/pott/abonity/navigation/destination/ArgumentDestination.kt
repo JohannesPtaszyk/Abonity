@@ -17,7 +17,7 @@ interface ArgumentDestination<T : Arguments> : Destination {
     override val route: String
         get() = buildString {
             append(baseRoute)
-            appendArguments()
+            appendArguments(this@ArgumentDestination)
         }
 
     fun routeWithArgs(args: T): String {
@@ -25,28 +25,7 @@ interface ArgumentDestination<T : Arguments> : Destination {
         return if (params.isEmpty()) {
             route
         } else {
-            replaceParamsInRoute(params)
-        }
-    }
-
-    private fun replaceParamsInRoute(params: Map<String, Any>): String {
-        var route = this.route
-        params.forEach {
-            route = route.replace("{${it.key}}", it.value.toString())
-        }
-        return route
-    }
-
-    private fun StringBuilder.appendArguments() {
-        requiredArguments.forEach {
-            append("/{${it.name}}")
-        }
-        optionalArguments.forEachIndexed { i: Int, argument: NamedNavArgument ->
-            if (i == 0) {
-                append("?${argument.name}={${argument.name}}")
-            } else {
-                append("$${argument.name}={${argument.name}}")
-            }
+            route.replaceNavArguments(params)
         }
     }
 }

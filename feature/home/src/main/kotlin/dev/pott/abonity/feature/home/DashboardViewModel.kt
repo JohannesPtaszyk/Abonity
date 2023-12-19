@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class DashboardViewModel @Inject constructor(
     getUpcomingSubscriptions: GetUpcomingSubscriptionsUseCase,
 ) : ViewModel() {
 
@@ -24,13 +24,21 @@ class HomeScreenViewModel @Inject constructor(
         getUpcomingSubscriptions(PaymentPeriod.MONTHS),
         selectedId,
     ) { subscriptions, selectedId ->
-        HomeState(
-            upcommingSubscriptions = subscriptions.toImmutableList(),
+        DashboardState(
+            upcomingSubscriptions = subscriptions.toImmutableList(),
             selectedId = selectedId,
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        HomeState(),
+        DashboardState(),
     )
+
+    fun select(subscriptionId: SubscriptionId) {
+        selectedId.value = subscriptionId
+    }
+
+    fun consumeSelectedId() {
+        selectedId.value = null
+    }
 }

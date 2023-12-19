@@ -8,7 +8,6 @@ import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial
 import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,13 +25,18 @@ import dev.pott.abonity.core.ui.theme.AppTheme
 fun AppMainContent(modifier: Modifier = Modifier) {
     AppTheme {
         val navController = rememberNavController()
-        val state by rememberAppState(navController)
+        val state = rememberAppState(navController)
         NavigationSuiteScaffold(
             navigationSuiteItems = {
                 state.navigationItems.forEach {
                     item(
                         selected = state.selectedNavigationItem == it,
-                        onClick = { navController.navigateTabItem(it) },
+                        onClick = {
+                            navController.navigateTabItem(
+                                it,
+                                state.selectedNavigationItem == it,
+                            )
+                        },
                         label = { Text(stringResource(id = it.titleRes)) },
                         icon = { NavigationIcon(navigationItem = it) },
                     )

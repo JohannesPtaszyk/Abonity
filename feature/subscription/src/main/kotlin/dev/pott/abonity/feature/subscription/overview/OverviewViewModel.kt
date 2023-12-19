@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription.overview
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,10 +17,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     getSubscriptionWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
     private val calculator: PaymentInfoCalculator,
 ) : ViewModel() {
-    private val selectedDetailId = MutableStateFlow<SubscriptionId?>(null)
+    private val args = OverviewScreenDestination.Args.parse(savedStateHandle)
+    private val selectedDetailId = MutableStateFlow(args.detailId)
 
     val state = combine(
         selectedDetailId,

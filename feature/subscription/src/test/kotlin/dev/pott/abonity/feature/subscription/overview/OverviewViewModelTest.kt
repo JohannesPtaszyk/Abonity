@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription.overview
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -45,7 +46,7 @@ class OverviewViewModelTest {
             val useCase =
                 GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(useCase, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, infoCalculator)
 
             val expectedSubscriptions = persistentListOf(
                 SubscriptionWithPeriodInfo(
@@ -87,7 +88,7 @@ class OverviewViewModelTest {
             val useCase =
                 GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(useCase, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, infoCalculator)
 
             tested.state.test {
                 skipItems(2) // Skip initial state and first subscription emit
@@ -132,7 +133,7 @@ class OverviewViewModelTest {
             val useCase =
                 GetSubscriptionsWithPeriodPrice(repository, infoCalculator, dateCalculator)
 
-            val tested = OverviewViewModel(useCase, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, infoCalculator)
 
             tested.state.test {
                 skipItems(2) // Skip initial state and first subscription emit

@@ -9,7 +9,6 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -18,7 +17,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 
 @OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 data class AppState(
@@ -34,10 +33,10 @@ data class AppState(
 )
 @Suppress("SpreadOperator")
 @Composable
-fun rememberAppState(navController: NavController): State<AppState> {
+fun rememberAppState(navController: NavController): AppState {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val navigationItems = remember { NavigationItem.values() }
+    val navigationItems = remember { NavigationItem.entries.toPersistentList() }
     val selectedNavigationItem by remember(navBackStackEntry?.destination) {
         derivedStateOf {
             navigationItems.find { navigationItem ->
@@ -48,17 +47,14 @@ fun rememberAppState(navController: NavController): State<AppState> {
         }
     }
     return remember(selectedNavigationItem) {
-        derivedStateOf {
-            val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
-            val items = persistentListOf(*navigationItems)
-            val navigationSuiteType = calculateFromAdaptiveInfo(adaptiveInfo)
-            AppState(
-                navigationSuiteType,
-                selected,
-                items,
-                getSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType),
-            )
-        }
+        val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
+        val navigationSuiteType = calculateFromAdaptiveInfo(adaptiveInfo)
+        AppState(
+            navigationSuiteType,
+            selected,
+            navigationItems,
+            getSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType),
+        )
     }
 }
 

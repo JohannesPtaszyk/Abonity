@@ -7,7 +7,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
-import dev.pott.abonity.feature.home.HomeScreenDestination
+import dev.pott.abonity.feature.home.HomeNavigationDestination
 import dev.pott.abonity.feature.settings.SettingsScreenDestination
 import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
 import dev.pott.abonity.navigation.destination.Destination
@@ -20,7 +20,7 @@ enum class NavigationItem(
     HOME(
         R.string.navigation_item_home,
         AppIcons.Home,
-        HomeScreenDestination,
+        HomeNavigationDestination,
     ),
     SUBSCRIPTION(
         R.string.navigation_item_subscription,

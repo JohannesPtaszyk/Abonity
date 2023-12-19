@@ -5,23 +5,36 @@ import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
 class GetUpcomingSubscriptionsUseCase @Inject constructor(
+    private val clock: Clock,
     private val calculator: PaymentInfoCalculator,
     private val getSubscriptionsWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
 ) {
     operator fun invoke(period: PaymentPeriod): Flow<List<SubscriptionWithPeriodInfo>> {
         return getSubscriptionsWithPeriodPrice().map { subscriptions ->
-            subscriptions.filter {
+            val now = clock.todayIn(TimeZone.currentSystemDefault())
+            subscriptions.map {
                 val firstPayment = it.subscription.paymentInfo.firstPayment
                 val paymentType = it.subscription.paymentInfo.type
-                val paymentsInPeriod = calculator.getPaymentCountForCurrentPeriod(
+                val paymentsInPeriod = calculator.getPaymentDatesForCurrentPeriod(
                     firstPayment,
                     period,
                     paymentType,
-                )
-                paymentsInPeriod > 0
+                ).filter { paymentDate ->
+                    paymentDate > now
+                }
+                it to paymentsInPeriod
+            }.filter {
+                it.second.isNotEmpty()
+            }.sortedBy {
+                it.second.first()
+            }.map {
+                it.first
             }
         }
     }

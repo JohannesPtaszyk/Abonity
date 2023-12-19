@@ -1,16 +1,19 @@
 package dev.pott.abonity.feature.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -26,6 +29,7 @@ import dev.pott.abonity.core.entity.SubscriptionId
 import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
+import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.core.ui.util.plus
@@ -38,19 +42,26 @@ import java.util.Currency
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel,
+    viewModel: DashboardViewModel,
     openDetails: (id: SubscriptionId) -> Unit,
+    openSubscriptions: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    HomeScreen(state, openDetails, modifier)
+    LaunchedEffect(state.selectedId) {
+        val selectedId = state.selectedId ?: return@LaunchedEffect
+        openDetails(selectedId)
+        viewModel.consumeSelectedId()
+    }
+    HomeScreen(state, viewModel::select, openSubscriptions, modifier)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    state: HomeState,
+    state: DashboardState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
+    onOpenSubscriptionsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -59,7 +70,7 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.overview_screen_title))
+                    Text(text = stringResource(id = R.string.home_screen_title))
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -67,14 +78,26 @@ fun HomeScreen(
     ) { paddingValues ->
         LazyColumn(
             contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
-            items(
-                state.upcommingSubscriptions,
-                key = { it.subscription.id.value },
-                contentType = { "Subscription Card" },
-            ) { subscription ->
+            item {
+                SectionHeader(
+                    modifier = Modifier.fillMaxWidth(),
+                    action = {
+                        TextButton(onClick = onOpenSubscriptionsClick) {
+                            Text(text = stringResource(id = R.string.home_btn_open_subscriptions))
+                        }
+                    },
+                ) {
+                    Text(text = stringResource(id = R.string.home_upcomming_subscriptions_label))
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            itemsIndexed(
+                state.upcomingSubscriptions,
+                key = { _, item -> item.subscription.id.value },
+                contentType = { _, _ -> "subscription_card" },
+            ) { i, subscription ->
                 SubscriptionCard(
                     subscription.subscription,
                     subscription.periodPrice,
@@ -84,6 +107,9 @@ fun HomeScreen(
                     },
                     isSelected = subscription.subscription.id == state.selectedId,
                 )
+                if (i != state.upcomingSubscriptions.lastIndex) {
+                    Spacer(Modifier.height(16.dp))
+                }
             }
         }
     }
@@ -107,8 +133,8 @@ private fun HomeScreenPreview() {
 
     AppTheme {
         HomeScreen(
-            state = HomeState(
-                upcommingSubscriptions = buildList {
+            state = DashboardState(
+                upcomingSubscriptions = buildList {
                     repeat(5) { id ->
                         SubscriptionWithPeriodInfo(
                             subscription = Subscription(
@@ -130,6 +156,9 @@ private fun HomeScreenPreview() {
             ),
             onSubscriptionClick = {
                 // On Subscription click
+            },
+            onOpenSubscriptionsClick = {
+                // On Open Subscription Click
             },
         )
     }

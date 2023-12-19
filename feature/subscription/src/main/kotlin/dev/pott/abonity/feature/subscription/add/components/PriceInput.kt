@@ -75,7 +75,7 @@ fun PriceInput(
             readOnly = true,
             value = currency.getSymbol(locale),
             onValueChange = {},
-            label = { Text("Currency") },
+            label = { Text(stringResource(id = R.string.subscription_add_currency_label)) },
             trailingIcon = {
                 Icon(Icons.Filled.ArrowDropDown, null)
             },

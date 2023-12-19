@@ -9,7 +9,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import co.touchlab.kermit.Logger
 import kotlinx.collections.immutable.persistentListOf
 
 typealias Enter = AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
@@ -24,17 +23,13 @@ fun NavGraphBuilder.composable(
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
 ) {
     composable(
-        route = destination.route.also {
-            Logger.withTag("NavGraphBuilder.composable").i {
-                "Added destination with route $it ($destination)"
-            }
-        },
+        route = destination.route,
         arguments = if (destination is ArgumentDestination<*>) {
             destination.requiredArguments + destination.optionalArguments
         } else {
             persistentListOf()
         },
-        deepLinks = if (destination is DeeplinkDestination) {
+        deepLinks = if (destination is Deeplinkable) {
             destination.deeplinks
         } else {
             persistentListOf()

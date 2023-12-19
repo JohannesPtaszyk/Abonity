@@ -2,7 +2,6 @@ package dev.pott.abonity.core.domain
 
 import dev.pott.abonity.common.extensions.endOfWeek
 import dev.pott.abonity.common.extensions.startOfWeek
-import dev.pott.abonity.common.extensions.toInt
 import dev.pott.abonity.core.entity.PaymentInfo
 import dev.pott.abonity.core.entity.PaymentPeriod
 import dev.pott.abonity.core.entity.PaymentType
@@ -63,17 +62,23 @@ class PaymentInfoCalculator @Inject constructor(
         }
     }
 
-    fun getPaymentCountForCurrentPeriod(
+    fun getPaymentDatesForCurrentPeriod(
         firstPayment: LocalDate,
         targetPeriod: PaymentPeriod,
         type: PaymentType,
-    ): Int {
+    ): List<LocalDate> {
         val today = getCurrentLocalDate()
         val lastDayOfCurrentPeriod = today.getLastDayOfCurrentPeriod(targetPeriod)
         val firstDayOfCurrentPeriod = today.getFirstDayOfCurrentPeriod(targetPeriod)
         return when (type) {
             is PaymentType.OneTime -> {
-                (firstPayment in firstDayOfCurrentPeriod..lastDayOfCurrentPeriod).toInt()
+                buildList {
+                    firstPayment.takeIf {
+                        it in firstDayOfCurrentPeriod..lastDayOfCurrentPeriod
+                    }?.let {
+                        add(it)
+                    }
+                }
             }
 
             is PaymentType.Periodic -> {
@@ -86,10 +91,10 @@ class PaymentInfoCalculator @Inject constructor(
                     possiblePaymentDate > lastDayOfCurrentPeriod ||
                     firstPayment > lastDayOfCurrentPeriod
                 ) {
-                    return 0
+                    return emptyList()
                 }
 
-                getPeriodicPaymentCountForPeriod(
+                getPeriodicPaymentDatesForPeriod(
                     firstPayment,
                     possiblePaymentDate,
                     lastDayOfCurrentPeriod,
@@ -99,21 +104,21 @@ class PaymentInfoCalculator @Inject constructor(
         }
     }
 
-    private fun getPeriodicPaymentCountForPeriod(
+    private fun getPeriodicPaymentDatesForPeriod(
         firstPayment: LocalDate,
         beginOfPeriod: LocalDate,
         endOfPeriod: LocalDate,
         periodicType: PaymentType.Periodic,
-    ): Int {
+    ): List<LocalDate> {
         var potentialLastPaymentDate = paymentDateCalculator.firstPaymentAfterBeginOfPeriod(
             firstPayment,
             beginOfPeriod,
             periodicType,
         )
 
-        var paymentsInCurrentPeriod = 0
+        var paymentsInCurrentPeriod = emptyList<LocalDate>()
         while (potentialLastPaymentDate <= endOfPeriod) {
-            paymentsInCurrentPeriod++
+            paymentsInCurrentPeriod = paymentsInCurrentPeriod + potentialLastPaymentDate
             potentialLastPaymentDate = paymentDateCalculator.calculateNextPossiblePaymentDate(
                 periodicType,
                 potentialLastPaymentDate,
@@ -129,13 +134,13 @@ class PaymentInfoCalculator @Inject constructor(
         type: PaymentType.Periodic,
         price: Price,
     ): Price {
-        val paymentsInCurrentPeriod = getPaymentCountForCurrentPeriod(
+        val paymentsInCurrentPeriod = getPaymentDatesForCurrentPeriod(
             firstPayment,
             targetPeriod,
             type,
         )
 
-        return price * paymentsInCurrentPeriod
+        return price * paymentsInCurrentPeriod.size
     }
 
     private fun isFirstPaymentInCurrentPeriod(

@@ -2,6 +2,7 @@ package dev.pott.abonity.core.ui.components.subscription
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.ui.components.text.SectionHeader
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -23,9 +25,10 @@ fun PriceOverview(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        title()
-        Spacer(modifier = Modifier.height(8.dp))
+        SectionHeader(Modifier.padding(horizontal = 16.dp)) { title() }
+        Spacer(Modifier.height(8.dp))
         LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(periodPrices) {

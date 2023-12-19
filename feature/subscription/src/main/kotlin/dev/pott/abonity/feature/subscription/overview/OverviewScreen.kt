@@ -1,14 +1,13 @@
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,7 +30,6 @@ import dev.pott.abonity.core.ui.components.subscription.PriceOverview
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.core.ui.util.plus
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -60,7 +58,7 @@ fun OverviewScreen(
         floatingActionButton = floatingActionButton,
     ) { paddingValues ->
         LazyColumn(
-            contentPadding = paddingValues + PaddingValues(16.dp),
+            contentPadding = paddingValues,
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             state = listState,
@@ -73,7 +71,6 @@ fun OverviewScreen(
                             text = stringResource(
                                 id = R.string.subscription_overview_price_overview_title,
                             ),
-                            style = MaterialTheme.typography.headlineMedium,
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -90,7 +87,7 @@ fun OverviewScreen(
                 SubscriptionCard(
                     subscription.subscription,
                     subscription.periodPrice,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     onClick = {
                         onSubscriptionClick(subscription.subscription.id)
                     },

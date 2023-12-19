@@ -80,4 +80,7 @@
     <string name="dialog_btn_confirm_default">OK</string>
     <string name="dialog_btn_dismiss_default">Cancel</string>
     <string name="subscription_detail_edit_label">Edit Subscription: %s</string>
+    <string name="home_screen_title">Overview</string>
+    <string name="home_btn_open_subscriptions">Show all</string>
+    <string name="home_upcomming_subscriptions_label">Upcomming Subscriptions</string>
 </resources>
