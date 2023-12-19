@@ -1,7 +1,7 @@
 package dev.pott.abonity.core.test
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import kotlinx.datetime.Instant
 import org.junit.jupiter.api.Test
 
@@ -11,6 +11,6 @@ class FakeClockTest {
         val instant = Instant.DISTANT_FUTURE
         val clock = FakeClock(instant)
 
-        assertThat(clock.now()).isSameAs(instant)
+        assertThat(clock.now()).isSameInstanceAs(instant)
     }
 }
