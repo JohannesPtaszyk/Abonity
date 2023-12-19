@@ -16,7 +16,7 @@ fun Project.applySpotless() {
                 targetExclude("**/build/**", "**/tmp/**", "**/.gradle/**")
 
                 val ktlintVersion = libs.findVersion("ktlint").get().toString()
-                ktlint(ktlintVersion).userData(mapOf("android" to "true"))
+                ktlint(ktlintVersion).editorConfigOverride(mapOf("android" to "true"))
             }
             format("xml") {
                 target("**/*.xml")

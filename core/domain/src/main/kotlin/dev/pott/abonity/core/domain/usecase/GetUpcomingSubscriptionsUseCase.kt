@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetSubscriptionsWithPeriodPriceUntilEndOfPeriod @Inject constructor(
+class GetUpcomingSubscriptionsUseCase @Inject constructor(
     private val calculator: PaymentInfoCalculator,
     private val getSubscriptionsWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
 ) {
