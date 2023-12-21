@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.ui.components.navigation.AddFloatingActionButton
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailViewModel

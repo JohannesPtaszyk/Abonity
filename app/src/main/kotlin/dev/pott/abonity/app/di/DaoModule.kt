@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.pott.abonity.core.local.db.AppDatabase
-import dev.pott.abonity.core.local.db.SubscriptionDao
+import dev.pott.abonity.core.local.subscription.db.AppDatabase
+import dev.pott.abonity.core.local.subscription.db.SubscriptionDao
 
 @Module
 @InstallIn(SingletonComponent::class)

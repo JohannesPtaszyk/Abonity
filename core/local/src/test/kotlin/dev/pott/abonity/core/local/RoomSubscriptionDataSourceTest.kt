@@ -3,9 +3,10 @@ package dev.pott.abonity.core.local
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import dev.pott.abonity.core.entity.PaymentPeriod
-import dev.pott.abonity.core.entity.PaymentType
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.local.fakes.FakeSubscriptionDao
+import dev.pott.abonity.core.local.subscription.RoomSubscriptionDataSource
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithOneTimePayment
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithPeriodicPayment
 import dev.pott.abonity.core.test.entities.createTestPaymentInfo

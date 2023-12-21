@@ -3,10 +3,10 @@ package dev.pott.abonity.feature.subscription.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pott.abonity.core.domain.PaymentDateCalculator
-import dev.pott.abonity.core.domain.SubscriptionRepository
-import dev.pott.abonity.core.entity.PaymentType
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.domain.subscription.PaymentDateCalculator
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
+import dev.pott.abonity.core.entity.subscription.PaymentType
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

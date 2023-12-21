@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.feature.home.HomeNavigationDestination
-import dev.pott.abonity.feature.settings.SettingsScreenDestination
+import dev.pott.abonity.feature.settings.main.SettingsScreenDestination
 import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
 import dev.pott.abonity.navigation.destination.Destination
 

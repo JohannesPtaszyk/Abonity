@@ -33,5 +33,6 @@ plugins {
     alias(libs.plugins.kover) apply false
     alias(libs.plugins.sonar) apply false
     alias(libs.plugins.compose.compiler.report) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     id("dev.pott.project")
 }

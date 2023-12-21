@@ -1,5 +1,7 @@
 package dev.pott.abonity.core.entity
 
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentType
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestFactory

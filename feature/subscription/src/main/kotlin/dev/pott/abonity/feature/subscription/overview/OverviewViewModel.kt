@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pott.abonity.core.domain.PaymentInfoCalculator
-import dev.pott.abonity.core.domain.usecase.GetSubscriptionsWithPeriodPrice
-import dev.pott.abonity.core.entity.PaymentPeriod
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithPeriodPrice
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

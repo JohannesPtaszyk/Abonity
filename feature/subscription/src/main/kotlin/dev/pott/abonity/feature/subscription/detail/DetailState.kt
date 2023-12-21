@@ -1,7 +1,7 @@
 package dev.pott.abonity.feature.subscription.detail
 
 import androidx.compose.runtime.Immutable
-import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.subscription.Subscription
 import kotlinx.datetime.LocalDate
 
 @Immutable

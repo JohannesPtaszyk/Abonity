@@ -1,8 +1,8 @@
 package dev.pott.abonity.core.test
 
-import dev.pott.abonity.core.domain.SubscriptionRepository
-import dev.pott.abonity.core.entity.Subscription
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
+import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

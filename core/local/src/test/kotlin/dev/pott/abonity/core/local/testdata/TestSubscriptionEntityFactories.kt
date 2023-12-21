@@ -1,8 +1,8 @@
 package dev.pott.abonity.core.local.testdata
 
-import dev.pott.abonity.core.local.db.entities.LocalPaymentPeriod
-import dev.pott.abonity.core.local.db.entities.LocalPaymentType
-import dev.pott.abonity.core.local.db.entities.SubscriptionEntity
+import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentPeriod
+import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentType
+import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionEntity
 
 fun createSubscriptionEntityWithPeriodicPayment(
     id: Long = 1337,

@@ -40,7 +40,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.common.text.DigitsOnlyTextFieldFilter
-import dev.pott.abonity.core.entity.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.rememberFormattedDate
 

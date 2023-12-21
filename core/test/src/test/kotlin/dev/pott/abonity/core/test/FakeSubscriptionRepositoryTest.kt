@@ -2,7 +2,7 @@ package dev.pott.abonity.core.test
 
 import assertk.assertThat
 import assertk.assertions.isSameInstanceAs
-import dev.pott.abonity.core.entity.Subscription
+import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.test.entities.createTestSubscription
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf

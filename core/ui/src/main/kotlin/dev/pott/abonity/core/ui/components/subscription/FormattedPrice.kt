@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.TextUnit
-import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import java.text.NumberFormat
 import java.util.Currency

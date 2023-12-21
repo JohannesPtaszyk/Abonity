@@ -1,7 +1,7 @@
 package dev.pott.abonity.core.local.fakes
 
-import dev.pott.abonity.core.local.db.SubscriptionDao
-import dev.pott.abonity.core.local.db.entities.SubscriptionEntity
+import dev.pott.abonity.core.local.subscription.db.SubscriptionDao
+import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionEntity
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow

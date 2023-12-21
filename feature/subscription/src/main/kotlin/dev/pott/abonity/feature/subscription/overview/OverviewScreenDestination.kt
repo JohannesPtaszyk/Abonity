@@ -6,7 +6,7 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.ui.navigation.AppDeeplink
 import dev.pott.abonity.navigation.destination.ArgumentDestination
 import dev.pott.abonity.navigation.destination.Arguments

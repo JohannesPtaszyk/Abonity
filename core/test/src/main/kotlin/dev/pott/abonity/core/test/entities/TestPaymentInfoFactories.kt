@@ -1,8 +1,8 @@
 package dev.pott.abonity.core.test.entities
 
-import dev.pott.abonity.core.entity.PaymentInfo
-import dev.pott.abonity.core.entity.PaymentType
-import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.subscription.PaymentInfo
+import dev.pott.abonity.core.entity.subscription.PaymentType
+import dev.pott.abonity.core.entity.subscription.Price
 import kotlinx.datetime.LocalDate
 
 fun createTestPaymentInfo(

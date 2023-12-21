@@ -5,7 +5,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination.Args.Companion.NO_SUBSCRIPTION_PASSED_ID
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination.Args.Companion.SUBSCRIPTION_ID_KEY
 import dev.pott.abonity.navigation.destination.ArgumentDestination

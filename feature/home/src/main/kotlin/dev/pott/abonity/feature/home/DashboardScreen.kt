@@ -20,13 +20,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.pott.abonity.core.entity.PaymentInfo
-import dev.pott.abonity.core.entity.PaymentPeriod
-import dev.pott.abonity.core.entity.PaymentType
-import dev.pott.abonity.core.entity.Price
-import dev.pott.abonity.core.entity.Subscription
-import dev.pott.abonity.core.entity.SubscriptionId
-import dev.pott.abonity.core.entity.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.entity.subscription.PaymentInfo
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentType
+import dev.pott.abonity.core.entity.subscription.Price
+import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.text.SectionHeader
@@ -41,7 +41,7 @@ import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 
 @Composable
-fun HomeScreen(
+fun DashboardScreen(
     viewModel: DashboardViewModel,
     openDetails: (id: SubscriptionId) -> Unit,
     openSubscriptions: () -> Unit,
@@ -53,12 +53,12 @@ fun HomeScreen(
         openDetails(selectedId)
         viewModel.consumeSelectedId()
     }
-    HomeScreen(state, viewModel::select, openSubscriptions, modifier)
+    DashboardScreen(state, viewModel::select, openSubscriptions, modifier)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun DashboardScreen(
     state: DashboardState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     onOpenSubscriptionsClick: () -> Unit,
@@ -132,7 +132,7 @@ private fun HomeScreenPreview() {
             "Lorem ipsum dolor sit amet."
 
     AppTheme {
-        HomeScreen(
+        DashboardScreen(
             state = DashboardState(
                 upcomingSubscriptions = buildList {
                     repeat(5) { id ->

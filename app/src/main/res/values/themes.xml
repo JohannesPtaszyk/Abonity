@@ -2,4 +2,5 @@
 <resources>
 
     <style name="Theme.Abonity" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Abonity.OssLicenses" parent="Theme.AppCompat.DayNight" />
 </resources>

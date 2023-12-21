@@ -2,6 +2,7 @@ package dev.pott.abonity.core.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
 import dev.pott.abonity.core.test.FakeSubscriptionLocalDataSource
 import dev.pott.abonity.core.test.entities.createTestSubscription
 import dev.pott.abonity.core.test.entities.createTestSubscriptionList

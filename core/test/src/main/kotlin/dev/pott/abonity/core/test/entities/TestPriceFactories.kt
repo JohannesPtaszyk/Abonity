@@ -1,6 +1,6 @@
 package dev.pott.abonity.core.test.entities
 
-import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.subscription.Price
 import java.util.Currency
 
 fun createTestPrice(

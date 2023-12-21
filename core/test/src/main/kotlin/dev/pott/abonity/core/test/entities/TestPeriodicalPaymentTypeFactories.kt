@@ -1,7 +1,7 @@
 package dev.pott.abonity.core.test.entities
 
-import dev.pott.abonity.core.entity.PaymentPeriod
-import dev.pott.abonity.core.entity.PaymentType
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentType
 
 fun createPeriodicallyPaymentType(
     periodCount: Int = 1,

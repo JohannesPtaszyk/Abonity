@@ -1,8 +1,8 @@
 package dev.pott.abonity.core.test.entities
 
-import dev.pott.abonity.core.entity.PaymentInfo
-import dev.pott.abonity.core.entity.Subscription
-import dev.pott.abonity.core.entity.SubscriptionId
+import dev.pott.abonity.core.entity.subscription.PaymentInfo
+import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import io.github.serpro69.kfaker.Faker
 import kotlinx.datetime.LocalDate
 import java.util.Currency

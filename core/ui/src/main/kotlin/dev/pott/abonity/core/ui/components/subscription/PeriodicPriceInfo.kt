@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextAlign
-import dev.pott.abonity.core.entity.PaymentInfo
-import dev.pott.abonity.core.entity.PaymentPeriod
-import dev.pott.abonity.core.entity.PaymentType
+import dev.pott.abonity.core.entity.subscription.PaymentInfo
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.ui.R
 
 @Composable

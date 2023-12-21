@@ -14,7 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.core.entity.Price
+import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import kotlinx.collections.immutable.ImmutableList
 

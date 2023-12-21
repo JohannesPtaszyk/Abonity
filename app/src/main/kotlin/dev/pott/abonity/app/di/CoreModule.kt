@@ -4,10 +4,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.pott.abonity.core.domain.SubscriptionLocalDataSource
-import dev.pott.abonity.core.domain.SubscriptionRepository
-import dev.pott.abonity.core.domain.SubscriptionRepositoryImpl
-import dev.pott.abonity.core.local.RoomSubscriptionDataSource
+import dev.pott.abonity.core.domain.settings.SettingsLocalDataSource
+import dev.pott.abonity.core.domain.settings.SettingsRepository
+import dev.pott.abonity.core.domain.settings.SettingsRepositoryImpl
+import dev.pott.abonity.core.domain.subscription.SubscriptionLocalDataSource
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
+import dev.pott.abonity.core.local.settings.DataStoreSettingsDataSource
+import dev.pott.abonity.core.local.subscription.RoomSubscriptionDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -19,4 +23,10 @@ interface CoreModule {
     fun bindsSubscriptionLocalDataSource(
         impl: RoomSubscriptionDataSource,
     ): SubscriptionLocalDataSource
+
+    @Binds
+    fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    fun bindDataStoreSettingsDataSource(impl: DataStoreSettingsDataSource): SettingsLocalDataSource
 }

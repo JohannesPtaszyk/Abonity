@@ -83,4 +83,8 @@
     <string name="home_screen_title">Overview</string>
     <string name="home_btn_open_subscriptions">Show all</string>
     <string name="home_upcomming_subscriptions_label">Upcomming Subscriptions</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_oss_item_label">Third Party Licenses</string>
+    <string name="settings_theme_item_label">Theme</string>
+    <string name="settings_period_item_label">Payment Period</string>
 </resources>

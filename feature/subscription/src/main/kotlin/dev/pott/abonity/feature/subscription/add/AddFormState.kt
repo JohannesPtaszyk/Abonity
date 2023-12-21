@@ -1,6 +1,6 @@
 package dev.pott.abonity.feature.subscription.add
 
-import dev.pott.abonity.core.entity.PaymentPeriod
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import java.util.Currency
 import java.util.Locale
 
