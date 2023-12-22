@@ -37,6 +37,10 @@ class SettingsViewModel @Inject constructor(
         updateSettings { it.copy(period = period) }
     }
 
+    fun enableAdaptiveColors(enableAdaptiveColors: Boolean) {
+        updateSettings { it.copy(enableAdaptiveColors = enableAdaptiveColors) }
+    }
+
     private fun updateSettings(transform: (Settings) -> Settings) {
         updateJob?.cancel()
         updateJob = viewModelScope.launch {

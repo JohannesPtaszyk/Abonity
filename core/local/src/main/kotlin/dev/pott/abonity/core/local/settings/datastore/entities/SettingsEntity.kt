@@ -6,8 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SettingsEntity(
-    @SerialName("theme")
-    val theme: LocalTheme = LocalTheme.FOLLOW_SYSTEM,
     @SerialName("paymentPeriod")
     val period: LocalPaymentPeriod = LocalPaymentPeriod.MONTHS,
+    @SerialName("theme")
+    val theme: LocalTheme = LocalTheme.FOLLOW_SYSTEM,
+    @SerialName("enableAdaptiveColors")
+    val enableAdaptiveColors: Boolean = false,
 )

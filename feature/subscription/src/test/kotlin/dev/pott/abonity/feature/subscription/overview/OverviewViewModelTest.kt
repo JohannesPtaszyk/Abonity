@@ -14,8 +14,8 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.entities.createTestSubscription
+import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest

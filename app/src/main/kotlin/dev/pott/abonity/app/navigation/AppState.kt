@@ -9,7 +9,6 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
@@ -37,23 +36,23 @@ fun rememberAppState(navController: NavController): AppState {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navigationItems = remember { NavigationItem.entries.toPersistentList() }
-    val selectedNavigationItem by remember(navBackStackEntry?.destination) {
-        derivedStateOf {
-            navigationItems.find { navigationItem ->
-                navBackStackEntry?.destination?.hierarchy?.find {
-                    navigationItem.destination.route == it.route
-                } != null
-            }
+    val selectedNavigationItem = remember(navBackStackEntry) {
+        navigationItems.find { navigationItem ->
+            navBackStackEntry?.destination?.hierarchy?.find {
+                navigationItem.destination.route == it.route
+            } != null
         }
     }
     return remember(selectedNavigationItem) {
         val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
         val navigationSuiteType = calculateFromAdaptiveInfo(adaptiveInfo)
+        val subscriptionGraphState =
+            calculateSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType)
         AppState(
             navigationSuiteType,
             selected,
             navigationItems,
-            getSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType),
+            subscriptionGraphState,
         )
     }
 }
@@ -87,7 +86,7 @@ private fun WindowAdaptiveInfo.showDrawer(): Boolean {
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
-private fun getSubscriptionGraphState(
+private fun calculateSubscriptionGraphState(
     windowSizeClass: WindowSizeClass,
     navigationSuiteType: NavigationSuiteType,
 ): SubscriptionGraphState {

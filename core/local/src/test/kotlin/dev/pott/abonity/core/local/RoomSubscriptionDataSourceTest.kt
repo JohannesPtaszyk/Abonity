@@ -9,8 +9,8 @@ import dev.pott.abonity.core.local.fakes.FakeSubscriptionDao
 import dev.pott.abonity.core.local.subscription.RoomSubscriptionDataSource
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithOneTimePayment
 import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithPeriodicPayment
-import dev.pott.abonity.core.test.entities.createTestPaymentInfo
-import dev.pott.abonity.core.test.entities.createTestSubscription
+import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 

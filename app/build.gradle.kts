@@ -36,8 +36,6 @@ android {
 }
 
 dependencies {
-    ksp(libs.hilt.compiler)
-
     implementation(projects.core.local)
     implementation(projects.core.domain)
     implementation(projects.core.entity)
@@ -60,20 +58,24 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window.manager)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.testManifest)
+    testImplementation(projects.core.test)
+    testImplementation(projects.common.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 
     testImplementation(platform(libs.junit.bom))
-    testRuntimeOnly(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.assertk)
 
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }

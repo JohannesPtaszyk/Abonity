@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.domain.subscription.PaymentDateCalculator
 import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.entities.createTestSubscriptionList
+import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscriptionList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate

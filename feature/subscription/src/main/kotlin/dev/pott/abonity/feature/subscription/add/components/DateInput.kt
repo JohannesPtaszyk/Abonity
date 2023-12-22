@@ -43,6 +43,7 @@ import dev.pott.abonity.common.text.DigitsOnlyTextFieldFilter
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.rememberFormattedDate
+import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,7 +197,7 @@ private fun PeriodDropDown(
         TextField(
             readOnly = true,
             value = period?.let {
-                val textRes = getPaymentPeriodPluralRes(it = it)
+                val textRes = paymentPeriodPluralRes(it = it)
                 pluralStringResource(id = textRes, currentPeriodCount ?: 0)
             }.orEmpty(),
             onValueChange = {},
@@ -219,7 +220,7 @@ private fun PeriodDropDown(
             PaymentPeriod.entries.forEach {
                 ListItem(
                     headlineContent = {
-                        val textRes = getPaymentPeriodPluralRes(it)
+                        val textRes = paymentPeriodPluralRes(it)
                         Text(text = pluralStringResource(id = textRes, currentPeriodCount ?: 0))
                     },
                     modifier = Modifier.clickable(
@@ -232,15 +233,4 @@ private fun PeriodDropDown(
             }
         }
     }
-}
-
-@Composable
-private fun getPaymentPeriodPluralRes(it: PaymentPeriod): Int {
-    val textRes = when (it) {
-        PaymentPeriod.DAYS -> R.plurals.payment_period_dropdown_days
-        PaymentPeriod.WEEKS -> R.plurals.payment_period_dropdown_weeks
-        PaymentPeriod.MONTHS -> R.plurals.payment_period_dropdown_months
-        PaymentPeriod.YEARS -> R.plurals.payment_period_dropdown_years
-    }
-    return textRes
 }

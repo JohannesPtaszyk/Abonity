@@ -1,4 +1,4 @@
-package dev.pott.abonity.core.test
+package dev.pott.abonity.core.test.subscription
 
 import dev.pott.abonity.core.domain.subscription.SubscriptionLocalDataSource
 import dev.pott.abonity.core.entity.subscription.Subscription

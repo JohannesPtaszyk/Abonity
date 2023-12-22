@@ -3,9 +3,9 @@ package dev.pott.abonity.core.domain
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
-import dev.pott.abonity.core.test.FakeSubscriptionLocalDataSource
-import dev.pott.abonity.core.test.entities.createTestSubscription
-import dev.pott.abonity.core.test.entities.createTestSubscriptionList
+import dev.pott.abonity.core.test.subscription.FakeSubscriptionLocalDataSource
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscriptionList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

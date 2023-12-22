@@ -10,6 +10,8 @@ import dev.pott.abonity.feature.subscription.overview.OverviewScreenDestination
 import dev.pott.abonity.feature.subscription.subscriptionGraph
 import dev.pott.abonity.navigation.destination.setDestination
 
+private const val OSS_LICENSE_ACTIVITY_ROUTE = "ossLicenses"
+
 fun NavGraphBuilder.appNavGraph(state: AppState, navController: NavController) {
     homeGraph(
         openDetails = { subscriptionId ->
@@ -24,8 +26,6 @@ fun NavGraphBuilder.appNavGraph(state: AppState, navController: NavController) {
         openSubscriptions = { navController.navigateTabItem(NavigationItem.SUBSCRIPTION) },
     )
     subscriptionGraph(state.subscriptionGraphState, navController)
-    settingsNavGraph(openOssLicenses = { navController.navigate("ossLicenses") })
-    activity("ossLicenses") {
-        activityClass = OssLicensesMenuActivity::class
-    }
+    settingsNavGraph(openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) })
+    activity(OSS_LICENSE_ACTIVITY_ROUTE) { activityClass = OssLicensesMenuActivity::class }
 }

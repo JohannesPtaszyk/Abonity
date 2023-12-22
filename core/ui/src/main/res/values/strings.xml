@@ -87,4 +87,8 @@
     <string name="settings_oss_item_label">Third Party Licenses</string>
     <string name="settings_theme_item_label">Theme</string>
     <string name="settings_period_item_label">Payment Period</string>
+    <string name="settings_adaptive_colors_item_label">Adaptive Colors</string>
+    <string name="settings_theme_follow_system">Follow System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
 </resources>

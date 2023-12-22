@@ -16,14 +16,15 @@ class DataStoreSettingsDataSource @Inject constructor(
     private val dataStore: DataStore<SettingsEntity>,
 ) : SettingsLocalDataSource {
     override fun getSettingsFlow(): Flow<Settings> {
-        return dataStore.data.map {
+        return dataStore.data.map { settingsEntity ->
             Settings(
-                theme = when (it.theme) {
+                period = settingsEntity.period.toDomain(),
+                theme = when (settingsEntity.theme) {
                     LocalTheme.FOLLOW_SYSTEM -> Theme.FOLLOW_SYSTEM
                     LocalTheme.LIGHT -> Theme.LIGHT
                     LocalTheme.DARK -> Theme.DARK
                 },
-                period = it.period.toDomain(),
+                enableAdaptiveColors = settingsEntity.enableAdaptiveColors,
             )
         }
     }
@@ -37,6 +38,7 @@ class DataStoreSettingsDataSource @Inject constructor(
                     Theme.LIGHT -> LocalTheme.LIGHT
                     Theme.DARK -> LocalTheme.DARK
                 },
+                enableAdaptiveColors = settings.enableAdaptiveColors,
             )
         }
     }

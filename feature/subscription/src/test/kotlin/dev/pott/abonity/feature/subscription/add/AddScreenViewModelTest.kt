@@ -8,9 +8,9 @@ import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.entities.createTestPaymentInfo
-import dev.pott.abonity.core.test.entities.createTestSubscription
+import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
+import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
+import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runCurrent

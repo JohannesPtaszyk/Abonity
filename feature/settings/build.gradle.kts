@@ -9,21 +9,24 @@ android {
 
 dependencies {
     implementation(projects.navigation)
-    implementation(projects.core.ui)
     implementation(projects.core.domain)
+    implementation(projects.core.ui)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.lifecycle.runtimeCompose)
 
+    testImplementation(projects.common.test)
+    testImplementation(projects.core.test)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
