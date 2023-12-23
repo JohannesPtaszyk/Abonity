@@ -45,7 +45,7 @@ import java.util.Currency
 fun AddScreen(
     close: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddScreenViewModel = hiltViewModel(),
+    viewModel: AddViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.savingState) {
@@ -90,7 +90,11 @@ fun AddScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    val title = stringResource(id = R.string.add_subscription_title)
+                    val title = if (state.showNameAsTitle) {
+                        state.input.name
+                    } else {
+                        stringResource(id = R.string.add_subscription_title)
+                    }
                     Text(title)
                 },
                 navigationIcon = {
@@ -160,9 +164,9 @@ fun AddScreen(
 private fun AddScreenPreview() {
     AddScreen(
         state = AddState(
-            AddFormState(Clock.System.now().toEpochMilliseconds()),
-            AddState.SavingState.IDLE,
-            false,
+            input = AddFormState(Clock.System.now().toEpochMilliseconds()),
+            savingState = AddState.SavingState.IDLE,
+            loading = false,
         ),
         onPaymentDateChanged = {},
         onNameChanged = {},

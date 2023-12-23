@@ -1,6 +1,7 @@
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -34,7 +35,7 @@ fun OverviewScreenWithDetails(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
-    Row(modifier = modifier) {
+    Row(modifier = modifier.fillMaxSize()) {
         OverviewScreen(
             state = overviewState,
             onSubscriptionClick = {

@@ -76,14 +76,21 @@ fun DateInput(
         Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            OutlinedButton(onClick = { onIsPeriodicChanged(true) }) {
+            OutlinedButton(
+                onClick = { onIsPeriodicChanged(true) },
+                modifier = Modifier.weight(1f),
+            ) {
                 if (isPeriodic) {
                     Icon(rememberVectorPainter(image = AppIcons.Check), null)
                     Spacer(Modifier.width(8.dp))
                 }
                 Text(text = stringResource(id = R.string.subscription_add_btn_periodic))
             }
-            OutlinedButton(onClick = { onIsPeriodicChanged(false) }) {
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedButton(
+                onClick = { onIsPeriodicChanged(false) },
+                modifier = Modifier.weight(1f),
+            ) {
                 if (!isPeriodic) {
                     Icon(rememberVectorPainter(image = AppIcons.Check), null)
                     Spacer(Modifier.width(8.dp))
@@ -173,10 +180,10 @@ private fun PeriodicInput(
                     Text(text = stringResource(id = R.string.subscription_add_label_period_count))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.weight(weight = 0.6f),
+                modifier = Modifier.weight(weight = 0.4f),
             )
             Spacer(Modifier.width(8.dp))
-            PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(1f))
+            PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(0.6f))
         }
     }
 }
@@ -204,6 +211,7 @@ private fun PeriodDropDown(
             onValueChange = {},
             label = { Text(text = stringResource(id = R.string.subscription_add_label_period)) },
             modifier = Modifier
+                .fillMaxWidth()
                 .menuAnchor()
                 .clickable(
                     role = Role.Button,

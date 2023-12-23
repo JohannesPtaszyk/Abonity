@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
-class AddScreenViewModelTest {
+class AddViewModelTest {
 
     @BeforeEach
     fun setUp() {
@@ -45,7 +45,7 @@ class AddScreenViewModelTest {
             val savedStateHandle = SavedStateHandle(
                 mapOf(AddScreenDestination.Args.SUBSCRIPTION_ID_KEY to subscription.id.value),
             )
-            val tested = AddScreenViewModel(savedStateHandle, FakeClock(), repository)
+            val tested = AddViewModel(savedStateHandle, FakeClock(), repository)
 
             tested.state.test {
                 runCurrent()
@@ -53,6 +53,7 @@ class AddScreenViewModelTest {
                 assertThat(awaitItem()).isEqualTo(AddState(loading = true))
                 assertThat(awaitItem()).isEqualTo(
                     AddState(
+                        showNameAsTitle = true,
                         input = AddFormState(
                             paymentDateEpochMillis = TimeUnit.DAYS.toMillis(
                                 LocalDate(
@@ -80,7 +81,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPrice with dot THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             tested.state.test {
                 val priceValue = "9.99"
@@ -97,7 +98,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPrice with comma THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             tested.state.test {
                 val priceValue = "9,99"
@@ -114,7 +115,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPeriodic true THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             tested.state.test {
                 tested.setPeriodic(true)
@@ -130,7 +131,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPeriodic false THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             tested.state.test {
                 tested.setPeriodic(false)
@@ -146,7 +147,7 @@ class AddScreenViewModelTest {
     fun `GIVEN no input WHEN setPaymentPeriodCount empty THEN input state is updated`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             tested.state.test {
                 tested.setPaymentPeriodCount("")
@@ -166,7 +167,7 @@ class AddScreenViewModelTest {
             ) {
                 runTest {
                     val repository = FakeSubscriptionRepository()
-                    val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+                    val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
                     tested.state.test {
                         val period = PaymentPeriod.WEEKS
@@ -184,7 +185,7 @@ class AddScreenViewModelTest {
     fun `GIVEN full periodic input WHEN save THEN periodic subscription is created`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()
@@ -244,7 +245,7 @@ class AddScreenViewModelTest {
     fun `GIVEN full one time input WHEN save THEN periodic subscription is created`() {
         runTest {
             val repository = FakeSubscriptionRepository()
-            val tested = AddScreenViewModel(SavedStateHandle(), FakeClock(), repository)
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
             val now = FakeClock().now()
             val nowEpochMilliseconds = now.toEpochMilliseconds()

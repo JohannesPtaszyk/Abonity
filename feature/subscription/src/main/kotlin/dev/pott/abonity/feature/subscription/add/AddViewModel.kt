@@ -10,6 +10,7 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
@@ -29,9 +31,9 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
-class AddScreenViewModel @Inject constructor(
+class AddViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    clock: Clock,
+    private val clock: Clock,
     private val repository: SubscriptionRepository,
 ) : ViewModel() {
 
@@ -73,14 +75,19 @@ class AddScreenViewModel @Inject constructor(
             savingState,
             loadingState,
         ) { prefilledInputState, saving, loading ->
-            AddState(prefilledInputState, saving, loading)
+            AddState(
+                showNameAsTitle = true,
+                input = prefilledInputState,
+                savingState = saving,
+                loading = loading,
+            )
         }
     } else {
         combine(
             inputState,
             savingState,
         ) { input, saving ->
-            AddState(input, saving, false)
+            AddState(input = input, savingState = saving, loading = false)
         }
     }.stateIn(
         viewModelScope,
@@ -126,28 +133,38 @@ class AddScreenViewModel @Inject constructor(
             val input = inputState.value
             val priceValue = parsePriceValue(input.priceValue)
             val price = Price(priceValue, input.currency)
-            val date = Instant.fromEpochMilliseconds(input.paymentDateEpochMillis!!)
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date
+            val date = calculateDate(input)
+            val paymentType = if (input.isOneTimePayment) {
+                PaymentType.OneTime
+            } else {
+                PaymentType.Periodic(
+                    input.paymentPeriodCount!!,
+                    input.paymentPeriod!!,
+                )
+            }
+            val paymentInfo = PaymentInfo(
+                price = price,
+                firstPayment = date,
+                type = paymentType,
+            )
             val subscription = Subscription(
+                id = args.subscriptionId ?: SubscriptionId.none(),
                 name = input.name,
                 description = input.description,
-                paymentInfo = PaymentInfo(
-                    price = price,
-                    firstPayment = date,
-                    type = if (input.isOneTimePayment) {
-                        PaymentType.OneTime
-                    } else {
-                        PaymentType.Periodic(
-                            input.paymentPeriodCount!!,
-                            input.paymentPeriod!!,
-                        )
-                    },
-                ),
+                paymentInfo = paymentInfo,
             )
             repository.addOrUpdateSubscription(subscription)
             savingState.value = AddState.SavingState.SAVED
         }
+    }
+
+    private fun calculateDate(input: AddFormState): LocalDate {
+        val instant = if (input.paymentDateEpochMillis != null) {
+            Instant.fromEpochMilliseconds(input.paymentDateEpochMillis)
+        } else {
+            clock.now()
+        }
+        return instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
     private fun parsePriceValue(value: String): Double {

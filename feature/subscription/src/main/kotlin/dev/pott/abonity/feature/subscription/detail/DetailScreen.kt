@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription.detail
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -57,103 +60,125 @@ fun DetailScreen(
     onEditClick: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val subscription = state.subscription
-    if (subscription == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
+    AnimatedContent(
+        targetState = state.subscription,
+        label = "detail_subscription_animation",
+        modifier = modifier.fillMaxSize(),
+    ) { subscription ->
+        if (subscription == null) {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ghost),
+                        contentDescription = null,
+                        modifier = Modifier.size(96.dp),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = stringResource(id = R.string.subscription_detail_empty_label),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            return@AnimatedContent
         }
-        return
-    }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = state.subscription.name)
-                },
-                navigationIcon = {
-                    BackButton(close)
-                },
-                actions = {
-                    IconButton(onClick = { onEditClick(subscription.id) }) {
-                        Icon(
-                            painter = rememberVectorPainter(image = AppIcons.Edit),
-                            contentDescription = stringResource(
-                                id = R.string.subscription_detail_edit_label,
-                                subscription.name,
-                            ),
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    ) { paddingValues ->
-        val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(paddingValues),
-        ) {
-            PaymentInfoCard(
-                subscription.paymentInfo,
-                Modifier.padding(horizontal = 16.dp),
-            )
-            Spacer(Modifier.height(16.dp))
-            Divider()
-            ListItem(
-                headlineContent = {
-                    Text(text = subscription.name)
-                },
-                overlineContent = {
-                    Text(text = stringResource(id = R.string.subscription_detail_name_label))
-                },
-            )
-            Divider()
-            ListItem(
-                headlineContent = {
-                    Text(text = subscription.description)
-                },
-                overlineContent = {
-                    Text(text = stringResource(id = R.string.subscription_detail_description_label))
-                },
-            )
-            Divider()
-            ListItem(
-                headlineContent = {
-                    FormattedDate(date = subscription.paymentInfo.firstPayment)
-                },
-                overlineContent = {
-                    Text(text = stringResource(id = R.string.subscription_first_payment_date_label))
-                },
-            )
-            state.nextPayment?.let { nextPayment ->
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = subscription.name) },
+                    navigationIcon = { BackButton(close) },
+                    actions = {
+                        IconButton(onClick = { onEditClick(subscription.id) }) {
+                            Icon(
+                                painter = rememberVectorPainter(image = AppIcons.Edit),
+                                contentDescription = stringResource(
+                                    id = R.string.subscription_detail_edit_label,
+                                    subscription.name,
+                                ),
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            },
+            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        ) { paddingValues ->
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(paddingValues),
+            ) {
+                PaymentInfoCard(
+                    subscription.paymentInfo,
+                    Modifier.padding(horizontal = 16.dp),
+                )
+                Spacer(Modifier.height(16.dp))
                 Divider()
                 ListItem(
                     headlineContent = {
-                        FormattedDate(date = nextPayment)
+                        Text(text = subscription.name)
+                    },
+                    overlineContent = {
+                        Text(text = stringResource(id = R.string.subscription_detail_name_label))
+                    },
+                )
+                Divider()
+                ListItem(
+                    headlineContent = {
+                        Text(text = subscription.description)
                     },
                     overlineContent = {
                         Text(
                             text = stringResource(
-                                id = R.string.subscription_next_payment_date_label,
+                                id = R.string.subscription_detail_description_label,
                             ),
                         )
                     },
                 )
+                Divider()
+                ListItem(
+                    headlineContent = {
+                        FormattedDate(date = subscription.paymentInfo.firstPayment)
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_first_payment_date_label,
+                            ),
+                        )
+                    },
+                )
+                state.nextPayment?.let { nextPayment ->
+                    Divider()
+                    ListItem(
+                        headlineContent = {
+                            FormattedDate(date = nextPayment)
+                        },
+                        overlineContent = {
+                            Text(
+                                text = stringResource(
+                                    id = R.string.subscription_next_payment_date_label,
+                                ),
+                            )
+                        },
+                    )
+                }
+                Divider()
+                ListItem(
+                    headlineContent = {
+                        Text(text = subscription.id.value.toString())
+                    },
+                    overlineContent = {
+                        Text(text = stringResource(id = R.string.subscription_id_label))
+                    },
+                )
             }
-            Divider()
-            ListItem(
-                headlineContent = {
-                    Text(text = subscription.id.value.toString())
-                },
-                overlineContent = {
-                    Text(text = stringResource(id = R.string.subscription_id_label))
-                },
-            )
         }
     }
 }
