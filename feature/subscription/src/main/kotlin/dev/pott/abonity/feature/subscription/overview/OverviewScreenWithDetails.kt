@@ -1,11 +1,8 @@
 package dev.pott.abonity.feature.subscription.overview
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.ThreePaneScaffoldState
-import androidx.compose.material3.adaptive.calculateListDetailPaneScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
@@ -27,7 +24,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun OverviewScreenWithDetails(
     overviewState: OverviewState,
@@ -36,36 +32,29 @@ fun OverviewScreenWithDetails(
     onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
     modifier: Modifier = Modifier,
-    scaffoldState: ThreePaneScaffoldState = calculateListDetailPaneScaffoldState(),
     listState: LazyListState = rememberLazyListState(),
 ) {
-    ListDetailPaneScaffold(
-        modifier = modifier,
-        scaffoldState = scaffoldState,
-        listPane = {
-            OverviewScreen(
-                state = overviewState,
-                onSubscriptionClick = {
-                    onSubscriptionClicked(it)
-                },
-                listState = listState,
-            )
-        },
-        detailPane = {
-            if (overviewState.detailId != null) {
-                DetailScreen(
-                    state = detailState,
-                    close = {
-                        closeDetails()
-                    },
-                    onEditClick = onEditClick,
-                )
-            }
-        },
-    )
+    Row(modifier = modifier) {
+        OverviewScreen(
+            state = overviewState,
+            onSubscriptionClick = {
+                onSubscriptionClicked(it)
+            },
+            listState = listState,
+            modifier = Modifier.weight(1f),
+        )
+
+        DetailScreen(
+            state = detailState,
+            close = {
+                closeDetails()
+            },
+            onEditClick = onEditClick,
+            modifier = Modifier.weight(1f),
+        )
+    }
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Suppress("MagicNumber")
 @Composable
 @PreviewCommonScreenConfig

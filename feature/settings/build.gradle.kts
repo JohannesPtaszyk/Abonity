@@ -17,7 +17,6 @@ dependencies {
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowSizeClass)
-    implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.lifecycle.runtimeCompose)
 
     testImplementation(projects.common.test)

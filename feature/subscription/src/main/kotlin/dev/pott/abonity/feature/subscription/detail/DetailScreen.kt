@@ -1,6 +1,7 @@
 package dev.pott.abonity.feature.subscription.detail
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,10 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -57,27 +57,34 @@ fun DetailScreen(
     onEditClick: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val subscription = state.subscription
+    if (subscription == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+        }
+        return
+    }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = state.subscription?.name.orEmpty())
+                    Text(text = state.subscription.name)
                 },
                 navigationIcon = {
                     BackButton(close)
                 },
                 actions = {
-                    state.subscription?.let { subscription ->
-                        IconButton(onClick = { onEditClick(subscription.id) }) {
-                            Icon(
-                                painter = rememberVectorPainter(image = AppIcons.Edit),
-                                contentDescription = stringResource(
-                                    id = R.string.subscription_detail_edit_label,
-                                    subscription.name,
-                                ),
-                            )
-                        }
+                    IconButton(onClick = { onEditClick(subscription.id) }) {
+                        Icon(
+                            painter = rememberVectorPainter(image = AppIcons.Edit),
+                            contentDescription = stringResource(
+                                id = R.string.subscription_detail_edit_label,
+                                subscription.name,
+                            ),
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -86,7 +93,6 @@ fun DetailScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         val scrollState = rememberScrollState()
-        val subscription = state.subscription ?: return@Scaffold
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
@@ -97,7 +103,7 @@ fun DetailScreen(
                 Modifier.padding(horizontal = 16.dp),
             )
             Spacer(Modifier.height(16.dp))
-            HorizontalDivider()
+            Divider()
             ListItem(
                 headlineContent = {
                     Text(text = subscription.name)
@@ -106,7 +112,7 @@ fun DetailScreen(
                     Text(text = stringResource(id = R.string.subscription_detail_name_label))
                 },
             )
-            HorizontalDivider()
+            Divider()
             ListItem(
                 headlineContent = {
                     Text(text = subscription.description)
@@ -115,7 +121,7 @@ fun DetailScreen(
                     Text(text = stringResource(id = R.string.subscription_detail_description_label))
                 },
             )
-            HorizontalDivider()
+            Divider()
             ListItem(
                 headlineContent = {
                     FormattedDate(date = subscription.paymentInfo.firstPayment)
@@ -125,7 +131,7 @@ fun DetailScreen(
                 },
             )
             state.nextPayment?.let { nextPayment ->
-                HorizontalDivider()
+                Divider()
                 ListItem(
                     headlineContent = {
                         FormattedDate(date = nextPayment)
@@ -139,7 +145,7 @@ fun DetailScreen(
                     },
                 )
             }
-            HorizontalDivider()
+            Divider()
             ListItem(
                 headlineContent = {
                     Text(text = subscription.id.value.toString())

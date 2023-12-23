@@ -1,10 +1,5 @@
 package dev.pott.abonity.app.navigation
 
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
-import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -18,22 +13,16 @@ import dev.pott.abonity.feature.subscription.SubscriptionGraphState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
-@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 data class AppState(
-    val navigationType: NavigationSuiteType,
+    val navigationType: NavigationType,
     val selectedNavigationItem: NavigationItem,
     val navigationItems: ImmutableList<NavigationItem>,
     val subscriptionGraphState: SubscriptionGraphState,
 )
 
-@OptIn(
-    ExperimentalMaterial3AdaptiveApi::class,
-    ExperimentalMaterial3AdaptiveNavigationSuiteApi::class,
-)
 @Suppress("SpreadOperator")
 @Composable
-fun rememberAppState(navController: NavController): AppState {
-    val adaptiveInfo = currentWindowAdaptiveInfo()
+fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeClass): AppState {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val navigationItems = remember { NavigationItem.entries.toPersistentList() }
     val selectedNavigationItem = remember(navBackStackEntry) {
@@ -45,9 +34,8 @@ fun rememberAppState(navController: NavController): AppState {
     }
     return remember(selectedNavigationItem) {
         val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
-        val navigationSuiteType = calculateFromAdaptiveInfo(adaptiveInfo)
-        val subscriptionGraphState =
-            calculateSubscriptionGraphState(adaptiveInfo.windowSizeClass, navigationSuiteType)
+        val navigationSuiteType = calculateFromAdaptiveInfo(windowSizeClass)
+        val subscriptionGraphState = calculateSubscriptionGraphState(windowSizeClass)
         AppState(
             navigationSuiteType,
             selected,
@@ -57,42 +45,27 @@ fun rememberAppState(navController: NavController): AppState {
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3AdaptiveNavigationSuiteApi::class,
-    ExperimentalMaterial3AdaptiveApi::class,
-)
-private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
+private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowSizeClass): NavigationType {
     return with(adaptiveInfo) {
         if (showNavigationBar()) {
-            NavigationSuiteType.NavigationBar
-        } else if (showDrawer()) {
-            NavigationSuiteType.NavigationDrawer
+            NavigationType.NAVIGATION_BAR
         } else {
-            NavigationSuiteType.NavigationRail
+            NavigationType.NAVIGATION_RAIL
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun WindowAdaptiveInfo.showNavigationBar(): Boolean {
-    return windowPosture.isTabletop ||
-        windowSizeClass.heightSizeClass == WindowHeightSizeClass.Medium
+private fun WindowSizeClass.showNavigationBar(): Boolean {
+    return heightSizeClass == WindowHeightSizeClass.Medium
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun WindowAdaptiveInfo.showDrawer(): Boolean {
-    return windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
-        windowSizeClass.heightSizeClass == WindowHeightSizeClass.Expanded
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 private fun calculateSubscriptionGraphState(
     windowSizeClass: WindowSizeClass,
-    navigationSuiteType: NavigationSuiteType,
+    // navigationSuiteType: NavigationType,
 ): SubscriptionGraphState {
     val twoPane = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
     return SubscriptionGraphState(
         showOverviewAsMultiColumn = twoPane,
-        showAddFloatingActionButton = navigationSuiteType == NavigationSuiteType.NavigationBar,
+        // showAddFloatingActionButton = navigationSuiteType == NavigationType.NAVIGATION_BAR,
     )
 }

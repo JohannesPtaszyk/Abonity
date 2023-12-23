@@ -8,7 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -23,12 +24,12 @@ import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel by viewModels<MainActivityViewModel>()
 
+    @ExperimentalMaterial3WindowSizeClassApi
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -69,11 +70,9 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
-            AppTheme(
-                isDarkTheme,
-                shouldUseSystemTheme(state = mainState),
-            ) {
-                App()
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
+            AppTheme(isDarkTheme, shouldUseSystemTheme(state = mainState)) {
+                App(windowSizeClass)
             }
         }
     }

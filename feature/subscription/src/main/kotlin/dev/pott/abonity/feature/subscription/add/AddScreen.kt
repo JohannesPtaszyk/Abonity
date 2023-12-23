@@ -1,17 +1,19 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package dev.pott.abonity.feature.subscription.add
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -126,7 +128,7 @@ fun AddScreen(
                         Modifier.fillMaxWidth(),
                     )
                 }
-                item { HorizontalDivider() }
+                item { Divider() }
                 item {
                     DateInput(
                         isPeriodic = !state.input.isOneTimePayment,
@@ -140,7 +142,7 @@ fun AddScreen(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                item { HorizontalDivider() }
+                item { Divider() }
                 item {
                     DescriptionInput(
                         state.input.description,

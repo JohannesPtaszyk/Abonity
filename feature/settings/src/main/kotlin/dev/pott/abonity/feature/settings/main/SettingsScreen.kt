@@ -4,13 +4,9 @@ import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.rounded.BrightnessMedium
-import androidx.compose.material.icons.rounded.CalendarViewMonth
-import androidx.compose.material.icons.rounded.ColorLens
-import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
@@ -196,7 +192,7 @@ fun SettingsScreen(
                         }
                     }
                 }
-                item { HorizontalDivider() }
+                item { Divider() }
                 item {
                     ListItem(
                         headlineContent = {

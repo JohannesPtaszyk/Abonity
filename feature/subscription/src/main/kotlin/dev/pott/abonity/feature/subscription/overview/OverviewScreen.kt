@@ -1,6 +1,10 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +34,7 @@ import dev.pott.abonity.core.ui.components.subscription.PriceOverview
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
+import dev.pott.abonity.core.ui.util.plus
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -43,7 +48,6 @@ fun OverviewScreen(
     state: OverviewState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
-    floatingActionButton: @Composable () -> Unit = {},
     listState: LazyListState = rememberLazyListState(),
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -55,10 +59,9 @@ fun OverviewScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        floatingActionButton = floatingActionButton,
     ) { paddingValues ->
         LazyColumn(
-            contentPadding = paddingValues,
+            contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             state = listState,

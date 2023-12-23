@@ -1,63 +1,118 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package dev.pott.abonity.app
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigation.suite.ExperimentalMaterial3AdaptiveNavigationSuiteApi
-import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigation.suite.NavigationSuiteType
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.pott.abonity.app.navigation.NavigationItem
+import dev.pott.abonity.app.navigation.NavigationType
 import dev.pott.abonity.app.navigation.appNavGraph
 import dev.pott.abonity.app.navigation.components.NavigationIcon
 import dev.pott.abonity.app.navigation.navigateTabItem
 import dev.pott.abonity.app.navigation.rememberAppState
+import dev.pott.abonity.core.ui.components.navigation.AddFloatingActionButton
+import dev.pott.abonity.core.ui.util.minus
+import dev.pott.abonity.feature.subscription.add.AddScreenDestination
 
 @Composable
-@OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
-fun App() {
+fun App(windowSizeClass: WindowSizeClass, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val appState = rememberAppState(navController)
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            appState.navigationItems.forEach {
-                item(
-                    selected = appState.selectedNavigationItem == it,
-                    onClick = {
-                        navController.navigateTabItem(
-                            it,
-                            appState.selectedNavigationItem == it,
+    val appState = rememberAppState(navController, windowSizeClass)
+    val startRoute = remember { NavigationItem.entries.first().destination.route }
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
+                BottomAppBar {
+                    appState.navigationItems.forEach {
+                        NavigationBarItem(
+                            selected = appState.selectedNavigationItem == it,
+                            onClick = {
+                                navController.navigateTabItem(
+                                    it,
+                                    appState.selectedNavigationItem == it,
+                                )
+                            },
+                            label = { Text(stringResource(id = it.titleRes)) },
+                            icon = { NavigationIcon(navigationItem = it) },
                         )
-                    },
-                    label = { Text(stringResource(id = it.titleRes)) },
-                    icon = { NavigationIcon(navigationItem = it) },
+                    }
+                }
+            }
+        },
+        floatingActionButton = {
+            if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
+                AddFloatingActionButton(
+                    onClick = { navController.navigate(AddScreenDestination.route) },
+                    expanded = false,
                 )
             }
         },
-        layoutType = appState.navigationType,
-    ) {
-        val startRoute = remember {
-            NavigationItem.entries.first().destination.route
-        }
-        NavHost(
-            navController = navController,
-            startDestination = startRoute,
-            modifier = if (appState.navigationType == NavigationSuiteType.NavigationBar) {
-                Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+        contentWindowInsets = if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
+            WindowInsets(0, 0, 0, 0)
+        } else {
+            ScaffoldDefaults.contentWindowInsets
+        },
+    ) { paddingValues ->
+        Row(
+            modifier = if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
+                Modifier.padding(paddingValues - WindowInsets.navigationBars.asPaddingValues())
             } else {
-                Modifier
+                Modifier.padding(paddingValues)
             },
         ) {
-            appNavGraph(
-                appState,
-                navController,
-            )
+            if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {
+                NavigationRail {
+                    AddFloatingActionButton(
+                        onClick = { navController.navigate(AddScreenDestination.route) },
+                        expanded = false,
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    appState.navigationItems.forEach {
+                        NavigationRailItem(
+                            selected = appState.selectedNavigationItem == it,
+                            onClick = {
+                                navController.navigateTabItem(
+                                    it,
+                                    appState.selectedNavigationItem == it,
+                                )
+                            },
+                            label = { Text(stringResource(id = it.titleRes)) },
+                            icon = { NavigationIcon(navigationItem = it) },
+                        )
+                    }
+                }
+            }
+            NavHost(
+                navController = navController,
+                startDestination = startRoute,
+            ) {
+                appNavGraph(
+                    appState,
+                    navController,
+                )
+            }
         }
     }
 }

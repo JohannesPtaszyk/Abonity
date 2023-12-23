@@ -21,12 +21,8 @@ fun NavGraphBuilder.subscriptionGraph(
         composable(OverviewScreenDestination) {
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
-                showAddFloatingActionButton = state.showAddFloatingActionButton,
                 onEditClick = {
                     navController.navigateToAddScreen(it)
-                },
-                onAddClick = {
-                    navController.navigateToAddScreen()
                 },
             )
         }
