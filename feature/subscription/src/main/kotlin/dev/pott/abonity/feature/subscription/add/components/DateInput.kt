@@ -183,7 +183,7 @@ private fun PeriodicInput(
                 modifier = Modifier.weight(weight = 0.4f),
             )
             Spacer(Modifier.width(8.dp))
-            PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(0.6f))
+            PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(weight = 0.6f))
         }
     }
 }

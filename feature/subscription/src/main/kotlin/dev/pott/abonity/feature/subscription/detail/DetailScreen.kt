@@ -67,7 +67,7 @@ fun DetailScreen(
     ) { subscription ->
         if (subscription == null) {
             Box(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -106,7 +106,7 @@ fun DetailScreen(
                     scrollBehavior = scrollBehavior,
                 )
             },
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             val scrollState = rememberScrollState()
             Column(

@@ -20,18 +20,18 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PriceOverview(
-    periodPrices: ImmutableList<Price>,
+    prices: ImmutableList<Price>,
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        SectionHeader(Modifier.padding(horizontal = 16.dp)) { title() }
-        Spacer(Modifier.height(8.dp))
+        SectionHeader(Modifier) { title() }
+        Spacer(Modifier.height(4.dp))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(periodPrices) {
+            items(prices) {
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,

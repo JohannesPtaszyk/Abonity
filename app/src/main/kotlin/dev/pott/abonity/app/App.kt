@@ -79,7 +79,7 @@ fun App(windowSizeClass: WindowSizeClass, modifier: Modifier = Modifier) {
             modifier = if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
                 Modifier.padding(paddingValues - WindowInsets.navigationBars.asPaddingValues())
             } else {
-                Modifier.padding(paddingValues)
+                Modifier
             },
         ) {
             if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {
