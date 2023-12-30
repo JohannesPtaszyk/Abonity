@@ -2,6 +2,7 @@ plugins {
     id("dev.pott.android.app")
     id("dev.pott.hilt")
     id("dev.pott.android.room")
+    id(libs.plugins.gms.get().pluginId)
 }
 
 android {
@@ -57,6 +58,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window.manager)
     implementation(libs.androidx.core.splashscreen)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.cloud.messaging)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.inapp.messaging)
     implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)

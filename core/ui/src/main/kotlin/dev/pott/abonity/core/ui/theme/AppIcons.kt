@@ -12,6 +12,7 @@ import androidx.compose.material.icons.rounded.CreditCard
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Settings
 
@@ -29,4 +30,5 @@ object AppIcons {
     val Home = Icons.Rounded.Home
     val Save = Icons.Rounded.Save
     val Settings = Icons.Rounded.Settings
+    val Notification = Icons.Rounded.Notifications
 }

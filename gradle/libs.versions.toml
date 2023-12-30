@@ -3,6 +3,7 @@ compileSdkVersion = "34"
 targetSdkVersion = "34"
 minSdkVersion = "21"
 
+accompanist = "0.32.0"
 androidDesugarJdkLibs = "2.0.4"
 androidGradlePlugin = "8.2.0"
 androidxActivity = "1.8.2"
@@ -51,6 +52,7 @@ sonar = "4.4.1.3373"
 turbine = "1.0.0"
 
 [libraries]
+accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist"}
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
@@ -80,6 +82,7 @@ faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "fa
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 firebase-performance-gradle = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }

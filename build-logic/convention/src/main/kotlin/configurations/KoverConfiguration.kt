@@ -20,9 +20,12 @@ fun KoverReportFilters.coverageExclusions() {
             "**/Manifest*.*",
             "dagger.**",
             "_**",
+            "**Activity**",
+            "**Module**"
         )
         annotatedBy(
             "*Generated*",
+            "**Generated**",
             "*Generated",
             "androidx.compose.runtime.Composable",
         )

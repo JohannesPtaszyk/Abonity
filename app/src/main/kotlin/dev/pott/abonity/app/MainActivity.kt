@@ -1,7 +1,11 @@
 package dev.pott.abonity.app
 
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -72,7 +76,21 @@ class MainActivity : ComponentActivity() {
 
             val windowSizeClass = calculateWindowSizeClass(activity = this)
             AppTheme(isDarkTheme, shouldUseSystemTheme(state = mainState)) {
-                App(windowSizeClass)
+                App(
+                    windowSizeClass = windowSizeClass,
+                    openNotificationSettings = {
+                        val intent = Intent()
+                        intent.addCategory(Intent.CATEGORY_DEFAULT)
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
+                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            intent.setData(Uri.fromParts("package", packageName, null))
+                        } else {
+                            intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                        }
+                        startActivity(intent)
+                    },
+                )
             }
         }
     }

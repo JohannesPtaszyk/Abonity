@@ -33,7 +33,7 @@ fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeCl
         }
     }
     return remember(selectedNavigationItem) {
-        val selected = selectedNavigationItem ?: NavigationItem.SUBSCRIPTION
+        val selected = selectedNavigationItem ?: NavigationItem.HOME
         val navigationSuiteType = calculateFromAdaptiveInfo(windowSizeClass)
         val subscriptionGraphState = calculateSubscriptionGraphState(windowSizeClass)
         AppState(

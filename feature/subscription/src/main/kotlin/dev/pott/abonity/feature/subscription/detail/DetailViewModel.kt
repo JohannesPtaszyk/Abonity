@@ -21,6 +21,7 @@ class DetailViewModel @Inject constructor(
     private val repository: SubscriptionRepository,
     private val calculator: PaymentDateCalculator,
 ) : ViewModel() {
+
     private val currentDetailId: MutableStateFlow<SubscriptionId?> = MutableStateFlow(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)

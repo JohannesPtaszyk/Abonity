@@ -12,7 +12,11 @@ import dev.pott.abonity.navigation.destination.setDestination
 
 private const val OSS_LICENSE_ACTIVITY_ROUTE = "ossLicenses"
 
-fun NavGraphBuilder.appNavGraph(state: AppState, navController: NavController) {
+fun NavGraphBuilder.appNavGraph(
+    state: AppState,
+    navController: NavController,
+    openNotificationSettings: () -> Unit,
+) {
     homeGraph(
         openDetails = { subscriptionId ->
             navController.createDeepLink()
@@ -24,8 +28,12 @@ fun NavGraphBuilder.appNavGraph(state: AppState, navController: NavController) {
                 .send()
         },
         openSubscriptions = { navController.navigateTabItem(NavigationItem.SUBSCRIPTION) },
+        openNotificationSettings = openNotificationSettings,
     )
     subscriptionGraph(state.subscriptionGraphState, navController)
-    settingsNavGraph(openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) })
+    settingsNavGraph(
+        openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) },
+        openNotificationSettings = openNotificationSettings,
+    )
     activity(OSS_LICENSE_ACTIVITY_ROUTE) { activityClass = OssLicensesMenuActivity::class }
 }

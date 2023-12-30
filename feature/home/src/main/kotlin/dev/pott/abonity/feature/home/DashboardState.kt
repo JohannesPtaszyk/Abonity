@@ -8,4 +8,5 @@ import kotlinx.collections.immutable.persistentListOf
 data class DashboardState(
     val upcomingSubscriptions: ImmutableList<SubscriptionWithPeriodInfo> = persistentListOf(),
     val selectedId: SubscriptionId? = null,
+    val shouldShowNotificationTeaser: Boolean = false,
 )

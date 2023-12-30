@@ -12,6 +12,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 
+    implementation(libs.accompanist.permission)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 

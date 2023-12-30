@@ -1,10 +1,9 @@
 package plugins
 
 import com.android.build.gradle.LibraryExtension
-import configurations.configureKotlinAndroid
 import configurations.applyKoverAndroid
 import configurations.configureGradleManagedDevices
-import configurations.configureKotlinJvm
+import configurations.configureKotlinAndroid
 import extensions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,7 +29,6 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                     generateBuildConfigProvider?.configure { enabled = false }
                 }
             }
-            configureKotlinJvm()
             applyKoverAndroid()
             dependencies {
                 add("testImplementation", kotlin("test"))

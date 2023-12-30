@@ -9,6 +9,7 @@ import dev.pott.abonity.navigation.destination.navigation
 fun NavGraphBuilder.homeGraph(
     openDetails: (subscriptionId: SubscriptionId) -> Unit,
     openSubscriptions: () -> Unit,
+    openNotificationSettings: () -> Unit,
 ) {
     navigation(
         destination = HomeNavigationDestination,
@@ -19,6 +20,7 @@ fun NavGraphBuilder.homeGraph(
                 viewModel = hiltViewModel(),
                 openDetails = openDetails,
                 openSubscriptions = openSubscriptions,
+                openNotificationSettings = openNotificationSettings,
             )
         }
     }

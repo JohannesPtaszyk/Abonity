@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,11 +30,14 @@ import dev.pott.abonity.app.navigation.components.NavigationIcon
 import dev.pott.abonity.app.navigation.navigateTabItem
 import dev.pott.abonity.app.navigation.rememberAppState
 import dev.pott.abonity.core.ui.components.navigation.AddFloatingActionButton
-import dev.pott.abonity.core.ui.util.minus
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination
 
 @Composable
-fun App(windowSizeClass: WindowSizeClass, modifier: Modifier = Modifier) {
+fun App(
+    windowSizeClass: WindowSizeClass,
+    openNotificationSettings: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
     val appState = rememberAppState(navController, windowSizeClass)
     val startRoute = remember { NavigationItem.entries.first().destination.route }
@@ -75,13 +76,7 @@ fun App(windowSizeClass: WindowSizeClass, modifier: Modifier = Modifier) {
             ScaffoldDefaults.contentWindowInsets
         },
     ) { paddingValues ->
-        Row(
-            modifier = if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
-                Modifier.padding(paddingValues - WindowInsets.navigationBars.asPaddingValues())
-            } else {
-                Modifier
-            },
-        ) {
+        Row(modifier = Modifier.padding(paddingValues)) {
             if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {
                 NavigationRail {
                     AddFloatingActionButton(
@@ -111,6 +106,7 @@ fun App(windowSizeClass: WindowSizeClass, modifier: Modifier = Modifier) {
                 appNavGraph(
                     appState,
                     navController,
+                    openNotificationSettings,
                 )
             }
         }
