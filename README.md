@@ -1,3 +1,5 @@
+![Abonity App Icon](./app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
+
 # Abonity - Your Ultimate Subscription Management Companion
 
 [![stability-wip](https://img.shields.io/badge/stability-wip-lightgrey.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#work-in-progress)
