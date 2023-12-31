@@ -2,12 +2,15 @@ package dev.pott.abonity.feature.home
 
 import android.Manifest
 import android.os.Build
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -78,8 +82,8 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state.selectedId) {
-        val selectedId = state.selectedId ?: return@LaunchedEffect
+    LaunchedEffect(state) {
+        val selectedId = (state as? DashboardState.Loaded)?.selectedId ?: return@LaunchedEffect
         openDetails(selectedId)
         viewModel.consumeSelectedId()
     }
@@ -93,11 +97,6 @@ fun DashboardScreen(
     )
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
-    ExperimentalPermissionsApi::class,
-)
 @Composable
 fun DashboardScreen(
     state: DashboardState,
@@ -107,19 +106,61 @@ fun DashboardScreen(
     onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    AnimatedContent(
+        targetState = state,
+        modifier = modifier,
+        label = "content_animation",
+    ) { dashboardState ->
+        when (dashboardState) {
+            is DashboardState.Loaded -> {
+                LoadedContent(
+                    onOpenNotificationSettingsClick,
+                    dashboardState,
+                    onCloseNotificationTeaserClick,
+                    onOpenSubscriptionsClick,
+                    onSubscriptionClick,
+                )
+            }
+
+            DashboardState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalPermissionsApi::class,
+)
+private fun LoadedContent(
+    onOpenNotificationSettingsClick: () -> Unit,
+    dashboardState: DashboardState.Loaded,
+    onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
+    onOpenSubscriptionsClick: () -> Unit,
+    onSubscriptionClick: (id: SubscriptionId) -> Unit,
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showNotificationDialog by remember { mutableStateOf(false) }
-    val notificationPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        rememberPermissionState(
-            permission = Manifest.permission.POST_NOTIFICATIONS,
-            onPermissionResult = { isGranted ->
-                if (isGranted) return@rememberPermissionState
-                showNotificationDialog = true
-            },
-        )
-    } else {
-        null
-    }
+    val notificationPermissionState =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(
+                permission = Manifest.permission.POST_NOTIFICATIONS,
+                onPermissionResult = { isGranted ->
+                    if (isGranted) return@rememberPermissionState
+                    showNotificationDialog = true
+                },
+            )
+        } else {
+            null
+        }
 
     if (showNotificationDialog) {
         NotificationPermissionDialog(
@@ -129,7 +170,6 @@ fun DashboardScreen(
     }
 
     Scaffold(
-        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -143,7 +183,12 @@ fun DashboardScreen(
             contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
-            if (showNotificationTeaser(notificationPermissionState, state)) {
+            val shouldShowNotificationTeaser = dashboardState.shouldShowNotificationTeaser
+            if (showNotificationTeaser(
+                    notificationPermissionState,
+                    shouldShowNotificationTeaser,
+                )
+            ) {
                 item(
                     key = "notification_permission_teaser",
                     contentType = "notification_permission_teaser",
@@ -155,8 +200,11 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-            if (state.upcomingSubscriptions.isNotEmpty()) {
-                item(key = "header_upcoming_subscriptions", contentType = "section_header") {
+            if (dashboardState.upcomingSubscriptions.isNotEmpty()) {
+                item(
+                    key = "header_upcoming_subscriptions",
+                    contentType = "section_header",
+                ) {
                     SectionHeader(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -173,7 +221,7 @@ fun DashboardScreen(
                 }
             }
             itemsIndexed(
-                state.upcomingSubscriptions,
+                dashboardState.upcomingSubscriptions,
                 key = { _, item -> item.subscription.id.value },
                 contentType = { _, _ -> "subscription_card" },
             ) { i, subscription ->
@@ -186,9 +234,9 @@ fun DashboardScreen(
                     onClick = {
                         onSubscriptionClick(subscription.subscription.id)
                     },
-                    isSelected = subscription.subscription.id == state.selectedId,
+                    isSelected = subscription.subscription.id == dashboardState.selectedId,
                 )
-                if (i != state.upcomingSubscriptions.lastIndex) {
+                if (i != dashboardState.upcomingSubscriptions.lastIndex) {
                     Spacer(Modifier.height(16.dp))
                 }
             }
@@ -199,15 +247,15 @@ fun DashboardScreen(
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalContracts::class)
 private fun showNotificationTeaser(
     notificationPermissionState: PermissionState?,
-    state: DashboardState,
+    shouldShowNotificationTeaser: Boolean,
 ): Boolean {
     contract {
-        returns(true)implies(notificationPermissionState != null)
+        returns(true) implies (notificationPermissionState != null)
     }
     return (
         notificationPermissionState != null &&
             !notificationPermissionState.status.isGranted &&
-            state.shouldShowNotificationTeaser
+            shouldShowNotificationTeaser
         )
 }
 
@@ -327,7 +375,7 @@ private fun DashboardScreenPreview() {
 
     AppTheme {
         DashboardScreen(
-            state = DashboardState(
+            state = DashboardState.Loaded(
                 upcomingSubscriptions = buildList {
                     repeat(5) { id ->
                         SubscriptionWithPeriodInfo(

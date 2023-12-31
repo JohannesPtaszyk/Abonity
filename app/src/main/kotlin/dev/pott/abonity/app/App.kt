@@ -13,7 +13,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -70,11 +69,7 @@ fun App(
                 )
             }
         },
-        contentWindowInsets = if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
-            WindowInsets(0, 0, 0, 0)
-        } else {
-            ScaffoldDefaults.contentWindowInsets
-        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
     ) { paddingValues ->
         Row(modifier = Modifier.padding(paddingValues)) {
             if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {

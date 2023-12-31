@@ -5,9 +5,11 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
 import kotlinx.collections.immutable.persistentListOf
 
@@ -38,6 +40,28 @@ fun NavGraphBuilder.composable(
         exitTransition = exitTransition,
         popEnterTransition = popEnterTransition,
         popExitTransition = popExitTransition,
+        content = content,
+    )
+}
+
+fun NavGraphBuilder.dialog(
+    destination: Destination,
+    dialogProperties: DialogProperties = DialogProperties(),
+    content: @Composable (NavBackStackEntry) -> Unit,
+) {
+    dialog(
+        route = destination.route,
+        arguments = if (destination is ArgumentDestination<*>) {
+            destination.requiredArguments + destination.optionalArguments
+        } else {
+            persistentListOf()
+        },
+        deepLinks = if (destination is Deeplinkable) {
+            destination.deeplinks
+        } else {
+            persistentListOf()
+        },
+        dialogProperties = dialogProperties,
         content = content,
     )
 }

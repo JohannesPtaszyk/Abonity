@@ -120,9 +120,7 @@ fun AddScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.widthIn(max = 600.dp),
             ) {
-                item {
-                    NameInput(state, onNameChanged, Modifier.fillMaxWidth())
-                }
+                item { NameInput(state, onNameChanged, Modifier.fillMaxWidth()) }
                 item {
                     PriceInput(
                         state.input.priceValue,

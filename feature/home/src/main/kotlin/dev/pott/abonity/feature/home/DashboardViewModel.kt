@@ -30,7 +30,7 @@ class DashboardViewModel @Inject constructor(
         shouldShowNotificationTeaser(),
         selectedId,
     ) { subscriptions, shouldShowNotificationTeaser, selectedId ->
-        DashboardState(
+        DashboardState.Loaded(
             upcomingSubscriptions = subscriptions.toImmutableList(),
             selectedId = selectedId,
             shouldShowNotificationTeaser = shouldShowNotificationTeaser,
@@ -38,7 +38,7 @@ class DashboardViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        DashboardState(),
+        DashboardState.Loading,
     )
 
     fun select(subscriptionId: SubscriptionId) {
