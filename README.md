@@ -6,7 +6,7 @@
 
 Android application for managing your subscriptions. 
 
-## About 
+## About (Mainly AI-Generated, will do a human-generated version later on)
 
 Are you tired of juggling multiple subscriptions, struggling to keep track of renewal dates, and wondering where your hard-earned money is going? Look no further! Abonity is here to simplify your life and take the hassle out of managing subscriptions.
 
