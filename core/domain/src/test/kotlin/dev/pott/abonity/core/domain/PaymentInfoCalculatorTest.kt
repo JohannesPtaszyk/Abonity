@@ -2,7 +2,6 @@ package dev.pott.abonity.core.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import dev.pott.abonity.core.domain.subscription.PaymentDateCalculator
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
@@ -51,9 +50,7 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
-
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -108,9 +105,7 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
-
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -175,9 +170,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -232,9 +226,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -299,9 +292,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -366,9 +358,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -433,9 +424,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.MONTHS,
                 )
@@ -480,9 +470,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.YEARS,
                 )
@@ -567,9 +556,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.YEARS,
                 )
@@ -634,9 +622,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.YEARS,
                 )
@@ -701,9 +688,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.YEARS,
                 )
@@ -768,9 +754,8 @@ class PaymentInfoCalculatorTest {
             ) {
                 val todayInstant = Instant.parse(testCase.today.toString() + "T00:00:00Z")
                 val clock = FakeClock(todayInstant)
-                val dateCalculator = PaymentDateCalculator(clock)
 
-                val result = PaymentInfoCalculator(dateCalculator, clock).getTotalPriceForPeriod(
+                val result = PaymentInfoCalculator(clock).getTotalPriceForPeriod(
                     testCase.paymentInfo,
                     PaymentPeriod.YEARS,
                 )

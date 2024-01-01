@@ -30,11 +30,12 @@ import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
+import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailState
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -47,6 +48,7 @@ fun OverviewScreenWithDetails(
     overviewState: OverviewState,
     detailState: DetailState,
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
+    onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
     onEditClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,14 +61,13 @@ fun OverviewScreenWithDetails(
     ) {
         OverviewScreen(
             state = overviewState,
-            onSubscriptionClick = {
-                onSubscriptionClicked(it)
-            },
+            onSubscriptionClick = onSubscriptionClicked,
+            onFilterItemSelected = onFilterItemSelected,
             listState = listState,
             modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.width(16.dp))
-        if (overviewState.detailId == null) {
+        if ((overviewState as? OverviewState.Loaded)?.detailId == null) {
             EmptyDetails(Modifier.fillMaxHeight().weight(1f))
         } else {
             DetailScreen(
@@ -142,13 +143,15 @@ private fun OverviewWithDetailScreenPreview() {
             }
         }.toImmutableList()
         OverviewScreenWithDetails(
-            overviewState = OverviewState(
+            overviewState = OverviewState.Loaded(
                 detailId = SubscriptionId(0),
-                periodSubscriptions = periodSubscriptions,
-                periodPrices = persistentListOf(
-                    Price(99.99, currency),
-                    Price(99.99, Currency.getInstance("USD")),
-                    Price(99.99, Currency.getInstance("GBP")),
+                subscriptions = periodSubscriptions,
+                filterState = SubscriptionFilterState(
+                    listOf(
+                        Price(99.99, Currency.getInstance("EUR")),
+                    ),
+                    PaymentPeriod.MONTHS,
+                    listOf(),
                 ),
             ),
             detailState = DetailState(
@@ -164,6 +167,7 @@ private fun OverviewWithDetailScreenPreview() {
                 ),
             ),
             onSubscriptionClicked = {},
+            onFilterItemSelected = {},
             onEditClick = {},
             closeDetails = {},
         )

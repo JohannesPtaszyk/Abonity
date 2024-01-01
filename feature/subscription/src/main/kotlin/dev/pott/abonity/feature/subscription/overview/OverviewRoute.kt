@@ -24,8 +24,9 @@ fun OverviewRoute(
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
-    LaunchedEffect(overviewState.detailId) {
-        detailViewModel.setId(overviewState.detailId)
+    LaunchedEffect(overviewState) {
+        val loadedState = (overviewState as? OverviewState.Loaded) ?: return@LaunchedEffect
+        detailViewModel.setId(loadedState.detailId)
     }
 
     if (showAsMultiColumn) {
@@ -34,6 +35,7 @@ fun OverviewRoute(
             overviewState = overviewState,
             detailState = detailState,
             onSubscriptionClicked = overviewViewModel::openDetails,
+            onFilterItemSelected = overviewViewModel::toggleFilter,
             onEditClick = onEditClick,
             closeDetails = overviewViewModel::consumeDetails,
             listState = listState,
@@ -41,7 +43,7 @@ fun OverviewRoute(
         return
     }
 
-    if (overviewState.detailId != null) {
+    if ((overviewState as? OverviewState.Loaded)?.detailId != null) {
         BackHandler { overviewViewModel.consumeDetails() }
         DetailScreen(
             state = detailState,
@@ -52,6 +54,7 @@ fun OverviewRoute(
         OverviewScreen(
             state = overviewState,
             onSubscriptionClick = overviewViewModel::openDetails,
+            onFilterItemSelected = overviewViewModel::toggleFilter,
             listState = listState,
         )
     }

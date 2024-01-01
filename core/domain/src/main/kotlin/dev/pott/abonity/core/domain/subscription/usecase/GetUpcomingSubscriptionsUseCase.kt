@@ -1,6 +1,6 @@
 package dev.pott.abonity.core.domain.subscription.usecase
 
-import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.getLastDayOfCurrentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import kotlinx.coroutines.flow.Flow
@@ -12,29 +12,14 @@ import javax.inject.Inject
 
 class GetUpcomingSubscriptionsUseCase @Inject constructor(
     private val clock: Clock,
-    private val calculator: PaymentInfoCalculator,
     private val getSubscriptionsWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
 ) {
     operator fun invoke(period: PaymentPeriod): Flow<List<SubscriptionWithPeriodInfo>> {
         return getSubscriptionsWithPeriodPrice().map { subscriptions ->
-            val now = clock.todayIn(TimeZone.currentSystemDefault())
-            subscriptions.map {
-                val firstPayment = it.subscription.paymentInfo.firstPayment
-                val paymentType = it.subscription.paymentInfo.type
-                val paymentsInPeriod = calculator.getPaymentDatesForCurrentPeriod(
-                    firstPayment,
-                    period,
-                    paymentType,
-                ).filter { paymentDate ->
-                    paymentDate > now
-                }
-                it to paymentsInPeriod
-            }.filter {
-                it.second.isNotEmpty()
-            }.sortedBy {
-                it.second.first()
-            }.map {
-                it.first
+            val today = clock.todayIn(TimeZone.currentSystemDefault())
+            subscriptions.filter {
+                val lastDayOfCurrentPeriod = today.getLastDayOfCurrentPeriod(period)
+                it.nextPaymentDate in today..lastDayOfCurrentPeriod
             }
         }
     }

@@ -102,5 +102,5 @@
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
-    <string name="subscription_overview_price_overview_title">Total</string>
+    <string name="subscription_filter_current_period">This %s</string>
 </resources>

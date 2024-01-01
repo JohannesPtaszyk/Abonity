@@ -1,6 +1,5 @@
 package dev.pott.abonity.core.domain.subscription.usecase
 
-import dev.pott.abonity.core.domain.subscription.PaymentDateCalculator
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
@@ -14,7 +13,6 @@ import javax.inject.Inject
 class GetSubscriptionsWithPeriodPrice @Inject constructor(
     private val repository: SubscriptionRepository,
     private val infoCalculator: PaymentInfoCalculator,
-    private val dateCalculator: PaymentDateCalculator,
 ) {
     operator fun invoke(): Flow<List<SubscriptionWithPeriodInfo>> {
         return repository.getSubscriptionsFlow().map { subscriptions ->
@@ -25,7 +23,13 @@ class GetSubscriptionsWithPeriodPrice @Inject constructor(
     private fun map(subscription: Subscription): SubscriptionWithPeriodInfo {
         val nextPaymentDate = when (val type = subscription.paymentInfo.type) {
             PaymentType.OneTime -> subscription.paymentInfo.firstPayment
-            is PaymentType.Periodic -> dateCalculator.calculateNextPossiblePaymentDate(type)
+            is PaymentType.Periodic -> {
+                infoCalculator.getPaymentDatesForCurrentPeriod(
+                    subscription.paymentInfo.firstPayment,
+                    PaymentPeriod.MONTHS,
+                    type,
+                ).firstOrNull() ?: infoCalculator.getNextDateByType(type)
+            }
         }
 
         val totalPrice = infoCalculator.getTotalPriceForPeriod(
