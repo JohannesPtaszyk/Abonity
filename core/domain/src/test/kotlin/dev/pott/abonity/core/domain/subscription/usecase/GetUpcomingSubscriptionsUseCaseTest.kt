@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.common.test.InjectTestDispatcher
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
@@ -11,17 +13,27 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.test.FakeClock
+import dev.pott.abonity.core.test.settings.FakeSettingsRepository
+import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
 
+@ExtendWith(CoroutinesTestExtension::class)
 class GetUpcomingSubscriptionsUseCaseTest {
 
+    @InjectTestDispatcher
+    lateinit var testDispatcher: CoroutineDispatcher
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `GIVEN upcoming subscriptions WHEN invoked THEN return filtered list`() {
         runTest {
@@ -48,15 +60,24 @@ class GetUpcomingSubscriptionsUseCaseTest {
             )
 
             val localSubscriptionFlow = flowOf(listOf(subscription1, subscription2, subscription3))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock(now = Instant.parse("2022-02-01T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetUpcomingSubscriptionsUseCase(
+
+            val tested = GetUpcomingSubscriptionsUseCase(
                 clock,
-                GetSubscriptionsWithPeriodPrice(repository, infoCalculator),
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    testDispatcher,
+                ),
+                settingsRepository,
+                testDispatcher,
             )
 
-            useCase(PaymentPeriod.MONTHS).test {
+            tested().test {
                 assertThat(awaitItem()).isEqualTo(
                     listOf(
                         SubscriptionWithPeriodInfo(
@@ -71,7 +92,6 @@ class GetUpcomingSubscriptionsUseCaseTest {
                         ),
                     ),
                 )
-                awaitComplete()
             }
         }
     }
@@ -88,17 +108,25 @@ class GetUpcomingSubscriptionsUseCaseTest {
             )
 
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
             val clock = FakeClock(now = Instant.parse("2022-02-02T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetUpcomingSubscriptionsUseCase(
+
+            val tested = GetUpcomingSubscriptionsUseCase(
                 clock,
-                GetSubscriptionsWithPeriodPrice(repository, infoCalculator),
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    testDispatcher,
+                ),
+                settingsRepository,
+                testDispatcher,
             )
 
-            useCase(PaymentPeriod.MONTHS).test {
+            tested().test {
                 assertThat(awaitItem()).isEmpty()
-                awaitComplete()
             }
         }
     }

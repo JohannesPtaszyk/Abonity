@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pott.abonity.common.injection.Dispatcher
+import dev.pott.abonity.common.injection.Dispatcher.Type.DEFAULT
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.getFirstDayOfCurrentPeriod
 import dev.pott.abonity.core.domain.subscription.getLastDayOfCurrentPeriod
@@ -17,14 +19,14 @@ import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
@@ -34,6 +36,7 @@ import javax.inject.Inject
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getSubscriptionWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
+    @Dispatcher(DEFAULT) defaultDispatcher: CoroutineDispatcher,
     private val clock: Clock,
     private val calculator: PaymentInfoCalculator,
 ) : ViewModel() {
@@ -49,39 +52,37 @@ class OverviewViewModel @Inject constructor(
         getSubscriptionWithPeriodPrice(),
         selectedFilterItemsFlow,
     ) { subscriptions, selectedFilterItems ->
-        withContext(Dispatchers.Default) {
-            val totalPricePerCurrency = calculator.getTotalPricesForPeriod(
-                subscriptions.map { it.subscription.paymentInfo },
-                PaymentPeriod.MONTHS,
-            )
-            val filteredSubscriptions = if (selectedFilterItems.isEmpty()) {
-                subscriptions
-            } else {
-                subscriptions.filter { subscriptionWithPeriodInfo ->
-                    val appliedFilter = selectedFilterItems.map { filterItem ->
-                        when (filterItem) {
-                            is SubscriptionFilterItem.Currency -> {
-                                val subscription = subscriptionWithPeriodInfo.subscription
-                                subscription.paymentInfo.price.currency == filterItem.price.currency
-                            }
+        val totalPricePerCurrency = calculator.getTotalPricesForPeriod(
+            subscriptions.map { it.subscription.paymentInfo },
+            PaymentPeriod.MONTHS,
+        )
+        val filteredSubscriptions = if (selectedFilterItems.isEmpty()) {
+            subscriptions
+        } else {
+            subscriptions.filter { subscriptionWithPeriodInfo ->
+                val appliedFilter = selectedFilterItems.map { filterItem ->
+                    when (filterItem) {
+                        is SubscriptionFilterItem.Currency -> {
+                            val subscription = subscriptionWithPeriodInfo.subscription
+                            subscription.paymentInfo.price.currency == filterItem.price.currency
+                        }
 
-                            is SubscriptionFilterItem.CurrentPeriod -> {
-                                val today = clock.todayIn(TimeZone.currentSystemDefault())
-                                val from = today.getFirstDayOfCurrentPeriod(PaymentPeriod.MONTHS)
-                                val to = today.getLastDayOfCurrentPeriod(PaymentPeriod.MONTHS)
-                                subscriptionWithPeriodInfo.nextPaymentDate in from..to
-                            }
+                        is SubscriptionFilterItem.CurrentPeriod -> {
+                            val today = clock.todayIn(TimeZone.currentSystemDefault())
+                            val from = today.getFirstDayOfCurrentPeriod(PaymentPeriod.MONTHS)
+                            val to = today.getLastDayOfCurrentPeriod(PaymentPeriod.MONTHS)
+                            subscriptionWithPeriodInfo.nextPaymentDate in from..to
                         }
                     }
-                    appliedFilter.contains(true)
                 }
+                appliedFilter.contains(true)
             }
-            SubscriptionInformation(
-                filteredSubscriptions,
-                totalPricePerCurrency,
-            )
         }
-    }
+        SubscriptionInformation(
+            filteredSubscriptions,
+            totalPricePerCurrency,
+        )
+    }.flowOn(defaultDispatcher)
 
     val state = combine(
         selectedDetailIdFlow,

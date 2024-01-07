@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.notification.NotificationTeaserRepository
 import dev.pott.abonity.core.domain.notification.usecase.ShouldShowNotificationTeaserUseCase
 import dev.pott.abonity.core.domain.subscription.usecase.GetUpcomingSubscriptionsUseCase
-import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +25,7 @@ class DashboardViewModel @Inject constructor(
     private val selectedId: MutableStateFlow<SubscriptionId?> = MutableStateFlow(null)
 
     val state = combine(
-        getUpcomingSubscriptions(PaymentPeriod.MONTHS),
+        getUpcomingSubscriptions(),
         shouldShowNotificationTeaser(),
         selectedId,
     ) { subscriptions, shouldShowNotificationTeaser, selectedId ->

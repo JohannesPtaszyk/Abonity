@@ -15,6 +15,19 @@ class CoroutinesTestExtension : BeforeEachCallback, AfterEachCallback {
 
     override fun beforeEach(context: ExtensionContext?) {
         Dispatchers.setMain(dispatcher)
+        injectTestDispatcher(context)
+    }
+
+    private fun injectTestDispatcher(context: ExtensionContext?) {
+        val testInstance = context?.testInstance?.get() ?: return
+        val fields = testInstance.javaClass.declaredFields
+
+        for (field in fields) {
+            if (field.isAnnotationPresent(InjectTestDispatcher::class.java)) {
+                field.isAccessible = true
+                field.set(testInstance, dispatcher)
+            }
+        }
     }
 
     override fun afterEach(context: ExtensionContext?) {

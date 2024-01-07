@@ -37,6 +37,7 @@ include(
     ":common:test",
     ":common:extensions",
     ":common:compose",
+    ":common:injection",
 )
 
 include(":navigation")

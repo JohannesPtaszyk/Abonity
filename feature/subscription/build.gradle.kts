@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(projects.navigation)
     implementation(projects.common.compose)
+    implementation(projects.common.injection)
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 

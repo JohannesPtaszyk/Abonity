@@ -41,6 +41,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.entity)
     implementation(projects.core.ui)
+    implementation(projects.common.injection)
     implementation(projects.feature.home)
     implementation(projects.feature.subscription)
     implementation(projects.feature.settings)

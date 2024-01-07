@@ -3,10 +3,12 @@ package dev.pott.abonity.feature.subscription.overview
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.common.test.InjectTestDispatcher
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithPeriodPrice
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
@@ -15,24 +17,35 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.test.FakeClock
+import dev.pott.abonity.core.test.settings.FakeSettingsRepository
+import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
 class OverviewViewModelTest {
+
+    @InjectTestDispatcher
+    lateinit var dispatcher: CoroutineDispatcher
+
     @Test
     fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items AND period prices`() {
         runTest {
+            runCurrent()
             val subscription = createTestSubscription(
                 paymentInfo = PaymentInfo(
                     price = Price(1.0, Currency.getInstance("EUR")),
@@ -41,12 +54,19 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+            val useCase = GetSubscriptionsWithPeriodPrice(
+                subscriptionRepository,
+                settingsRepository,
+                infoCalculator,
+                dispatcher,
+            )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
 
             val expectedSubscriptions = persistentListOf(
                 SubscriptionWithPeriodInfo(
@@ -83,14 +103,21 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val useCase = GetSubscriptionsWithPeriodPrice(
+                subscriptionRepository,
+                settingsRepository,
+                infoCalculator,
+                dispatcher,
+            )
             val savedStateHandle = SavedStateHandle(
                 mapOf(OverviewScreenDestination.Args.DETAIL_ID_KEY to subscription.id.value),
             )
-            val tested = OverviewViewModel(savedStateHandle, useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(savedStateHandle, useCase, dispatcher, clock, infoCalculator)
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState.Loading)
@@ -112,14 +139,22 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val useCase = GetSubscriptionsWithPeriodPrice(
+                subscriptionRepository,
+                settingsRepository,
+                infoCalculator,
+                dispatcher,
+            )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
 
             tested.state.test {
+                runCurrent()
                 skipItems(2) // Skip initial state and first subscription emit
                 tested.openDetails(subscription.id)
                 assertThat(awaitItem()).isEqualTo(
@@ -157,15 +192,23 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
             val useCase =
-                GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
 
             tested.state.test {
+                runCurrent()
                 skipItems(2) // Skip initial state and first subscription emit
                 tested.openDetails(subscription.id)
                 skipItems(1) // Skip emit with id
@@ -194,7 +237,6 @@ class OverviewViewModelTest {
     }
 
     @Test
-    @Disabled("Need to extract use case and fix dispatcher for filtering")
     fun `GIVEN initialized vm WHEN toggleFilter THEN state contains updated filter items`() {
         runTest {
             val subscription = createTestSubscription(
@@ -205,25 +247,34 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
             val useCase =
-                GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
 
             tested.state.test {
-                skipItems(2) // Skip initial state and first subscription emit
+                runCurrent()
+                skipItems(1) // Skip initial state
                 val initialFilterState = (awaitItem() as OverviewState.Loaded).filterState
                 val initialFilterItems = initialFilterState.selectedItems
 
                 tested.toggleFilter(
                     SubscriptionFilterItem.Currency(Price(1.0, Currency.getInstance("EUR"))),
                 )
+                runCurrent()
+
                 val updatedFilterState = (awaitItem() as OverviewState.Loaded).filterState
                 val updatedFilterItems = updatedFilterState.selectedItems
-
                 assertThat(updatedFilterItems).isNotEmpty()
                 assertThat(updatedFilterItems).isNotEqualTo(initialFilterItems)
             }
@@ -231,7 +282,6 @@ class OverviewViewModelTest {
     }
 
     @Test
-    @Disabled("Need to extract use case and fix dispatcher for filtering")
     fun `GIVEN initialized vm WHEN toggleFilter THEN state contains updated subscriptions`() {
         runTest {
             val subscription1 = createTestSubscription(
@@ -249,23 +299,34 @@ class OverviewViewModelTest {
                 ),
             )
             val localSubscriptionFlow = flowOf(listOf(subscription1, subscription2))
-            val repository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val clock = FakeClock()
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val clock = FakeClock(now = Instant.parse("2021-01-01T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetSubscriptionsWithPeriodPrice(repository, infoCalculator)
+            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val useCase = GetSubscriptionsWithPeriodPrice(
+                subscriptionRepository,
+                settingsRepository,
+                infoCalculator,
+                dispatcher,
+            )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase, clock, infoCalculator)
+            val tested =
+                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
 
             tested.state.test {
-                skipItems(2) // Skip initial state and first subscription emit
+                runCurrent()
+                skipItems(1) // Skip initial Loading state
                 val initialSubscriptions = (awaitItem() as OverviewState.Loaded).subscriptions
 
                 tested.toggleFilter(
                     SubscriptionFilterItem.Currency(Price(1.0, Currency.getInstance("EUR"))),
                 )
-                val updatedSubscriptions = (awaitItem() as OverviewState.Loaded).subscriptions
+                runCurrent()
 
+                skipItems(1) // Skip filter selection emission
+                val updatedSubscriptions = (awaitItem() as OverviewState.Loaded).subscriptions
                 assertThat(updatedSubscriptions).isNotEqualTo(initialSubscriptions)
+                assertThat(cancelAndConsumeRemainingEvents()).isEmpty()
             }
         }
     }

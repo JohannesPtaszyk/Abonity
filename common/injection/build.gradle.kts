@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlinx.datetime)
+    implementation(libs.javax.inject)
 }

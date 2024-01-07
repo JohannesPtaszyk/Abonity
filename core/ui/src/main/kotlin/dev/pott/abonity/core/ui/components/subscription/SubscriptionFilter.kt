@@ -81,7 +81,7 @@ sealed interface SubscriptionFilterItem {
  * Primary constructor is private to make sure items always include default options, which are not
  * based on user data.
  */
-class SubscriptionFilterState private constructor(
+data class SubscriptionFilterState(
     val items: ImmutableList<SubscriptionFilterItem>,
     val selectedItems: ImmutableList<SubscriptionFilterItem>,
 ) {
@@ -99,20 +99,4 @@ class SubscriptionFilterState private constructor(
         }.toImmutableList(),
         selectedItems = selectedItems.toImmutableList(),
     )
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as SubscriptionFilterState
-
-        if (items != other.items) return false
-        return selectedItems == other.selectedItems
-    }
-
-    override fun hashCode(): Int {
-        var result = items.hashCode()
-        result = 31 * result + selectedItems.hashCode()
-        return result
-    }
 }
