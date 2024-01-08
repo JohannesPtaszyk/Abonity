@@ -27,11 +27,11 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
@@ -146,7 +146,7 @@ private fun OverviewWithDetailScreenPreview() {
             overviewState = OverviewState.Loaded(
                 detailId = SubscriptionId(0),
                 subscriptions = periodSubscriptions,
-                filterState = SubscriptionFilterState(
+                filter = SubscriptionFilter(
                     listOf(
                         Price(99.99, Currency.getInstance("EUR")),
                     ),

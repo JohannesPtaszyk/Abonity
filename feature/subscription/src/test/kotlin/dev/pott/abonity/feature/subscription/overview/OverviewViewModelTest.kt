@@ -10,19 +10,20 @@ import assertk.assertions.isNotEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.common.test.InjectTestDispatcher
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithPeriodPrice
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -58,15 +59,20 @@ class OverviewViewModelTest {
             val settingsRepository = FakeSettingsRepository(createTestSettings())
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
-            val useCase = GetSubscriptionsWithPeriodPrice(
-                subscriptionRepository,
+            val useCase = GetSubscriptionsWithFilterUseCase(
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                ),
                 settingsRepository,
                 infoCalculator,
+                clock,
                 dispatcher,
             )
 
-            val tested =
-                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase)
 
             val expectedSubscriptions = persistentListOf(
                 SubscriptionWithPeriodInfo(
@@ -81,7 +87,7 @@ class OverviewViewModelTest {
                 assertThat(awaitItem()).isEqualTo(
                     OverviewState.Loaded(
                         subscriptions = expectedSubscriptions,
-                        filterState = SubscriptionFilterState(
+                        filter = SubscriptionFilter(
                             listOf(Price(15.0, Currency.getInstance("EUR"))),
                             period = PaymentPeriod.MONTHS,
                             selectedItems = emptyList(),
@@ -107,17 +113,23 @@ class OverviewViewModelTest {
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val useCase = GetSubscriptionsWithPeriodPrice(
-                subscriptionRepository,
-                settingsRepository,
-                infoCalculator,
-                dispatcher,
-            )
             val savedStateHandle = SavedStateHandle(
                 mapOf(OverviewScreenDestination.Args.DETAIL_ID_KEY to subscription.id.value),
             )
-            val tested =
-                OverviewViewModel(savedStateHandle, useCase, dispatcher, clock, infoCalculator)
+            val useCase = GetSubscriptionsWithFilterUseCase(
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                ),
+                settingsRepository,
+                infoCalculator,
+                clock,
+                dispatcher,
+            )
+
+            val tested = OverviewViewModel(savedStateHandle, useCase)
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState.Loading)
@@ -143,15 +155,20 @@ class OverviewViewModelTest {
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val useCase = GetSubscriptionsWithPeriodPrice(
-                subscriptionRepository,
+            val useCase = GetSubscriptionsWithFilterUseCase(
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                ),
                 settingsRepository,
                 infoCalculator,
+                clock,
                 dispatcher,
             )
 
-            val tested =
-                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase)
 
             tested.state.test {
                 runCurrent()
@@ -169,7 +186,7 @@ class OverviewViewModelTest {
                                 nextPaymentDate = LocalDate(2021, 3, 2),
                             ),
                         ),
-                        filterState = SubscriptionFilterState(
+                        filter = SubscriptionFilter(
                             listOf(Price(15.0, Currency.getInstance("EUR"))),
                             period = PaymentPeriod.MONTHS,
                             selectedItems = emptyList(),
@@ -196,16 +213,20 @@ class OverviewViewModelTest {
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val useCase =
+            val useCase = GetSubscriptionsWithFilterUseCase(
                 GetSubscriptionsWithPeriodPrice(
                     subscriptionRepository,
                     settingsRepository,
                     infoCalculator,
                     dispatcher,
-                )
+                ),
+                settingsRepository,
+                infoCalculator,
+                clock,
+                dispatcher,
+            )
 
-            val tested =
-                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase)
 
             tested.state.test {
                 runCurrent()
@@ -225,7 +246,7 @@ class OverviewViewModelTest {
                                 nextPaymentDate = LocalDate(2021, 3, 2),
                             ),
                         ),
-                        filterState = SubscriptionFilterState(
+                        filter = SubscriptionFilter(
                             listOf(Price(15.0, Currency.getInstance("EUR"))),
                             period = PaymentPeriod.MONTHS,
                             selectedItems = emptyList(),
@@ -251,21 +272,25 @@ class OverviewViewModelTest {
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val useCase =
+            val useCase = GetSubscriptionsWithFilterUseCase(
                 GetSubscriptionsWithPeriodPrice(
                     subscriptionRepository,
                     settingsRepository,
                     infoCalculator,
                     dispatcher,
-                )
+                ),
+                settingsRepository,
+                infoCalculator,
+                clock,
+                dispatcher,
+            )
 
-            val tested =
-                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase)
 
             tested.state.test {
                 runCurrent()
                 skipItems(1) // Skip initial state
-                val initialFilterState = (awaitItem() as OverviewState.Loaded).filterState
+                val initialFilterState = (awaitItem() as OverviewState.Loaded).filter
                 val initialFilterItems = initialFilterState.selectedItems
 
                 tested.toggleFilter(
@@ -273,7 +298,7 @@ class OverviewViewModelTest {
                 )
                 runCurrent()
 
-                val updatedFilterState = (awaitItem() as OverviewState.Loaded).filterState
+                val updatedFilterState = (awaitItem() as OverviewState.Loaded).filter
                 val updatedFilterItems = updatedFilterState.selectedItems
                 assertThat(updatedFilterItems).isNotEmpty()
                 assertThat(updatedFilterItems).isNotEqualTo(initialFilterItems)
@@ -303,15 +328,20 @@ class OverviewViewModelTest {
             val clock = FakeClock(now = Instant.parse("2021-01-01T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val useCase = GetSubscriptionsWithPeriodPrice(
-                subscriptionRepository,
+            val useCase = GetSubscriptionsWithFilterUseCase(
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                ),
                 settingsRepository,
                 infoCalculator,
+                clock,
                 dispatcher,
             )
 
-            val tested =
-                OverviewViewModel(SavedStateHandle(), useCase, dispatcher, clock, infoCalculator)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase)
 
             tested.state.test {
                 runCurrent()

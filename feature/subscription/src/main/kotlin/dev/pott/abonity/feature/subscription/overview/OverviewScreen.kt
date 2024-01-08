@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,13 +28,13 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilter
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
@@ -76,7 +73,7 @@ fun OverviewScreen(
                 ) {
                     item {
                         SubscriptionFilter(
-                            state.filterState,
+                            state.filter,
                             onItemSelected = onFilterItemSelected,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -155,7 +152,7 @@ private fun OverviewScreenPreview() {
                         ).also { add(it) }
                     }
                 }.toImmutableList(),
-                filterState = SubscriptionFilterState(
+                filter = SubscriptionFilter(
                     listOf(
                         Price(99.99, Currency.getInstance("EUR")),
                     ),

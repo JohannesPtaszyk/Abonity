@@ -4,41 +4,27 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.pott.abonity.common.injection.Dispatcher
-import dev.pott.abonity.common.injection.Dispatcher.Type.DEFAULT
-import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
-import dev.pott.abonity.core.domain.subscription.getFirstDayOfCurrentPeriod
-import dev.pott.abonity.core.domain.subscription.getLastDayOfCurrentPeriod
-import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithPeriodPrice
-import dev.pott.abonity.core.entity.subscription.PaymentPeriod
-import dev.pott.abonity.core.entity.subscription.Price
+import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterItem
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilterState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    getSubscriptionWithPeriodPrice: GetSubscriptionsWithPeriodPrice,
-    @Dispatcher(DEFAULT) defaultDispatcher: CoroutineDispatcher,
-    private val clock: Clock,
-    private val calculator: PaymentInfoCalculator,
+    getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
 ) : ViewModel() {
 
     private val args = OverviewScreenDestination.Args.parse(savedStateHandle)
@@ -48,58 +34,18 @@ class OverviewViewModel @Inject constructor(
     private val selectedFilterItemsFlow = MutableStateFlow<ImmutableList<SubscriptionFilterItem>>(
         persistentListOf(),
     )
-    private val subscriptionInformationFlow = combine(
-        getSubscriptionWithPeriodPrice(),
-        selectedFilterItemsFlow,
-    ) { subscriptions, selectedFilterItems ->
-        val totalPricePerCurrency = calculator.getTotalPricesForPeriod(
-            subscriptions.map { it.subscription.paymentInfo },
-            PaymentPeriod.MONTHS,
-        )
-        val filteredSubscriptions = if (selectedFilterItems.isEmpty()) {
-            subscriptions
-        } else {
-            subscriptions.filter { subscriptionWithPeriodInfo ->
-                val appliedFilter = selectedFilterItems.map { filterItem ->
-                    when (filterItem) {
-                        is SubscriptionFilterItem.Currency -> {
-                            val subscription = subscriptionWithPeriodInfo.subscription
-                            subscription.paymentInfo.price.currency == filterItem.price.currency
-                        }
-
-                        is SubscriptionFilterItem.CurrentPeriod -> {
-                            val today = clock.todayIn(TimeZone.currentSystemDefault())
-                            val from = today.getFirstDayOfCurrentPeriod(PaymentPeriod.MONTHS)
-                            val to = today.getLastDayOfCurrentPeriod(PaymentPeriod.MONTHS)
-                            subscriptionWithPeriodInfo.nextPaymentDate in from..to
-                        }
-                    }
-                }
-                appliedFilter.contains(true)
-            }
-        }
-        SubscriptionInformation(
-            filteredSubscriptions,
-            totalPricePerCurrency,
-        )
-    }.flowOn(defaultDispatcher)
+    private val subscriptionWithFilterFlow = selectedFilterItemsFlow.flatMapLatest {
+        getFilteredSubscriptions(it)
+    }
 
     val state = combine(
         selectedDetailIdFlow,
-        selectedFilterItemsFlow,
-        subscriptionInformationFlow,
-    ) { detailId, selectedFilterItems, subscriptionsAndTotalPrices ->
-        val (subscriptions, totalPrices) = subscriptionsAndTotalPrices
-        val filterState = SubscriptionFilterState(
-            totalPrices,
-            PaymentPeriod.MONTHS,
-            selectedFilterItems,
-        )
-
+        subscriptionWithFilterFlow,
+    ) { detailId, subscriptionsWithFilter ->
         OverviewState.Loaded(
-            subscriptions = subscriptions.toImmutableList(),
+            subscriptions = subscriptionsWithFilter.filteredSubscriptions.toImmutableList(),
             detailId = detailId,
-            filterState = filterState,
+            filter = subscriptionsWithFilter.filter,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -126,9 +72,4 @@ class OverviewViewModel @Inject constructor(
             }
         }
     }
-
-    private data class SubscriptionInformation(
-        val filteredSubscriptions: List<SubscriptionWithPeriodInfo>,
-        val currencyFilterItems: List<Price>,
-    )
 }

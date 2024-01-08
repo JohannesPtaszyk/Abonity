@@ -15,17 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.core.entity.subscription.PaymentPeriod
-import dev.pott.abonity.core.entity.subscription.Price
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
+import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SubscriptionFilter(
-    state: SubscriptionFilterState,
+    state: SubscriptionFilter,
     onItemSelected: (SubscriptionFilterItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -66,37 +64,4 @@ fun SubscriptionFilter(
             )
         }
     }
-}
-
-sealed interface SubscriptionFilterItem {
-
-    data class Currency(val price: Price) : SubscriptionFilterItem
-
-    data class CurrentPeriod(val period: PaymentPeriod) : SubscriptionFilterItem
-}
-
-/**
- * Represents Subscription Filter State.
- *
- * Primary constructor is private to make sure items always include default options, which are not
- * based on user data.
- */
-data class SubscriptionFilterState(
-    val items: ImmutableList<SubscriptionFilterItem>,
-    val selectedItems: ImmutableList<SubscriptionFilterItem>,
-) {
-
-    constructor(
-        prices: List<Price>,
-        period: PaymentPeriod,
-        selectedItems: List<SubscriptionFilterItem>,
-    ) : this(
-        items = buildList<SubscriptionFilterItem> {
-            add(SubscriptionFilterItem.CurrentPeriod(period))
-            addAll(prices.map { SubscriptionFilterItem.Currency(it) })
-        }.sortedBy {
-            !selectedItems.contains(it)
-        }.toImmutableList(),
-        selectedItems = selectedItems.toImmutableList(),
-    )
 }
