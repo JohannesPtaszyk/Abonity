@@ -147,11 +147,8 @@ private fun OverviewWithDetailScreenPreview() {
                 detailId = SubscriptionId(0),
                 subscriptions = periodSubscriptions,
                 filter = SubscriptionFilter(
-                    listOf(
-                        Price(99.99, Currency.getInstance("EUR")),
-                    ),
-                    PaymentPeriod.MONTHS,
-                    listOf(),
+                    emptyList(),
+                    emptyList(),
                 ),
             ),
             detailState = DetailState(

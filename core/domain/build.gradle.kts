@@ -8,6 +8,7 @@ dependencies {
     implementation(projects.common.injection)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.javax.inject)
+    implementation(libs.kermit)
 
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)

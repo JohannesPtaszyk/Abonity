@@ -88,8 +88,12 @@ class OverviewViewModelTest {
                     OverviewState.Loaded(
                         subscriptions = expectedSubscriptions,
                         filter = SubscriptionFilter(
-                            listOf(Price(15.0, Currency.getInstance("EUR"))),
-                            period = PaymentPeriod.MONTHS,
+                            items = listOf(
+                                SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS),
+                                SubscriptionFilterItem.Currency(
+                                    Price(15.0, Currency.getInstance("EUR")),
+                                ),
+                            ),
                             selectedItems = emptyList(),
                         ),
                     ),
@@ -187,8 +191,12 @@ class OverviewViewModelTest {
                             ),
                         ),
                         filter = SubscriptionFilter(
-                            listOf(Price(15.0, Currency.getInstance("EUR"))),
-                            period = PaymentPeriod.MONTHS,
+                            items = listOf(
+                                SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS),
+                                SubscriptionFilterItem.Currency(
+                                    Price(15.0, Currency.getInstance("EUR")),
+                                ),
+                            ),
                             selectedItems = emptyList(),
                         ),
                         subscription.id,
@@ -247,8 +255,12 @@ class OverviewViewModelTest {
                             ),
                         ),
                         filter = SubscriptionFilter(
-                            listOf(Price(15.0, Currency.getInstance("EUR"))),
-                            period = PaymentPeriod.MONTHS,
+                            items = listOf(
+                                SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS),
+                                SubscriptionFilterItem.Currency(
+                                    Price(15.0, Currency.getInstance("EUR")),
+                                ),
+                            ),
                             selectedItems = emptyList(),
                         ),
                     ),
@@ -353,7 +365,6 @@ class OverviewViewModelTest {
                 )
                 runCurrent()
 
-                skipItems(1) // Skip filter selection emission
                 val updatedSubscriptions = (awaitItem() as OverviewState.Loaded).subscriptions
                 assertThat(updatedSubscriptions).isNotEqualTo(initialSubscriptions)
                 assertThat(cancelAndConsumeRemainingEvents()).isEmpty()

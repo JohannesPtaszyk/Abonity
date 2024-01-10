@@ -44,6 +44,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 
+private const val SUBSCRIPTION_FILTER = "SubscriptionFilter"
+private const val SUBSCRIPTION_CARD = "SubscriptionFilter"
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun OverviewScreen(
@@ -71,17 +74,20 @@ fun OverviewScreen(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     state = listState,
                 ) {
-                    item {
+                    item(
+                        key = SUBSCRIPTION_FILTER,
+                        contentType = SUBSCRIPTION_FILTER,
+                    ) {
                         SubscriptionFilter(
                             state.filter,
                             onItemSelected = onFilterItemSelected,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().animateItemPlacement(),
                         )
                     }
                     items(
                         state.subscriptions,
                         key = { it.subscription.id.value },
-                        contentType = { "Subscription Card" },
+                        contentType = { SUBSCRIPTION_CARD },
                     ) { subscription ->
                         val isSelected = remember(subscription.subscription, state.detailId) {
                             subscription.subscription.id == state.detailId
@@ -93,9 +99,7 @@ fun OverviewScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .animateItemPlacement(),
-                            onClick = {
-                                onSubscriptionClick(subscription.subscription.id)
-                            },
+                            onClick = { onSubscriptionClick(subscription.subscription.id) },
                             isSelected = isSelected,
                         )
                     }
@@ -153,11 +157,8 @@ private fun OverviewScreenPreview() {
                     }
                 }.toImmutableList(),
                 filter = SubscriptionFilter(
-                    listOf(
-                        Price(99.99, Currency.getInstance("EUR")),
-                    ),
-                    PaymentPeriod.MONTHS,
-                    listOf(),
+                    emptyList(),
+                    emptyList(),
                 ),
             ),
             onSubscriptionClick = {
