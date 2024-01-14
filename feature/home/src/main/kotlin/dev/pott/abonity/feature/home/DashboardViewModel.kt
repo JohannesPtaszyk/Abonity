@@ -7,7 +7,6 @@ import dev.pott.abonity.core.domain.notification.NotificationTeaserRepository
 import dev.pott.abonity.core.domain.notification.usecase.ShouldShowNotificationTeaserUseCase
 import dev.pott.abonity.core.domain.subscription.usecase.GetUpcomingSubscriptionsUseCase
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -30,7 +29,7 @@ class DashboardViewModel @Inject constructor(
         selectedId,
     ) { subscriptions, shouldShowNotificationTeaser, selectedId ->
         DashboardState.Loaded(
-            upcomingSubscriptions = subscriptions.toImmutableList(),
+            upcomingSubscriptions = subscriptions,
             selectedId = selectedId,
             shouldShowNotificationTeaser = shouldShowNotificationTeaser,
         )

@@ -4,7 +4,7 @@ import dev.pott.abonity.common.injection.Dispatcher
 import dev.pott.abonity.common.injection.Dispatcher.Type.DEFAULT
 import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.subscription.getLastDayOfCurrentPeriod
-import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -20,16 +20,20 @@ class GetUpcomingSubscriptionsUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository,
     @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
-    operator fun invoke(): Flow<List<SubscriptionWithPeriodInfo>> {
+    operator fun invoke(): Flow<UpcomingSubscriptions> {
         return combine(
             getSubscriptionsWithPeriodPrice(),
             settingsRepository.getSettingsFlow(),
         ) { subscriptions, settings ->
             val today = clock.todayIn(TimeZone.currentSystemDefault())
-            subscriptions.filter {
-                val lastDayOfCurrentPeriod = today.getLastDayOfCurrentPeriod(settings.period)
-                it.nextPaymentDate in today..lastDayOfCurrentPeriod
-            }
+            UpcomingSubscriptions(
+                subscriptions.filter {
+                    val lastDayOfCurrentPeriod = today.getLastDayOfCurrentPeriod(settings.period)
+                    it.nextPaymentDate in today..lastDayOfCurrentPeriod
+                },
+                subscriptions.isNotEmpty(),
+                settings.period,
+            )
         }.flowOn(defaultDispatcher)
     }
 }

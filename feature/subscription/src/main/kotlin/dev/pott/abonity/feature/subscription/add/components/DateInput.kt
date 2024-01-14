@@ -206,7 +206,7 @@ private fun PeriodDropDown(
             readOnly = true,
             value = period?.let {
                 val textRes = paymentPeriodPluralRes(it = it)
-                pluralStringResource(id = textRes, currentPeriodCount ?: 0)
+                pluralStringResource(id = textRes, currentPeriodCount ?: 0).uppercase()
             }.orEmpty(),
             onValueChange = {},
             label = { Text(text = stringResource(id = R.string.subscription_add_label_period)) },
@@ -230,7 +230,12 @@ private fun PeriodDropDown(
                 ListItem(
                     headlineContent = {
                         val textRes = paymentPeriodPluralRes(it)
-                        Text(text = pluralStringResource(id = textRes, currentPeriodCount ?: 0))
+                        Text(
+                            text = pluralStringResource(
+                                id = textRes,
+                                currentPeriodCount ?: 0,
+                            ).uppercase(),
+                        )
                     },
                     modifier = Modifier.clickable(
                         role = Role.Button,

@@ -10,6 +10,7 @@ fun NavGraphBuilder.homeGraph(
     openDetails: (subscriptionId: SubscriptionId) -> Unit,
     openSubscriptions: () -> Unit,
     openNotificationSettings: () -> Unit,
+    openAddScreen: () -> Unit,
 ) {
     navigation(
         destination = HomeNavigationDestination,
@@ -21,6 +22,7 @@ fun NavGraphBuilder.homeGraph(
                 openDetails = openDetails,
                 openSubscriptions = openSubscriptions,
                 openNotificationSettings = openNotificationSettings,
+                openAddScreen = openAddScreen,
             )
         }
     }

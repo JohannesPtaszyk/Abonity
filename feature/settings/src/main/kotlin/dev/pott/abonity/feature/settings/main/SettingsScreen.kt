@@ -115,13 +115,11 @@ private fun LazyListScope.SubscriptionSettings(
         ) {
             ListItem(
                 headlineContent = {
-                    Text(
-                        text = stringResource(id = R.string.settings_period_item_label),
-                    )
+                    Text(text = stringResource(id = R.string.settings_period_item_label))
                 },
                 supportingContent = {
                     val labelRes = paymentPeriodPluralRes(settings.period)
-                    Text(text = pluralStringResource(id = labelRes, count = 1))
+                    Text(text = pluralStringResource(id = labelRes, count = 1).uppercase())
                 },
                 leadingContent = {
                     Icon(

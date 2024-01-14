@@ -4,29 +4,19 @@ import android.Manifest
 import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -57,14 +48,16 @@ import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.core.ui.util.plus
-import kotlinx.collections.immutable.toImmutableList
+import dev.pott.abonity.feature.home.components.NoSubscriptionTeaser
+import dev.pott.abonity.feature.home.components.NoUpcomingSubscriptionTeaser
+import dev.pott.abonity.feature.home.components.NotificationPermissionTeaser
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -79,6 +72,7 @@ fun DashboardScreen(
     openDetails: (id: SubscriptionId) -> Unit,
     openSubscriptions: () -> Unit,
     openNotificationSettings: () -> Unit,
+    openAddScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -93,10 +87,12 @@ fun DashboardScreen(
         openSubscriptions,
         openNotificationSettings,
         viewModel::closeNotificationTeaser,
+        openAddScreen,
         modifier,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     state: DashboardState,
@@ -104,30 +100,52 @@ fun DashboardScreen(
     onOpenSubscriptionsClick: () -> Unit,
     onOpenNotificationSettingsClick: () -> Unit,
     onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
+    onAddNewSubscriptionClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AnimatedContent(
-        targetState = state,
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.home_screen_title))
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
         modifier = modifier,
-        label = "content_animation",
-    ) { dashboardState ->
-        when (dashboardState) {
-            is DashboardState.Loaded -> {
-                LoadedContent(
-                    onOpenNotificationSettingsClick,
-                    dashboardState,
-                    onCloseNotificationTeaserClick,
-                    onOpenSubscriptionsClick,
-                    onSubscriptionClick,
-                )
-            }
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = state,
+            contentKey = {
+                when (state) {
+                    is DashboardState.Loaded -> "Loaded"
+                    DashboardState.Loading -> "Loading"
+                }
+            },
+            modifier = Modifier.padding(paddingValues),
+            label = "content_animation",
+        ) { dashboardState ->
+            when (dashboardState) {
+                is DashboardState.Loaded -> {
+                    LoadedContent(
+                        onOpenNotificationSettingsClick,
+                        dashboardState,
+                        onCloseNotificationTeaserClick,
+                        onOpenSubscriptionsClick,
+                        onSubscriptionClick,
+                        onAddNewSubscriptionClicked,
+                        scrollBehavior.nestedScrollConnection,
+                    )
+                }
 
-            DashboardState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+                DashboardState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
@@ -146,8 +164,9 @@ private fun LoadedContent(
     onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
     onOpenSubscriptionsClick: () -> Unit,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
+    onAddNewSubscriptionClicked: () -> Unit,
+    nestedScrollConnection: NestedScrollConnection,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showNotificationDialog by remember { mutableStateOf(false) }
     val notificationPermissionState =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -169,76 +188,89 @@ private fun LoadedContent(
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.home_screen_title))
-                },
-                scrollBehavior = scrollBehavior,
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        modifier = Modifier.nestedScroll(nestedScrollConnection),
+    ) {
+        val shouldShowNotificationTeaser = dashboardState.shouldShowNotificationTeaser
+        if (showNotificationTeaser(
+                notificationPermissionState,
+                shouldShowNotificationTeaser,
             )
-        },
-    ) { paddingValues ->
-        LazyColumn(
-            contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
-            val shouldShowNotificationTeaser = dashboardState.shouldShowNotificationTeaser
-            if (showNotificationTeaser(
-                    notificationPermissionState,
-                    shouldShowNotificationTeaser,
-                )
+            item(
+                key = "notification_permission_teaser",
+                contentType = "notification_permission_teaser",
             ) {
-                item(
-                    key = "notification_permission_teaser",
-                    contentType = "notification_permission_teaser",
-                ) {
-                    NotificationPermissionTeaser(
-                        notificationPermissionState,
-                        onCloseClicked = onCloseNotificationTeaserClick,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-            if (dashboardState.upcomingSubscriptions.isNotEmpty()) {
-                item(
-                    key = "header_upcoming_subscriptions",
-                    contentType = "section_header",
-                ) {
-                    SectionHeader(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
-                        action = {
-                            TextButton(onClick = onOpenSubscriptionsClick) {
-                                Text(stringResource(R.string.home_btn_open_subscriptions))
-                            }
-                        },
-                    ) {
-                        Text(text = stringResource(id = R.string.home_upcoming_subscriptions_label))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-            itemsIndexed(
-                dashboardState.upcomingSubscriptions,
-                key = { _, item -> item.subscription.id.value },
-                contentType = { _, _ -> "subscription_card" },
-            ) { i, subscription ->
-                SubscriptionCard(
-                    subscription.subscription,
-                    subscription.periodPrice,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateItemPlacement(),
-                    onClick = {
-                        onSubscriptionClick(subscription.subscription.id)
-                    },
-                    isSelected = subscription.subscription.id == dashboardState.selectedId,
+                NotificationPermissionTeaser(
+                    notificationPermissionState,
+                    onCloseClicked = onCloseNotificationTeaserClick,
                 )
-                if (i != dashboardState.upcomingSubscriptions.lastIndex) {
-                    Spacer(Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+        item(
+            key = "header_upcoming_subscriptions",
+            contentType = "section_header",
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            SectionHeader(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItemPlacement(),
+                action = {
+                    TextButton(onClick = onOpenSubscriptionsClick) {
+                        Text(stringResource(R.string.home_btn_open_subscriptions))
+                    }
+                },
+            ) {
+                Text(text = stringResource(id = R.string.home_upcoming_subscriptions_label))
+            }
+        }
+        val upcoming = dashboardState.upcomingSubscriptions
+        when {
+            upcoming.subscriptions.isEmpty() && upcoming.hasAnySubscriptions -> {
+                item(
+                    key = "no_upcoming_subscription_teaser",
+                    contentType = "no_upcoming_subscription_teaser",
+                ) {
+                    NoUpcomingSubscriptionTeaser(
+                        onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
+                        period = dashboardState.upcomingSubscriptions.period,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
+            }
+            upcoming.subscriptions.isEmpty() && !upcoming.hasAnySubscriptions -> {
+                item(
+                    key = "no_subscription_teaser",
+                    contentType = "no_subscription_teaser",
+                ) {
+                    NoSubscriptionTeaser(
+                        onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+        itemsIndexed(
+            dashboardState.upcomingSubscriptions.subscriptions,
+            key = { _, item -> item.subscription.id.value },
+            contentType = { _, _ -> "subscription_card" },
+        ) { index, subscription ->
+            SubscriptionCard(
+                subscription.subscription,
+                subscription.periodPrice,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItemPlacement(),
+                onClick = {
+                    onSubscriptionClick(subscription.subscription.id)
+                },
+                isSelected = subscription.subscription.id == dashboardState.selectedId,
+            )
+            if (index != dashboardState.upcomingSubscriptions.subscriptions.lastIndex) {
+                Spacer(Modifier.height(16.dp))
             }
         }
     }
@@ -257,67 +289,6 @@ private fun showNotificationTeaser(
             !notificationPermissionState.status.isGranted &&
             shouldShowNotificationTeaser
         )
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun NotificationPermissionTeaser(
-    notificationPermissionState: PermissionState,
-    onCloseClicked: (shouldNotShowAgain: Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var shouldNotShowAgain by remember { mutableStateOf(false) }
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        ),
-        modifier = modifier,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.notification_permission_teaser_title),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                IconButton(onClick = { onCloseClicked(shouldNotShowAgain) }) {
-                    Icon(
-                        rememberVectorPainter(image = AppIcons.Close),
-                        null,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(id = R.string.notification_permission_teaser_text))
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = shouldNotShowAgain,
-                    onCheckedChange = { shouldNotShowAgain = it },
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(id = R.string.notification_permission_teaser_checkbox),
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    notificationPermissionState.launchPermissionRequest()
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(text = stringResource(id = R.string.notification_permission_teaser_btn))
-            }
-        }
-    }
 }
 
 @Composable
@@ -376,25 +347,31 @@ private fun DashboardScreenPreview() {
     AppTheme {
         DashboardScreen(
             state = DashboardState.Loaded(
-                upcomingSubscriptions = buildList {
-                    repeat(5) { id ->
-                        SubscriptionWithPeriodInfo(
-                            subscription = Subscription(
-                                SubscriptionId(id.toLong()),
-                                "Name",
-                                description,
-                                paymentInfo = PaymentInfo(
-                                    Price(99.99, Currency.getInstance("EUR")),
-                                    Clock.System.now()
-                                        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                                    PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                UpcomingSubscriptions(
+                    subscriptions = buildList {
+                        repeat(5) { id ->
+                            SubscriptionWithPeriodInfo(
+                                subscription = Subscription(
+                                    SubscriptionId(id.toLong()),
+                                    "Name",
+                                    description,
+                                    paymentInfo = PaymentInfo(
+                                        Price(99.99, Currency.getInstance("EUR")),
+                                        Clock.System.now()
+                                            .toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                                        PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                                    ),
                                 ),
-                            ),
-                            periodPrice = Price(99.99, Currency.getInstance("EUR")),
-                            nextPaymentDate = LocalDate(2023, 12, 12),
-                        ).also { add(it) }
-                    }
-                }.toImmutableList(),
+                                periodPrice = Price(99.99, Currency.getInstance("EUR")),
+                                nextPaymentDate = LocalDate(2023, 12, 12),
+                            ).also { add(it) }
+                        }
+                    },
+                    hasAnySubscriptions = true,
+                    period = PaymentPeriod.MONTHS,
+                ),
+                selectedId = null,
+                shouldShowNotificationTeaser = true,
             ),
             onSubscriptionClick = {
                 // On Subscription click
@@ -407,6 +384,9 @@ private fun DashboardScreenPreview() {
             },
             onCloseNotificationTeaserClick = {
                 // On Close Notification Teaser Click
+            },
+            onAddNewSubscriptionClicked = {
+                // On Add New Subscription Clicked
             },
         )
     }

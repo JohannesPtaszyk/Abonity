@@ -2,7 +2,6 @@ package dev.pott.abonity.core.domain.subscription.usecase
 
 import app.cash.turbine.test
 import assertk.assertThat
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.common.test.InjectTestDispatcher
@@ -12,13 +11,13 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -33,7 +32,6 @@ class GetUpcomingSubscriptionsUseCaseTest {
     @InjectTestDispatcher
     lateinit var testDispatcher: CoroutineDispatcher
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `GIVEN upcoming subscriptions WHEN invoked THEN return filtered list`() {
         runTest {
@@ -60,7 +58,8 @@ class GetUpcomingSubscriptionsUseCaseTest {
             )
 
             val localSubscriptionFlow = flowOf(listOf(subscription1, subscription2, subscription3))
-            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val settingsRepository =
+                FakeSettingsRepository(createTestSettings(period = PaymentPeriod.MONTHS))
             val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
             val clock = FakeClock(now = Instant.parse("2022-02-01T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
@@ -79,17 +78,21 @@ class GetUpcomingSubscriptionsUseCaseTest {
 
             tested().test {
                 assertThat(awaitItem()).isEqualTo(
-                    listOf(
-                        SubscriptionWithPeriodInfo(
-                            subscription = subscription1,
-                            periodPrice = Price(14.0, Currency.getInstance("EUR")),
-                            nextPaymentDate = LocalDate(2022, 2, 1),
+                    UpcomingSubscriptions(
+                        subscriptions = listOf(
+                            SubscriptionWithPeriodInfo(
+                                subscription = subscription1,
+                                periodPrice = Price(14.0, Currency.getInstance("EUR")),
+                                nextPaymentDate = LocalDate(2022, 2, 1),
+                            ),
+                            SubscriptionWithPeriodInfo(
+                                subscription = subscription2,
+                                periodPrice = Price(2.0, Currency.getInstance("USD")),
+                                nextPaymentDate = LocalDate(2022, 2, 1),
+                            ),
                         ),
-                        SubscriptionWithPeriodInfo(
-                            subscription = subscription2,
-                            periodPrice = Price(2.0, Currency.getInstance("USD")),
-                            nextPaymentDate = LocalDate(2022, 2, 1),
-                        ),
+                        hasAnySubscriptions = true,
+                        period = PaymentPeriod.MONTHS,
                     ),
                 )
             }
@@ -109,7 +112,8 @@ class GetUpcomingSubscriptionsUseCaseTest {
 
             val localSubscriptionFlow = flowOf(listOf(subscription))
             val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
-            val settingsRepository = FakeSettingsRepository(createTestSettings())
+            val settingsRepository =
+                FakeSettingsRepository(createTestSettings(period = PaymentPeriod.MONTHS))
             val clock = FakeClock(now = Instant.parse("2022-02-02T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
 
@@ -126,7 +130,13 @@ class GetUpcomingSubscriptionsUseCaseTest {
             )
 
             tested().test {
-                assertThat(awaitItem()).isEmpty()
+                assertThat(awaitItem()).isEqualTo(
+                    UpcomingSubscriptions(
+                        subscriptions = emptyList(),
+                        true,
+                        PaymentPeriod.MONTHS,
+                    ),
+                )
             }
         }
     }

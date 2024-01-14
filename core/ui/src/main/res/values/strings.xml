@@ -33,23 +33,23 @@
         <item quantity="other">/\u00A0%1$d\u00A0years</item>
     </plurals>
     <plurals name="payment_period_dropdown_days">
-        <item quantity="one">Day</item>
-        <item quantity="other">Days</item>
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
     </plurals>
     <plurals name="payment_period_dropdown_weeks">
-        <item quantity="one">Week</item>
-        <item quantity="other">Weeks</item>
+        <item quantity="one">week</item>
+        <item quantity="other">weeks</item>
     </plurals>
     <plurals name="payment_period_dropdown_months">
-        <item quantity="one">Month</item>
-        <item quantity="other">Months</item>
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
     </plurals>
     <plurals name="payment_period_dropdown_years">
-        <item quantity="one">Year</item>
-        <item quantity="other">Years</item>
+        <item quantity="one">year</item>
+        <item quantity="other">years</item>
     </plurals>
     <string name="add_subscription_btn">New</string>
-    <string name="add_subscription_title">New subscription</string>
+    <string name="add_subscription_title">New Payment</string>
     <string name="app_name">Abonity</string>
     <string name="common_back_button_content_description">Go back to previous screen</string>
     <string name="common_close_button_content_description">Dismiss current screen</string>
@@ -57,24 +57,24 @@
     <string name="dialog_btn_dismiss_default">Cancel</string>
     <string name="home_btn_open_subscriptions">Show all</string>
     <string name="home_screen_title">Overview</string>
-    <string name="home_upcoming_subscriptions_label">Upcoming Subscriptions</string>
+    <string name="home_upcoming_subscriptions_label">Upcoming Payments</string>
     <string name="navigation_item_home">Home</string>
     <string name="navigation_item_settings">Settings</string>
-    <string name="navigation_item_subscription">Subscriptions</string>
+    <string name="navigation_item_subscription">Payments</string>
     <string name="notification_permission_teaser_title">Stay up-to-date!</string>
-    <string name="notification_permission_teaser_checkbox">Do not show again</string>
-    <string name="notification_permission_teaser_text">Get notified about upcoming payments and more.</string>
+    <string name="notification_permission_teaser_checkbox">Don\'t show again</string>
+    <string name="notification_permission_teaser_text">Grant us permission to send notification, to get updated about upcoming payments and more.</string>
     <string name="notification_permission_teaser_btn">Enable Notifications</string>
     <string name="notification_permission_dialog_settings_btn">Open Settings</string>
-    <string name="notification_permission_dialog_text">To always get notified for upcoming payments and more.</string>
+    <string name="notification_permission_dialog_text">Grant us permission to send notification, to get updated about upcoming payments and more.</string>
     <string name="notification_permission_dialog_title">Permission required</string>
-    <string name="overview_screen_title">Subscriptions</string>
+    <string name="overview_screen_title">Payments</string>
     <string name="settings_adaptive_colors_item_label">Adaptive Colors</string>
     <string name="settings_oss_item_label">Third Party Licenses</string>
     <string name="settings_notification_item_label">Notifications</string>
     <string name="settings_period_item_label">Payment Period</string>
     <string name="settings_screen_title">Settings</string>
-    <string name="settings_section_subscription">Subscription</string>
+    <string name="settings_section_subscription">Payments</string>
     <string name="settings_section_appearance">Appearance</string>
     <string name="settings_section_more">More</string>
     <string name="settings_theme_dark">Dark</string>
@@ -96,11 +96,15 @@
     <string name="subscription_add_save">One Time</string>
     <string name="subscription_card_first_payment_label">First Payment:</string>
     <string name="subscription_detail_description_label">Description</string>
-    <string name="subscription_detail_edit_label">Edit Subscription: %s</string>
+    <string name="subscription_detail_edit_label">Edit Payment: %s</string>
     <string name="subscription_detail_empty_label">Select an item to get more information!</string>
     <string name="subscription_detail_name_label">Name</string>
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
     <string name="subscription_filter_current_period">This %s</string>
+    <string name="no_upcoming_subscription_teaser_title">Great news! There is no more upcoming payment this %s!</string>
+    <string name="no_upcoming_subscription_teaser_cta">Add New Payment</string>
+    <string name="no_subscription_teaser_title">Get started and create your first payment!</string>
+    <string name="no_subscription_teaser_cta">Add New Payment</string>
 </resources>
