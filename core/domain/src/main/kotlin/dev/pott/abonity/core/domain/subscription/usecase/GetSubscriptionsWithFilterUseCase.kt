@@ -38,7 +38,9 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
                     subscriptions.map { it.subscription.paymentInfo },
                     PaymentPeriod.MONTHS,
                 )
-                val currencyFilterItems = totalPrices.map { SubscriptionFilterItem.Currency(it) }
+                val currencyFilterItems = totalPrices
+                    .map { SubscriptionFilterItem.Currency(it) }
+                    .sortedByDescending { it.price.value }
                 subscriptions to currencyFilterItems
             },
             settingsRepository.getSettingsFlow().map { it.period },
@@ -71,19 +73,21 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
         val from = today.getFirstDayOfCurrentPeriod(period)
         val to = today.getLastDayOfCurrentPeriod(period)
         return subscriptions.filter { subscriptionWithPeriodInfo ->
-            val appliedFilter = selectedFilterItems.map { filterItem ->
-                when (filterItem) {
-                    is SubscriptionFilterItem.Currency -> {
-                        val subscription = subscriptionWithPeriodInfo.subscription
-                        subscription.paymentInfo.price.currency == filterItem.price.currency
-                    }
+            val appliedFilter = selectedFilterItems.groupBy { it::class }.map { filterGroup ->
+                filterGroup.value.map { filterItem ->
+                    when (filterItem) {
+                        is SubscriptionFilterItem.Currency -> {
+                            val subscription = subscriptionWithPeriodInfo.subscription
+                            subscription.paymentInfo.price.currency == filterItem.price.currency
+                        }
 
-                    is SubscriptionFilterItem.CurrentPeriod -> {
-                        subscriptionWithPeriodInfo.nextPaymentDate in from..to
+                        is SubscriptionFilterItem.CurrentPeriod -> {
+                            subscriptionWithPeriodInfo.nextPaymentDate in from..to
+                        }
                     }
                 }
             }
-            appliedFilter.any { it }
+            appliedFilter.all { it.any { shouldBeShown -> shouldBeShown } }
         }
     }
 }
