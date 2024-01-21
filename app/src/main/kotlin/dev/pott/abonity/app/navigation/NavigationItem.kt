@@ -1,9 +1,6 @@
 package dev.pott.abonity.app.navigation
 
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.rounded.CreditCard
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons

@@ -1,6 +1,5 @@
 package dev.pott.abonity.core.ui.components.navigation
 
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
