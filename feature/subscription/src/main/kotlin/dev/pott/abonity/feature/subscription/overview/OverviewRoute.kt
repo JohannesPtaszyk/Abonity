@@ -1,6 +1,11 @@
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,17 +46,6 @@ fun OverviewRoute(
             closeDetails = overviewViewModel::consumeDetails,
             listState = listState,
         )
-        return
-    }
-
-    if ((overviewState as? OverviewState.Loaded)?.detailId != null) {
-        BackHandler { overviewViewModel.consumeDetails() }
-        DetailScreen(
-            state = detailState,
-            onEditClicked = onEditClick,
-            onDeleteClicked = overviewViewModel::delete,
-            close = overviewViewModel::consumeDetails,
-        )
     } else {
         OverviewScreen(
             state = overviewState,
@@ -60,5 +54,19 @@ fun OverviewRoute(
             onSwipeToDelete = overviewViewModel::delete,
             listState = listState,
         )
+        val showDetail = (overviewState as? OverviewState.Loaded)?.detailId != null
+        AnimatedVisibility(
+            showDetail,
+            enter = slideInHorizontally { it } + fadeIn(),
+            exit = slideOutHorizontally { it } + fadeOut(),
+        ) {
+            BackHandler { overviewViewModel.consumeDetails() }
+            DetailScreen(
+                state = detailState,
+                onEditClicked = onEditClick,
+                onDeleteClicked = overviewViewModel::delete,
+                close = overviewViewModel::consumeDetails,
+            )
+        }
     }
 }

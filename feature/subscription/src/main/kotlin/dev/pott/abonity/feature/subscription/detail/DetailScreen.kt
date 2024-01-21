@@ -1,9 +1,13 @@
 package dev.pott.abonity.feature.subscription.detail
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,123 +64,168 @@ fun DetailScreen(
     onDeleteClicked: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AnimatedContent(
-        targetState = state.subscription,
-        label = "detail_subscription_animation",
-        modifier = modifier.fillMaxSize(),
-    ) { subscription ->
-        if (subscription == null) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
-            return@AnimatedContent
-        }
-        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = subscription.name) },
-                    navigationIcon = { BackButton(close) },
-                    actions = {
-                        IconButton(onClick = { onEditClicked(subscription.id) }) {
-                            Icon(
-                                painter = rememberVectorPainter(image = AppIcons.Edit),
-                                contentDescription = stringResource(
-                                    id = R.string.subscription_detail_edit_label,
-                                    subscription.name,
-                                ),
-                            )
-                        }
-                        IconButton(onClick = { onDeleteClicked(subscription.id) }) {
-                            Icon(
-                                painter = rememberVectorPainter(image = AppIcons.Delete),
-                                contentDescription = stringResource(
-                                    id = R.string.subscription_detail_delete_label,
-                                    subscription.name,
-                                ),
-                            )
-                        }
-                    },
-                    scrollBehavior = scrollBehavior,
-                )
-            },
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        ) { paddingValues ->
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(paddingValues),
-            ) {
-                PaymentInfoCard(
-                    subscription.paymentInfo,
-                    Modifier.padding(horizontal = 16.dp),
-                )
-                Spacer(Modifier.height(16.dp))
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        Text(text = subscription.name)
-                    },
-                    overlineContent = {
-                        Text(text = stringResource(id = R.string.subscription_detail_name_label))
-                    },
-                )
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        Text(text = subscription.description)
-                    },
-                    overlineContent = {
-                        Text(
-                            text = stringResource(
-                                id = R.string.subscription_detail_description_label,
-                            ),
-                        )
-                    },
-                )
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        FormattedDate(date = subscription.paymentInfo.firstPayment)
-                    },
-                    overlineContent = {
-                        Text(
-                            text = stringResource(
-                                id = R.string.subscription_first_payment_date_label,
-                            ),
-                        )
-                    },
-                )
-                state.nextPayment?.let { nextPayment ->
-                    Divider()
-                    ListItem(
-                        headlineContent = {
-                            FormattedDate(date = nextPayment)
-                        },
-                        overlineContent = {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.subscription_next_payment_date_label,
-                                ),
-                            )
-                        },
+    val subscription = state.subscription
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Crossfade(
+                        targetState = subscription?.name.orEmpty(),
+                        label = "title_animation",
+                    ) { name ->
+                        Text(text = name)
+                    }
+                },
+                navigationIcon = { BackButton(close) },
+                actions = {
+                    DetailActions(subscription, onEditClicked, onDeleteClicked)
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    ) { paddingValues ->
+        Crossfade(
+            targetState = state.subscription == null,
+            label = "content_subscription_animation",
+            modifier = Modifier.fillMaxSize(),
+        ) { isLoading ->
+            if (isLoading) {
+                DetailLoadingContent(Modifier.fillMaxSize())
+            } else {
+                subscription?.let {
+                    DetailLoadedContent(
+                        it,
+                        state,
+                        Modifier.padding(paddingValues),
                     )
                 }
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        Text(text = subscription.id.value.toString())
-                    },
-                    overlineContent = {
-                        Text(text = stringResource(id = R.string.subscription_id_label))
-                    },
-                )
             }
         }
+    }
+}
+
+@Composable
+private fun DetailActions(
+    subscription: Subscription?,
+    onEditClicked: (SubscriptionId) -> Unit,
+    onDeleteClicked: (SubscriptionId) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedVisibility(
+        subscription != null,
+        modifier = modifier,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Row {
+            subscription?.let {
+                IconButton(onClick = { onEditClicked(subscription.id) }) {
+                    Icon(
+                        painter = rememberVectorPainter(image = AppIcons.Edit),
+                        contentDescription = stringResource(
+                            id = R.string.subscription_detail_edit_label,
+                            subscription.name,
+                        ),
+                    )
+                }
+                IconButton(onClick = { onDeleteClicked(subscription.id) }) {
+                    Icon(
+                        painter = rememberVectorPainter(image = AppIcons.Delete),
+                        contentDescription = stringResource(
+                            id = R.string.subscription_detail_delete_label,
+                            subscription.name,
+                        ),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailLoadingContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun DetailLoadedContent(
+    subscription: Subscription,
+    state: DetailState,
+    modifier: Modifier = Modifier,
+) {
+    val scrollState = rememberScrollState()
+    Column(modifier = modifier.verticalScroll(scrollState)) {
+        PaymentInfoCard(
+            subscription.paymentInfo,
+            Modifier.padding(horizontal = 16.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+        Divider()
+        ListItem(
+            headlineContent = {
+                Text(text = subscription.name)
+            },
+            overlineContent = {
+                Text(text = stringResource(id = R.string.subscription_detail_name_label))
+            },
+        )
+        Divider()
+        ListItem(
+            headlineContent = {
+                Text(text = subscription.description)
+            },
+            overlineContent = {
+                Text(
+                    text = stringResource(
+                        id = R.string.subscription_detail_description_label,
+                    ),
+                )
+            },
+        )
+        Divider()
+        ListItem(
+            headlineContent = {
+                FormattedDate(date = subscription.paymentInfo.firstPayment)
+            },
+            overlineContent = {
+                Text(
+                    text = stringResource(
+                        id = R.string.subscription_first_payment_date_label,
+                    ),
+                )
+            },
+        )
+        state.nextPayment?.let { nextPayment ->
+            Divider()
+            ListItem(
+                headlineContent = {
+                    FormattedDate(date = nextPayment)
+                },
+                overlineContent = {
+                    Text(
+                        text = stringResource(
+                            id = R.string.subscription_next_payment_date_label,
+                        ),
+                    )
+                },
+            )
+        }
+        Divider()
+        ListItem(
+            headlineContent = {
+                Text(text = subscription.id.value.toString())
+            },
+            overlineContent = {
+                Text(text = stringResource(id = R.string.subscription_id_label))
+            },
+        )
     }
 }
 
@@ -203,36 +252,35 @@ private fun PaymentInfoCard(paymentInfo: PaymentInfo, modifier: Modifier = Modif
             )
             val paymentType = paymentInfo.type
             if (paymentType is PaymentType.Periodic) {
-                val period =
-                    when (paymentType.period) {
-                        PaymentPeriod.DAYS ->
-                            pluralStringResource(
-                                id = R.plurals.payment_per_days,
-                                count = paymentType.periodCount,
-                                paymentType.periodCount,
-                            )
+                val period = when (paymentType.period) {
+                    PaymentPeriod.DAYS ->
+                        pluralStringResource(
+                            id = R.plurals.payment_per_days,
+                            count = paymentType.periodCount,
+                            paymentType.periodCount,
+                        )
 
-                        PaymentPeriod.WEEKS ->
-                            pluralStringResource(
-                                id = R.plurals.payment_per_weeks,
-                                count = paymentType.periodCount,
-                                paymentType.periodCount,
-                            )
+                    PaymentPeriod.WEEKS ->
+                        pluralStringResource(
+                            id = R.plurals.payment_per_weeks,
+                            count = paymentType.periodCount,
+                            paymentType.periodCount,
+                        )
 
-                        PaymentPeriod.MONTHS ->
-                            pluralStringResource(
-                                id = R.plurals.payment_per_months,
-                                count = paymentType.periodCount,
-                                paymentType.periodCount,
-                            )
+                    PaymentPeriod.MONTHS ->
+                        pluralStringResource(
+                            id = R.plurals.payment_per_months,
+                            count = paymentType.periodCount,
+                            paymentType.periodCount,
+                        )
 
-                        PaymentPeriod.YEARS ->
-                            pluralStringResource(
-                                id = R.plurals.payment_per_weeks,
-                                count = paymentType.periodCount,
-                                paymentType.periodCount,
-                            )
-                    }
+                    PaymentPeriod.YEARS ->
+                        pluralStringResource(
+                            id = R.plurals.payment_per_weeks,
+                            count = paymentType.periodCount,
+                            paymentType.periodCount,
+                        )
+                }
                 Text(
                     style = MaterialTheme.typography.labelLarge,
                     text = period,
