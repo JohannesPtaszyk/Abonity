@@ -21,7 +21,7 @@ fun KoverReportFilters.coverageExclusions() {
             "dagger.**",
             "_**",
             "**Activity**",
-            "**Module**"
+            "**Module**",
         )
         annotatedBy(
             "*Generated*",
@@ -55,7 +55,7 @@ fun Project.applyKoverAndroid() {
         }
         androidReports("debug") {
             filters {
-               coverageExclusions()
+                coverageExclusions()
             }
         }
         filters {

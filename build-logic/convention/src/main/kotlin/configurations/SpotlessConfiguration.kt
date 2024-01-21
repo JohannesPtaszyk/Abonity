@@ -8,19 +8,49 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
 fun Project.applySpotless() {
-    subprojects {
-        plugins.apply(SpotlessPlugin::class)
-        configure<SpotlessExtension> {
-            kotlin {
-                target("**/*.kt")
-                targetExclude("**/build/**", "**/tmp/**", "**/.gradle/**")
+    plugins.apply(SpotlessPlugin::class)
+    configureSpotless()
+}
 
-                val ktlintVersion = libs.findVersion("ktlint").get().toString()
-                ktlint(ktlintVersion).editorConfigOverride(mapOf("android" to "true"))
-            }
-            format("xml") {
-                target("**/*.xml")
-            }
+private fun Project.configureSpotless() {
+    configure<SpotlessExtension> {
+        format("misc") {
+            // define the files to apply `misc` to
+            target("**/*.gradle', '**/*.md', '**/.gitignore")
+
+            // define the steps to apply to those files
+            indentWithSpaces()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+
+        kotlin {
+            target("**/*.kt", "**/*.kts")
+            targetExclude("**/build/**", "**/tmp/**", "**/.gradle/**")
+
+            val ktlintVersion = libs.findVersion("ktlint").get().toString()
+            ktlint(ktlintVersion).editorConfigOverride(mapOf("android" to "true"))
+        }
+
+        format("xml") {
+            target("**/*.xml")
+        }
+
+        json {
+            target("src/**/*.json")
+            simple()
+        }
+
+        format("toml") {
+            target("**/*.toml")
+            prettier(
+                mapOf(
+                    "prettier" to "latest",
+                    "prettier-plugin-toml" to "latest",
+                ),
+            ).config(
+                mapOf("parser" to "toml", "plugins" to listOf("prettier-plugin-toml")),
+            )
         }
     }
 }

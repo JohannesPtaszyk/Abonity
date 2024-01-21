@@ -6,7 +6,7 @@ import androidx.navigation.activity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dev.pott.abonity.feature.home.homeGraph
 import dev.pott.abonity.feature.settings.main.settingsNavGraph
-import dev.pott.abonity.feature.subscription.add.AddScreenDestination
+import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 import dev.pott.abonity.feature.subscription.overview.OverviewScreenDestination
 import dev.pott.abonity.feature.subscription.subscriptionGraph
 import dev.pott.abonity.navigation.destination.setDestination
@@ -30,7 +30,7 @@ fun NavGraphBuilder.appNavGraph(
         },
         openSubscriptions = { navController.navigateTabItem(NavigationItem.SUBSCRIPTION) },
         openNotificationSettings = openNotificationSettings,
-        openAddScreen = { navController.navigate(AddScreenDestination.route) },
+        openAddScreen = { navController.navigateToAddScreen() },
     )
     subscriptionGraph(state.subscriptionGraphState, navController)
     settingsNavGraph(

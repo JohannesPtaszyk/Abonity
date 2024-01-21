@@ -31,5 +31,4 @@ dependencies {
     testImplementation(projects.common.test)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
-
 }
