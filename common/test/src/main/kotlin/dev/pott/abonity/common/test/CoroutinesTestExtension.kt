@@ -25,7 +25,7 @@ class CoroutinesTestExtension : BeforeEachCallback, AfterEachCallback {
         for (field in fields) {
             if (field.isAnnotationPresent(InjectTestDispatcher::class.java)) {
                 field.isAccessible = true
-                field.set(testInstance, dispatcher)
+                field[testInstance] = dispatcher
             }
         }
     }

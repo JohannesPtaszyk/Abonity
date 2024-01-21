@@ -1,6 +1,5 @@
 package dev.pott.abonity.core.ui.components.navigation
 
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
