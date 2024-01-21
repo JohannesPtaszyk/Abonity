@@ -15,5 +15,11 @@ interface SubscriptionDao {
     fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>>
 
     @Query("SELECT * FROM subscription_entity WHERE id==:id")
-    fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity>
+    fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity?>
+
+    @Query("DELETE FROM subscription_entity WHERE id==:id")
+    suspend fun delete(id: Long)
+
+    @Query("DELETE FROM subscription_entity WHERE id IN (:ids)")
+    suspend fun delete(ids: List<Long>)
 }

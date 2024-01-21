@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.emptyFlow
 
 class FakeSubscriptionLocalDataSource(
     private val testSubscriptionsFlow: Flow<List<Subscription>> = emptyFlow(),
-    private val testSubscriptionFlow: Flow<Subscription> = emptyFlow(),
+    private val testSubscriptionFlow: Flow<Subscription?> = emptyFlow(),
 ) : SubscriptionLocalDataSource {
 
     val addedSubscriptions = mutableListOf<Subscription>()
+    val deletedSubscriptions = mutableListOf<SubscriptionId>()
 
     override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
         addedSubscriptions.add(subscription)
@@ -22,7 +23,15 @@ class FakeSubscriptionLocalDataSource(
         return testSubscriptionsFlow
     }
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
         return testSubscriptionFlow
+    }
+
+    override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
+        deletedSubscriptions.add(subscriptionId)
+    }
+
+    override suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>) {
+        deletedSubscriptions.addAll(subscriptionIds)
     }
 }

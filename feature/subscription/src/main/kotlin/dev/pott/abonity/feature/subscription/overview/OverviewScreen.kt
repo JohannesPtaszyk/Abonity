@@ -10,16 +10,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,6 +39,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.dismiss.DeleteDismissBackground
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilter
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
@@ -53,6 +60,7 @@ fun OverviewScreen(
     state: OverviewState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
+    onSwipeToDelete: (id: SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -81,26 +89,66 @@ fun OverviewScreen(
                         SubscriptionFilter(
                             state.filter,
                             onItemSelected = onFilterItemSelected,
-                            modifier = Modifier.fillMaxWidth().animateItemPlacement(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItemPlacement(),
                         )
                     }
                     items(
                         state.subscriptions,
                         key = { it.subscription.id.value },
                         contentType = { SUBSCRIPTION_CARD },
-                    ) { subscription ->
-                        val isSelected = remember(subscription.subscription, state.detailId) {
-                            subscription.subscription.id == state.detailId
+                    ) { subscriptionWithPeriodInfo ->
+                        val isSelected = remember(
+                            subscriptionWithPeriodInfo.subscription,
+                            state.detailId,
+                        ) {
+                            subscriptionWithPeriodInfo.subscription.id == state.detailId
                         }
-                        SubscriptionCard(
-                            subscription.subscription,
-                            subscription.periodPrice,
+                        val swipeToDismissState = rememberDismissState(
+                            confirmValueChange = {
+                                when (it) {
+                                    DismissValue.DismissedToEnd, DismissValue.DismissedToStart -> {
+                                        onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id)
+                                        true
+                                    }
+
+                                    DismissValue.Default -> {
+                                        false
+                                    }
+                                }
+                            },
+                            positionalThreshold = { 200.dp.toPx() },
+                        )
+                        SwipeToDismiss(
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
+                                .clipToBounds()
+                                .fillMaxWidth()
                                 .animateItemPlacement(),
-                            onClick = { onSubscriptionClick(subscription.subscription.id) },
-                            isSelected = isSelected,
+                            state = swipeToDismissState,
+                            background = {
+                                DeleteDismissBackground(
+                                    modifier = Modifier.clip(CardDefaults.shape),
+                                    dismissState = swipeToDismissState,
+                                    contentDescription = stringResource(
+                                        id = R.string.subscription_overview_swipe_delete_label,
+                                        subscriptionWithPeriodInfo.subscription.name,
+                                    ),
+                                )
+                            },
+                            dismissContent = {
+                                SubscriptionCard(
+                                    subscriptionWithPeriodInfo.subscription,
+                                    subscriptionWithPeriodInfo.periodPrice,
+                                    onClick = {
+                                        onSubscriptionClick(
+                                            subscriptionWithPeriodInfo.subscription.id,
+                                        )
+                                    },
+                                    isSelected = isSelected,
+                                )
+                            },
                         )
                     }
                 }
@@ -166,6 +214,9 @@ private fun OverviewScreenPreview() {
             },
             onFilterItemSelected = {
                 // On Filter Item Selected
+            },
+            onSwipeToDelete = {
+                // On Swipe to delete
             },
         )
     }

@@ -7,5 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface SubscriptionLocalDataSource {
     suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription
     fun getSubscriptionsFlow(): Flow<List<Subscription>>
-    fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription>
+    fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?>
+    suspend fun deleteSubscription(subscriptionId: SubscriptionId)
+    suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>)
 }

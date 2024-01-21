@@ -8,4 +8,5 @@ import kotlinx.datetime.LocalDate
 data class DetailState(
     val subscription: Subscription? = null,
     val nextPayment: LocalDate? = null,
+    val close: Boolean = false,
 )

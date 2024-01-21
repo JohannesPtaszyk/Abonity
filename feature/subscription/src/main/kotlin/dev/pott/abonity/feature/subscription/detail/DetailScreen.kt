@@ -56,7 +56,8 @@ import java.util.Currency
 fun DetailScreen(
     state: DetailState,
     close: () -> Unit,
-    onEditClick: (SubscriptionId) -> Unit,
+    onEditClicked: (SubscriptionId) -> Unit,
+    onDeleteClicked: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
@@ -80,11 +81,20 @@ fun DetailScreen(
                     title = { Text(text = subscription.name) },
                     navigationIcon = { BackButton(close) },
                     actions = {
-                        IconButton(onClick = { onEditClick(subscription.id) }) {
+                        IconButton(onClick = { onEditClicked(subscription.id) }) {
                             Icon(
                                 painter = rememberVectorPainter(image = AppIcons.Edit),
                                 contentDescription = stringResource(
                                     id = R.string.subscription_detail_edit_label,
+                                    subscription.name,
+                                ),
+                            )
+                        }
+                        IconButton(onClick = { onDeleteClicked(subscription.id) }) {
+                            Icon(
+                                painter = rememberVectorPainter(image = AppIcons.Delete),
+                                contentDescription = stringResource(
+                                    id = R.string.subscription_detail_delete_label,
                                     subscription.name,
                                 ),
                             )
@@ -263,8 +273,11 @@ private fun DetailScreenPreview() {
             close = {
                 // Close Screen
             },
-            onEditClick = {
+            onEditClicked = {
                 // Open Edit Screen
+            },
+            onDeleteClicked = {
+                // Delete
             },
         )
     }

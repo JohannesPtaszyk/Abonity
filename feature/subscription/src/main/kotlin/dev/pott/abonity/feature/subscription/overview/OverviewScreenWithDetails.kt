@@ -49,7 +49,8 @@ fun OverviewScreenWithDetails(
     detailState: DetailState,
     onSubscriptionClicked: (id: SubscriptionId) -> Unit,
     onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
-    onEditClick: (id: SubscriptionId) -> Unit,
+    onEditClicked: (id: SubscriptionId) -> Unit,
+    onDeleteClicked: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
@@ -63,6 +64,7 @@ fun OverviewScreenWithDetails(
             state = overviewState,
             onSubscriptionClick = onSubscriptionClicked,
             onFilterItemSelected = onFilterItemSelected,
+            onSwipeToDelete = onDeleteClicked,
             listState = listState,
             modifier = Modifier.weight(1f),
         )
@@ -75,7 +77,8 @@ fun OverviewScreenWithDetails(
                 close = {
                     closeDetails()
                 },
-                onEditClick = onEditClick,
+                onEditClicked = onEditClicked,
+                onDeleteClicked = onDeleteClicked,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -165,7 +168,8 @@ private fun OverviewWithDetailScreenPreview() {
             ),
             onSubscriptionClicked = {},
             onFilterItemSelected = {},
-            onEditClick = {},
+            onEditClicked = {},
+            onDeleteClicked = {},
             closeDetails = {},
         )
     }

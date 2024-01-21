@@ -18,39 +18,37 @@ class RoomSubscriptionDataSourceTest {
     @Test
     fun `GIVEN flow of subscription entities WHEN getSubscriptionFlow THEN return flow of domain subscriptions`() {
         runTest {
-            val entities =
-                listOf(
-                    createSubscriptionEntityWithPeriodicPayment(id = 1),
-                    createSubscriptionEntityWithOneTimePayment(id = 2),
-                )
+            val entities = listOf(
+                createSubscriptionEntityWithPeriodicPayment(id = 1),
+                createSubscriptionEntityWithOneTimePayment(id = 2),
+            )
             val dao = FakeSubscriptionDao(initialEntities = entities)
             val dataSource = RoomSubscriptionDataSource(dao)
 
-            val expected =
-                listOf(
-                    createTestSubscription(
-                        id = 1,
-                        name = "Name Periodic",
-                        description = "Description Periodic",
-                        paymentInfo =
-                        createTestPaymentInfo(
-                            type =
-                            PaymentType.Periodic(
-                                periodCount = 1,
-                                period = PaymentPeriod.MONTHS,
-                            ),
+            val expected = listOf(
+                createTestSubscription(
+                    id = 1,
+                    name = "Name Periodic",
+                    description = "Description Periodic",
+                    paymentInfo =
+                    createTestPaymentInfo(
+                        type =
+                        PaymentType.Periodic(
+                            periodCount = 1,
+                            period = PaymentPeriod.MONTHS,
                         ),
                     ),
-                    createTestSubscription(
-                        id = 2,
-                        name = "Name One Time",
-                        description = "Description One Time",
-                        paymentInfo =
-                        createTestPaymentInfo(
-                            type = PaymentType.OneTime,
-                        ),
+                ),
+                createTestSubscription(
+                    id = 2,
+                    name = "Name One Time",
+                    description = "Description One Time",
+                    paymentInfo =
+                    createTestPaymentInfo(
+                        type = PaymentType.OneTime,
                     ),
-                )
+                ),
+            )
             dataSource.getSubscriptionsFlow().test {
                 assertThat(awaitItem()).isEqualTo(expected)
             }

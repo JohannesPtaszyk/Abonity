@@ -17,7 +17,15 @@ class SubscriptionRepositoryImpl @Inject constructor(
         return localDataSource.getSubscriptionsFlow()
     }
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
         return localDataSource.getSubscriptionFlow(subscriptionId)
+    }
+
+    override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
+        localDataSource.deleteSubscription(subscriptionId)
+    }
+
+    override suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>) {
+        localDataSource.deleteSubscriptions(subscriptionIds)
     }
 }

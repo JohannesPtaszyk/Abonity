@@ -43,4 +43,19 @@ class SubscriptionRepositoryImplTest {
             assertThat(result).isEqualTo(localSubscriptions)
         }
     }
+
+    @Test
+    fun `GIVEN subscription ID WHEN deleteSubscription THEN deletes local subscription`() {
+        runTest {
+            val subscription = createTestSubscription()
+            val localSubscriptions = flowOf(subscription)
+            val fakeLocalDataSource = FakeSubscriptionLocalDataSource(
+                testSubscriptionFlow = localSubscriptions,
+            )
+
+            val tested = SubscriptionRepositoryImpl(fakeLocalDataSource)
+            tested.deleteSubscription(subscription.id)
+            assertThat(fakeLocalDataSource.deletedSubscriptions).isEqualTo(listOf(subscription.id))
+        }
+    }
 }

@@ -36,7 +36,8 @@ fun OverviewRoute(
             detailState = detailState,
             onSubscriptionClicked = overviewViewModel::openDetails,
             onFilterItemSelected = overviewViewModel::toggleFilter,
-            onEditClick = onEditClick,
+            onEditClicked = onEditClick,
+            onDeleteClicked = overviewViewModel::delete,
             closeDetails = overviewViewModel::consumeDetails,
             listState = listState,
         )
@@ -47,7 +48,8 @@ fun OverviewRoute(
         BackHandler { overviewViewModel.consumeDetails() }
         DetailScreen(
             state = detailState,
-            onEditClick = onEditClick,
+            onEditClicked = onEditClick,
+            onDeleteClicked = overviewViewModel::delete,
             close = overviewViewModel::consumeDetails,
         )
     } else {
@@ -55,6 +57,7 @@ fun OverviewRoute(
             state = overviewState,
             onSubscriptionClick = overviewViewModel::openDetails,
             onFilterItemSelected = overviewViewModel::toggleFilter,
+            onSwipeToDelete = overviewViewModel::delete,
             listState = listState,
         )
     }

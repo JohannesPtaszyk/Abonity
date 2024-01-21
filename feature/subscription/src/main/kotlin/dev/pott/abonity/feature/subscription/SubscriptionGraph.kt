@@ -23,9 +23,7 @@ fun NavGraphBuilder.subscriptionGraph(
         composable(OverviewScreenDestination) {
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
-                onEditClick = {
-                    navController.navigateToAddScreen(it)
-                },
+                onEditClick = { navController.navigateToAddScreen(it) },
             )
         }
     }

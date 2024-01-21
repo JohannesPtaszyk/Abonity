@@ -54,20 +54,22 @@ class AddViewModel @Inject constructor(
     val state: StateFlow<AddState> = if (args.subscriptionId != null) {
         val prefilledInputState = flow {
             val subscription = repository.getSubscriptionFlow(args.subscriptionId).first()
-            val periodicType = (subscription.paymentInfo.type as? PaymentType.Periodic)
-            val priceValue = subscription.paymentInfo.price.value.toString()
-            inputState.value = AddFormState(
-                TimeUnit.DAYS.toMillis(
-                    subscription.paymentInfo.firstPayment.toEpochDays().toLong(),
-                ),
-                name = subscription.name,
-                description = subscription.description,
-                priceValue = priceValue,
-                currency = subscription.paymentInfo.price.currency,
-                isOneTimePayment = subscription.paymentInfo.type == PaymentType.OneTime,
-                paymentPeriod = periodicType?.period,
-                paymentPeriodCount = periodicType?.periodCount,
-            )
+            if (subscription != null) {
+                val periodicType = (subscription.paymentInfo.type as? PaymentType.Periodic)
+                val priceValue = subscription.paymentInfo.price.value.toString()
+                inputState.value = AddFormState(
+                    TimeUnit.DAYS.toMillis(
+                        subscription.paymentInfo.firstPayment.toEpochDays().toLong(),
+                    ),
+                    name = subscription.name,
+                    description = subscription.description,
+                    priceValue = priceValue,
+                    currency = subscription.paymentInfo.price.currency,
+                    isOneTimePayment = subscription.paymentInfo.type == PaymentType.OneTime,
+                    paymentPeriod = periodicType?.period,
+                    paymentPeriodCount = periodicType?.periodCount,
+                )
+            }
             emitAll(inputState)
         }
         combine(

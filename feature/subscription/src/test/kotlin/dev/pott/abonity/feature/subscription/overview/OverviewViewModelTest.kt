@@ -72,7 +72,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, subscriptionRepository)
 
             val expectedSubscriptions = persistentListOf(
                 SubscriptionWithPeriodInfo(
@@ -133,7 +133,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(savedStateHandle, useCase)
+            val tested = OverviewViewModel(savedStateHandle, useCase, subscriptionRepository)
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(OverviewState.Loading)
@@ -172,7 +172,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, subscriptionRepository)
 
             tested.state.test {
                 runCurrent()
@@ -234,7 +234,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, subscriptionRepository)
 
             tested.state.test {
                 runCurrent()
@@ -297,7 +297,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, subscriptionRepository)
 
             tested.state.test {
                 runCurrent()
@@ -353,7 +353,7 @@ class OverviewViewModelTest {
                 dispatcher,
             )
 
-            val tested = OverviewViewModel(SavedStateHandle(), useCase)
+            val tested = OverviewViewModel(SavedStateHandle(), useCase, subscriptionRepository)
 
             tested.state.test {
                 runCurrent()

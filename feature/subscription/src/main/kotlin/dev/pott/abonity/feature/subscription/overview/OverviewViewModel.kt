@@ -4,13 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -19,11 +19,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
+    private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
     private val args = OverviewScreenDestination.Args.parse(savedStateHandle)
@@ -66,6 +66,13 @@ class OverviewViewModel @Inject constructor(
                     it + item
                 }.toImmutableList()
             }
+        }
+    }
+
+    fun delete(id: SubscriptionId) {
+        viewModelScope.launch {
+            subscriptionRepository.deleteSubscription(id)
+            selectedDetailIdFlow.value = null
         }
     }
 }

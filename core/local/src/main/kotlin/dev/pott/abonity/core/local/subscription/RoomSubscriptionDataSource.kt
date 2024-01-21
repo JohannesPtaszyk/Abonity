@@ -33,8 +33,16 @@ class RoomSubscriptionDataSource @Inject constructor(
         }
     }
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription> {
-        return dao.getSubscriptionFlow(subscriptionId.value).map { it.toDomain() }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
+        return dao.getSubscriptionFlow(subscriptionId.value).map { it?.toDomain() }
+    }
+
+    override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
+        dao.delete(subscriptionId.value)
+    }
+
+    override suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>) {
+        dao.delete(subscriptionIds.map(SubscriptionId::value))
     }
 
     private fun Subscription.toEntity(): SubscriptionEntity {

@@ -9,5 +9,9 @@ interface SubscriptionRepository {
 
     fun getSubscriptionsFlow(): Flow<List<Subscription>>
 
-    fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription>
+    fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?>
+
+    suspend fun deleteSubscription(subscriptionId: SubscriptionId)
+
+    suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>)
 }
