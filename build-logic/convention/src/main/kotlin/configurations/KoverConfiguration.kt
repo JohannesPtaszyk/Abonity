@@ -21,6 +21,7 @@ fun KoverReportFilters.coverageExclusions() {
             "_**",
             "**Activity**",
             "**Module**",
+            "*.gradle.kts",
         )
         annotatedBy(
             "*Generated*",
