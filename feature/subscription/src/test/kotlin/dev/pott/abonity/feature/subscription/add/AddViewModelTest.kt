@@ -3,6 +3,7 @@ package dev.pott.abonity.feature.subscription.add
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
@@ -11,6 +12,7 @@ import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runCurrent
@@ -62,13 +64,13 @@ class AddViewModelTest {
                                     2,
                                 ).toEpochDays().toLong(),
                             ),
-                            name = "Test Subscription",
+                            name = ValidatedInput("Test Subscription"),
                             description = "Test Description",
-                            priceValue = "9.99",
+                            priceValue = ValidatedInput("9.99"),
                             currency = Currency.getInstance("EUR"),
                             isOneTimePayment = false,
                             paymentPeriod = PaymentPeriod.MONTHS,
-                            paymentPeriodCount = 1,
+                            paymentPeriodCount = ValidatedInput("1"),
                         ),
                         loading = true,
                     ),
@@ -89,7 +91,7 @@ class AddViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(AddState(loading = false))
-                assertThat(awaitItem().input.priceValue).isEqualTo(priceValue)
+                assertThat(awaitItem().input.priceValue.value).isEqualTo(priceValue)
             }
         }
     }
@@ -106,7 +108,7 @@ class AddViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(AddState(loading = false))
-                assertThat(awaitItem().input.priceValue).isEqualTo(priceValue)
+                assertThat(awaitItem().input.priceValue.value).isEqualTo(priceValue)
             }
         }
     }
@@ -154,23 +156,27 @@ class AddViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(AddState(loading = false))
-                assertThat(awaitItem().input.paymentPeriodCount).isEqualTo(null)
+                assertThat(awaitItem().input.paymentPeriodCount).isEqualTo(
+                    ValidatedInput(
+                        "",
+                        errors = persistentListOf(ValidationError.EmptyOrBlank),
+                    ),
+                )
             }
         }
     }
 
     @TestFactory
     fun `GIVEN no input WHEN setPaymentPeriod THEN input state is updated`(): List<DynamicTest> {
-        return PaymentPeriod.entries.map {
+        return PaymentPeriod.entries.map { period ->
             dynamicTest(
-                "GIVEN no input WHEN setPaymentPeriod: $it THEN input state is updated",
+                "GIVEN no input WHEN setPaymentPeriod: $period THEN input state is updated",
             ) {
                 runTest {
                     val repository = FakeSubscriptionRepository()
                     val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
 
                     tested.state.test {
-                        val period = PaymentPeriod.WEEKS
                         tested.setPaymentPeriod(period)
                         runCurrent()
                         assertThat(awaitItem()).isEqualTo(AddState(loading = false))
@@ -214,13 +220,13 @@ class AddViewModelTest {
                 assertThat(awaitItem().input).isEqualTo(
                     AddFormState(
                         paymentDateEpochMillis = nowEpochMilliseconds,
-                        name = "Test Subscription",
+                        name = ValidatedInput("Test Subscription"),
                         description = "Test Description",
-                        priceValue = "9.99",
+                        priceValue = ValidatedInput("9.99"),
                         currency = Currency.getInstance("EUR"),
                         isOneTimePayment = false,
                         paymentPeriod = PaymentPeriod.MONTHS,
-                        paymentPeriodCount = 1,
+                        paymentPeriodCount = ValidatedInput("1"),
                     ),
                 )
                 cancelAndConsumeRemainingEvents()
@@ -270,13 +276,13 @@ class AddViewModelTest {
                 assertThat(awaitItem().input).isEqualTo(
                     AddFormState(
                         paymentDateEpochMillis = nowEpochMilliseconds,
-                        name = "Test Subscription",
+                        name = ValidatedInput("Test Subscription"),
                         description = "Test Description",
-                        priceValue = "9.99",
+                        priceValue = ValidatedInput("9.99"),
                         currency = Currency.getInstance("EUR"),
                         isOneTimePayment = true,
-                        paymentPeriod = null,
-                        paymentPeriodCount = null,
+                        paymentPeriod = PaymentPeriod.MONTHS,
+                        paymentPeriodCount = ValidatedInput("1"),
                     ),
                 )
                 cancelAndConsumeRemainingEvents()
@@ -295,6 +301,159 @@ class AddViewModelTest {
                     ),
                 ),
             )
+        }
+    }
+
+    @Test
+    fun `GIVEN epochMilliseconds WHEN setPaymentDate THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val epochMilliseconds = 1643458800000 // Replace with your desired value
+                tested.setPaymentDate(epochMilliseconds)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.paymentDateEpochMillis).isEqualTo(epochMilliseconds)
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN description WHEN setDescription THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val description = "New Test Description"
+                tested.setDescription(description)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.description).isEqualTo(description)
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN currency WHEN setCurrency THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val currency = Currency.getInstance("USD")
+                tested.setCurrency(currency)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.currency).isEqualTo(currency)
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN empty name WHEN save THEN validation error is present`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                tested.save()
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.name.errors).contains(ValidationError.EmptyOrBlank)
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN empty name WHEN setName THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val name = ""
+                tested.setName(name)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.name).isEqualTo(
+                    ValidatedInput(
+                        "",
+                        errors = persistentListOf(ValidationError.EmptyOrBlank),
+                    ),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN empty price WHEN setPrice THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val priceValue = ""
+                tested.setPrice(priceValue)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.priceValue).isEqualTo(
+                    ValidatedInput(
+                        "",
+                        errors = persistentListOf(ValidationError.EmptyOrBlank),
+                    ),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN non-positive period count WHEN setPaymentPeriodCount THEN input state is updated`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val periodCount = "0"
+                tested.setPaymentPeriodCount(periodCount)
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                assertThat(awaitItem().input.paymentPeriodCount).isEqualTo(
+                    ValidatedInput(
+                        "0",
+                        errors = persistentListOf(ValidationError.MustBePositiveValue),
+                    ),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN invalid name WHEN save THEN validation error is present`() {
+        runTest {
+            val repository = FakeSubscriptionRepository()
+            val tested = AddViewModel(SavedStateHandle(), FakeClock(), repository)
+
+            tested.state.test {
+                val invalidName = "   "
+                tested.setName(invalidName)
+                tested.save()
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState(loading = false))
+                val item = awaitItem()
+                assertThat(item.input.name.errors).contains(ValidationError.EmptyOrBlank)
+                assertThat(item.savingState).isEqualTo(AddState.SavingState.ERROR)
+            }
         }
     }
 }

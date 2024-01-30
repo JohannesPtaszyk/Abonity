@@ -10,5 +10,6 @@ data class AddState(
         IDLE,
         SAVING,
         SAVED,
+        ERROR,
     }
 }

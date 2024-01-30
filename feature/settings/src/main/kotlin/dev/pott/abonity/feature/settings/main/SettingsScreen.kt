@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
@@ -37,6 +37,7 @@ import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.util.plus
+import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 
 @Composable
 fun SettingsScreen(
@@ -85,9 +86,9 @@ fun SettingsScreen(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
                 SubscriptionSettings(settings, onPaymentPeriodChanged)
-                item { Divider() }
+                item { HorizontalDivider() }
                 AppearanceSection(settings, onThemeChanged, onEnableAdaptiveColorChanged)
-                item { Divider() }
+                item { HorizontalDivider() }
                 MoreSection(onOpenNotificationSettingsClick, onOpenOssLicensesClick)
             }
         }
@@ -108,7 +109,9 @@ private fun LazyListScope.SubscriptionSettings(
         }
     }
     item {
+        val locale = rememberDefaultLocale()
         var showPaymentPeriods by remember { mutableStateOf(false) }
+
         ExposedDropdownMenuBox(
             expanded = showPaymentPeriods,
             onExpandedChange = { showPaymentPeriods = it },
@@ -119,7 +122,18 @@ private fun LazyListScope.SubscriptionSettings(
                 },
                 supportingContent = {
                     val labelRes = paymentPeriodPluralRes(settings.period)
-                    Text(text = pluralStringResource(id = labelRes, count = 1).uppercase())
+                    Text(
+                        text = pluralStringResource(
+                            id = labelRes,
+                            count = 1,
+                        ).replaceFirstChar { char ->
+                            if (char.isLowerCase()) {
+                                char.titlecase(locale)
+                            } else {
+                                char.toString()
+                            }
+                        },
+                    )
                 },
                 leadingContent = {
                     Icon(
@@ -140,7 +154,18 @@ private fun LazyListScope.SubscriptionSettings(
                     val labelRes = paymentPeriodPluralRes(it)
                     ListItem(
                         headlineContent = {
-                            Text(text = pluralStringResource(id = labelRes, count = 1))
+                            Text(
+                                text = pluralStringResource(
+                                    id = labelRes,
+                                    count = 1,
+                                ).replaceFirstChar { char ->
+                                    if (char.isLowerCase()) {
+                                        char.titlecase(locale)
+                                    } else {
+                                        char.toString()
+                                    }
+                                },
+                            )
                         },
                         modifier = Modifier.clickable {
                             onPaymentPeriodChanged(it)

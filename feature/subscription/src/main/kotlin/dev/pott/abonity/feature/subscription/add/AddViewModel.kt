@@ -11,6 +11,7 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -61,13 +64,15 @@ class AddViewModel @Inject constructor(
                     TimeUnit.DAYS.toMillis(
                         subscription.paymentInfo.firstPayment.toEpochDays().toLong(),
                     ),
-                    name = subscription.name,
+                    name = ValidatedInput(subscription.name),
                     description = subscription.description,
-                    priceValue = priceValue,
+                    priceValue = ValidatedInput(priceValue),
                     currency = subscription.paymentInfo.price.currency,
                     isOneTimePayment = subscription.paymentInfo.type == PaymentType.OneTime,
-                    paymentPeriod = periodicType?.period,
-                    paymentPeriodCount = periodicType?.periodCount,
+                    paymentPeriod = periodicType?.period ?: PaymentPeriod.MONTHS,
+                    paymentPeriodCount = ValidatedInput(
+                        periodicType?.periodCount?.toString() ?: "1",
+                    ),
                 )
             }
             emitAll(inputState)
@@ -89,7 +94,11 @@ class AddViewModel @Inject constructor(
             inputState,
             savingState,
         ) { input, saving ->
-            AddState(input = input, savingState = saving, loading = false)
+            AddState(
+                input = input,
+                savingState = saving,
+                loading = false,
+            )
         }
     }.stateIn(
         viewModelScope,
@@ -98,66 +107,109 @@ class AddViewModel @Inject constructor(
     )
 
     fun setPaymentDate(epochMilliseconds: Long) {
-        updateInputs { it.copy(paymentDateEpochMillis = epochMilliseconds) }
+        inputState.update { it.copy(paymentDateEpochMillis = epochMilliseconds) }
     }
 
     fun setName(name: String) {
-        updateInputs { it.copy(name = name) }
+        inputState.update { it.copy(name = validateName(name)) }
     }
 
     fun setDescription(description: String) {
-        updateInputs { it.copy(description = description) }
+        inputState.update { it.copy(description = description) }
     }
 
     fun setPrice(value: String) {
-        updateInputs { it.copy(priceValue = value) }
+        inputState.update { it.copy(priceValue = validatePrice(value)) }
     }
 
     fun setCurrency(currency: Currency) {
-        updateInputs { it.copy(currency = currency) }
+        inputState.update { it.copy(currency = currency) }
     }
 
     fun setPeriodic(isPeriodic: Boolean) {
-        updateInputs { it.copy(isOneTimePayment = !isPeriodic) }
+        inputState.update { it.copy(isOneTimePayment = !isPeriodic) }
     }
 
     fun setPaymentPeriod(paymentPeriod: PaymentPeriod) {
-        updateInputs { it.copy(paymentPeriod = paymentPeriod) }
+        inputState.update { it.copy(paymentPeriod = paymentPeriod) }
     }
 
     fun setPaymentPeriodCount(periodCount: String) {
-        updateInputs { it.copy(paymentPeriodCount = periodCount.toIntOrNull()) }
+        inputState.update { it.copy(paymentPeriodCount = validatePaymentPeriod(periodCount)) }
+    }
+
+    private fun validateName(name: String): ValidatedInput {
+        val errors = buildList {
+            if (name.isBlank()) {
+                add(ValidationError.EmptyOrBlank)
+            }
+        }.toImmutableList()
+        return ValidatedInput(name, errors)
+    }
+
+    private fun validatePrice(value: String): ValidatedInput {
+        val errors = buildList {
+            if (value.isBlank()) {
+                add(ValidationError.EmptyOrBlank)
+            }
+        }.toImmutableList()
+        return ValidatedInput(value, errors)
+    }
+
+    private fun validatePaymentPeriod(periodCount: String): ValidatedInput {
+        val errors = buildList {
+            if (periodCount.isEmpty()) {
+                add(ValidationError.EmptyOrBlank)
+            } else if (periodCount.toInt() <= 0) {
+                add(ValidationError.MustBePositiveValue)
+            }
+        }.toImmutableList()
+        return ValidatedInput(periodCount, errors)
     }
 
     fun save() {
         viewModelScope.launch {
             savingState.value = AddState.SavingState.SAVING
-            val input = inputState.value
-            val priceValue = parsePriceValue(input.priceValue)
-            val price = Price(priceValue, input.currency)
-            val date = calculateDate(input)
-            val paymentType = if (input.isOneTimePayment) {
-                PaymentType.OneTime
-            } else {
-                PaymentType.Periodic(
-                    input.paymentPeriodCount!!,
-                    input.paymentPeriod!!,
+            val validatedState = inputState.updateAndGet { formState ->
+                formState.copy(
+                    name = validateName(formState.name.value),
+                    priceValue = validatePrice(formState.priceValue.value),
                 )
             }
-            val paymentInfo = PaymentInfo(
-                price = price,
-                firstPayment = date,
-                type = paymentType,
-            )
-            val subscription = Subscription(
-                id = args.subscriptionId ?: SubscriptionId.none(),
-                name = input.name,
-                description = input.description,
-                paymentInfo = paymentInfo,
-            )
+            if (!validatedState.isValid) {
+                savingState.value = AddState.SavingState.ERROR
+                return@launch
+            }
+            val subscription = getSubscription()
             repository.addOrUpdateSubscription(subscription)
             savingState.value = AddState.SavingState.SAVED
         }
+    }
+
+    private fun getSubscription(): Subscription {
+        val input = inputState.value
+        val priceValue = parsePriceValue(input.priceValue.value)
+        val price = Price(priceValue, input.currency)
+        val date = calculateDate(input)
+        val paymentType = if (input.isOneTimePayment) {
+            PaymentType.OneTime
+        } else {
+            PaymentType.Periodic(
+                input.paymentPeriodCount.value.toInt(),
+                input.paymentPeriod,
+            )
+        }
+        val paymentInfo = PaymentInfo(
+            price = price,
+            firstPayment = date,
+            type = paymentType,
+        )
+        return Subscription(
+            id = args.subscriptionId ?: SubscriptionId.none(),
+            name = input.name.value,
+            description = input.description,
+            paymentInfo = paymentInfo,
+        )
     }
 
     private fun calculateDate(input: AddFormState): LocalDate {
@@ -173,7 +225,7 @@ class AddViewModel @Inject constructor(
         return value.replace(",", ".").toDouble()
     }
 
-    private fun updateInputs(block: (AddFormState) -> AddFormState) {
-        inputState.value = block(inputState.value)
+    fun resetSavingState() {
+        savingState.value = AddState.SavingState.IDLE
     }
 }

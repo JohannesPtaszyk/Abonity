@@ -1,11 +1,12 @@
 package dev.pott.abonity.core.ui.theme
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.BrightnessMedium
 import androidx.compose.material.icons.rounded.CalendarViewMonth
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.CreditCard
@@ -15,12 +16,15 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.NotificationsNone
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 
 object AppIcons {
+    val Clear = Icons.Rounded.Clear
+    val Search = Icons.Rounded.Search
     val Delete = Icons.Rounded.DeleteOutline
     val Add = Icons.Rounded.Add
-    val ArrowBack = Icons.Rounded.ArrowBack
+    val ArrowBack = Icons.AutoMirrored.Rounded.ArrowBack
     val BrightnessMedium = Icons.Rounded.BrightnessMedium
     val CalendarViewMonth = Icons.Rounded.CalendarViewMonth
     val Close = Icons.Rounded.Close

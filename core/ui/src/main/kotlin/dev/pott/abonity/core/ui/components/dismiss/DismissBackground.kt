@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteDismissBackground(
-    dismissState: DismissState,
+    dismissState: SwipeToDismissBoxState,
     contentDescription: String,
     modifier: Modifier = Modifier,
 ) {
@@ -37,11 +37,11 @@ fun DeleteDismissBackground(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        if (direction == DismissDirection.StartToEnd) {
+        if (direction == SwipeToDismissBoxValue.StartToEnd) {
             LoadingDeleteIcon(dismissState, direction, contentDescription)
         }
         Spacer(modifier = Modifier)
-        if (direction == DismissDirection.EndToStart) {
+        if (direction == SwipeToDismissBoxValue.EndToStart) {
             LoadingDeleteIcon(dismissState, direction, contentDescription)
         }
     }
@@ -50,11 +50,11 @@ fun DeleteDismissBackground(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoadingDeleteIcon(
-    dismissState: DismissState,
-    direction: DismissDirection,
+    dismissState: SwipeToDismissBoxState,
+    direction: SwipeToDismissBoxValue,
     contentDescription: String,
 ) {
-    if (dismissState.isDismissed(direction)) {
+    if (dismissState.currentValue == direction) {
         CircularProgressIndicator(
             color = LocalContentColor.current,
             modifier = Modifier.size(24.dp),

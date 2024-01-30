@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +32,6 @@ import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.datetime.LocalDate
 import java.util.Currency
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionCard(
     subscription: Subscription,
@@ -73,7 +71,7 @@ fun SubscriptionCard(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = subscription.description,
+                    text = subscription.description.orEmpty(),
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,

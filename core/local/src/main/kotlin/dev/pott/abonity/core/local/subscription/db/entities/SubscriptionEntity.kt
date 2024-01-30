@@ -12,7 +12,7 @@ data class SubscriptionEntity(
     @ColumnInfo("name")
     val name: String,
     @ColumnInfo("description")
-    val description: String,
+    val description: String?,
     @ColumnInfo("price")
     val price: Double,
     /**

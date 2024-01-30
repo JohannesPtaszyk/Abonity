@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bf199f80cb7c9a0406b176462d2d8084",
+    "identityHash": "53bb07b15a731e8b8e24c5bb36f1b148",
     "entities": [
       {
         "tableName": "subscription_entity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `first_payment_local_date` TEXT NOT NULL, `payment_type` TEXT NOT NULL, `period_count` INTEGER, `period` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `price` REAL NOT NULL, `currency` TEXT NOT NULL, `first_payment_local_date` TEXT NOT NULL, `payment_type` TEXT NOT NULL, `period_count` INTEGER, `period` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -24,7 +24,7 @@
             "fieldPath": "description",
             "columnName": "description",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "price",
@@ -76,7 +76,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bf199f80cb7c9a0406b176462d2d8084')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '53bb07b15a731e8b8e24c5bb36f1b148')"
     ]
   }
 }

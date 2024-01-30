@@ -1,22 +1,21 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
 package dev.pott.abonity.feature.subscription.add
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,6 +62,7 @@ fun AddScreen(
         onIsPeriodicChanged = viewModel::setPeriodic,
         onPeriodChanged = viewModel::setPaymentPeriod,
         onPeriodCountChanged = viewModel::setPaymentPeriodCount,
+        resetSavingState = viewModel::resetSavingState,
         onSaveClick = viewModel::save,
         onCloseClick = close,
         modifier = modifier,
@@ -81,17 +81,47 @@ fun AddScreen(
     onIsPeriodicChanged: (isPeriodic: Boolean) -> Unit,
     onPeriodChanged: (period: PaymentPeriod) -> Unit,
     onPeriodCountChanged: (countValue: String) -> Unit,
+    resetSavingState: () -> Unit,
     onSaveClick: () -> Unit,
     onCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (state.savingState == AddState.SavingState.ERROR) {
+        AlertDialog(
+            onDismissRequest = resetSavingState,
+            title = {
+                Text(
+                    text = stringResource(
+                        id = R.string.add_validation_saving_error_invalid_fields_title,
+                    ),
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(
+                        id = R.string.add_validation_saving_error_invalid_fields_description,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = resetSavingState) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.add_validation_saving_error_invalid_fields_btn,
+                        ),
+                    )
+                }
+            },
+        )
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
                     val title = if (state.showNameAsTitle) {
-                        state.input.name
+                        state.input.name.value
                     } else {
                         stringResource(id = R.string.add_subscription_title)
                     }
@@ -120,17 +150,23 @@ fun AddScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.widthIn(max = 600.dp),
             ) {
-                item { NameInput(state, onNameChanged, Modifier.fillMaxWidth()) }
                 item {
-                    PriceInput(
-                        state.input.priceValue,
-                        state.input.currency,
-                        onPriceChanged,
-                        onCurrencyChanged,
-                        Modifier.fillMaxWidth(),
+                    NameInput(
+                        name = state.input.name,
+                        onNameChanged = onNameChanged,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                item { Divider() }
+                item {
+                    PriceInput(
+                        priceValue = state.input.priceValue,
+                        currency = state.input.currency,
+                        onPriceChanged = onPriceChanged,
+                        onCurrencyChanged = onCurrencyChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                item { HorizontalDivider() }
                 item {
                     DateInput(
                         isPeriodic = !state.input.isOneTimePayment,
@@ -144,12 +180,12 @@ fun AddScreen(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                item { Divider() }
+                item { HorizontalDivider() }
                 item {
                     DescriptionInput(
-                        state.input.description,
-                        onDescriptionChanged,
-                        Modifier.fillMaxWidth(),
+                        description = state.input.description,
+                        onDescriptionChanged = onDescriptionChanged,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -174,6 +210,7 @@ private fun AddScreenPreview() {
         onIsPeriodicChanged = {},
         onPeriodChanged = {},
         onPeriodCountChanged = {},
+        resetSavingState = {},
         onSaveClick = {},
         onCloseClick = {},
     )

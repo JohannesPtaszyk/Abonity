@@ -18,8 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -167,7 +167,7 @@ private fun DetailLoadedContent(
             Modifier.padding(horizontal = 16.dp),
         )
         Spacer(Modifier.height(16.dp))
-        Divider()
+        HorizontalDivider()
         ListItem(
             headlineContent = {
                 Text(text = subscription.name)
@@ -176,10 +176,10 @@ private fun DetailLoadedContent(
                 Text(text = stringResource(id = R.string.subscription_detail_name_label))
             },
         )
-        Divider()
+        HorizontalDivider()
         ListItem(
             headlineContent = {
-                Text(text = subscription.description)
+                Text(text = subscription.description.orEmpty())
             },
             overlineContent = {
                 Text(
@@ -189,7 +189,7 @@ private fun DetailLoadedContent(
                 )
             },
         )
-        Divider()
+        HorizontalDivider()
         ListItem(
             headlineContent = {
                 FormattedDate(date = subscription.paymentInfo.firstPayment)
@@ -203,7 +203,7 @@ private fun DetailLoadedContent(
             },
         )
         state.nextPayment?.let { nextPayment ->
-            Divider()
+            HorizontalDivider()
             ListItem(
                 headlineContent = {
                     FormattedDate(date = nextPayment)
@@ -217,7 +217,7 @@ private fun DetailLoadedContent(
                 },
             )
         }
-        Divider()
+        HorizontalDivider()
         ListItem(
             headlineContent = {
                 Text(text = subscription.id.value.toString())

@@ -39,20 +39,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.common.text.DigitsOnlyTextFieldFilter
+import dev.pott.abonity.common.text.rememberDigitsFilter
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.rememberFormattedDate
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 import dev.pott.abonity.core.ui.theme.AppIcons
+import dev.pott.abonity.core.ui.util.rememberDefaultLocale
+import dev.pott.abonity.feature.subscription.add.ValidatedInput
+import dev.pott.abonity.feature.subscription.add.localizedError
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun DateInput(
     isPeriodic: Boolean,
     paymentDateEpochMillis: Long?,
-    periodCount: Int?,
-    period: PaymentPeriod?,
+    periodCount: ValidatedInput,
+    period: PaymentPeriod,
     onIsPeriodicChanged: (isPeriodic: Boolean) -> Unit,
     onPeriodCountChanged: (countValue: String) -> Unit,
     onPeriodChanged: (period: PaymentPeriod) -> Unit,
@@ -126,7 +129,7 @@ fun DateInput(
     }
 
     if (showDatePicker) {
-        val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+        val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
@@ -154,7 +157,7 @@ fun DateInput(
 private fun PeriodicInput(
     date: String?,
     interactionSource: MutableInteractionSource,
-    periodCount: Int?,
+    periodCount: ValidatedInput,
     onPeriodCountChanged: (countValue: String) -> Unit,
     period: PaymentPeriod?,
     onPeriodChanged: (period: PaymentPeriod) -> Unit,
@@ -174,13 +177,17 @@ private fun PeriodicInput(
         Spacer(modifier = Modifier.height(16.dp))
         Row(Modifier.fillMaxWidth()) {
             TextField(
-                value = periodCount?.toString().orEmpty(),
-                onValueChange = DigitsOnlyTextFieldFilter(onPeriodCountChanged),
+                value = periodCount.value,
+                onValueChange = rememberDigitsFilter(onPeriodCountChanged),
                 label = {
                     Text(text = stringResource(id = R.string.subscription_add_label_period_count))
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.weight(weight = 0.4f),
+                isError = periodCount.isError,
+                supportingText = {
+                    periodCount.localizedError()?.let { Text(text = it) }
+                },
             )
             Spacer(Modifier.width(8.dp))
             PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(weight = 0.6f))
@@ -192,11 +199,13 @@ private fun PeriodicInput(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun PeriodDropDown(
     period: PaymentPeriod?,
-    currentPeriodCount: Int?,
+    currentPeriodCount: ValidatedInput,
     onPeriodChanged: (period: PaymentPeriod) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val locale = rememberDefaultLocale()
     var showPeriodDropdown by remember { mutableStateOf(false) }
+
     ExposedDropdownMenuBox(
         expanded = showPeriodDropdown,
         onExpandedChange = { showPeriodDropdown = it },
@@ -206,7 +215,16 @@ private fun PeriodDropDown(
             readOnly = true,
             value = period?.let {
                 val textRes = paymentPeriodPluralRes(it = it)
-                pluralStringResource(id = textRes, currentPeriodCount ?: 0).uppercase()
+                pluralStringResource(
+                    id = textRes,
+                    currentPeriodCount.value.toIntOrNull() ?: 0,
+                ).replaceFirstChar { char ->
+                    if (char.isLowerCase()) {
+                        char.titlecase(locale)
+                    } else {
+                        char.toString()
+                    }
+                }
             }.orEmpty(),
             onValueChange = {},
             label = { Text(text = stringResource(id = R.string.subscription_add_label_period)) },
@@ -233,15 +251,19 @@ private fun PeriodDropDown(
                         Text(
                             text = pluralStringResource(
                                 id = textRes,
-                                currentPeriodCount ?: 0,
-                            ).uppercase(),
+                                currentPeriodCount.value.toIntOrNull() ?: 0,
+                            ).replaceFirstChar { char ->
+                                if (char.isLowerCase()) {
+                                    char.titlecase(locale)
+                                } else {
+                                    char.toString()
+                                }
+                            },
                         )
                     },
-                    modifier = Modifier.clickable(
-                        role = Role.Button,
-
-                    ) {
+                    modifier = Modifier.clickable(role = Role.Button) {
                         onPeriodChanged(it)
+                        showPeriodDropdown = false
                     },
                 )
             }

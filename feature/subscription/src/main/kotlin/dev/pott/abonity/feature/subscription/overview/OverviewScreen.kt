@@ -12,21 +12,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
@@ -105,29 +109,37 @@ fun OverviewScreen(
                         ) {
                             subscriptionWithPeriodInfo.subscription.id == state.detailId
                         }
-                        val swipeToDismissState = rememberDismissState(
+                        var swipeToDismissPositionalThreshold by remember {
+                            mutableStateOf(0f)
+                        }
+                        val swipeToDismissState = rememberSwipeToDismissBoxState(
                             confirmValueChange = {
                                 when (it) {
-                                    DismissValue.DismissedToEnd, DismissValue.DismissedToStart -> {
+                                    SwipeToDismissBoxValue.StartToEnd,
+                                    SwipeToDismissBoxValue.EndToStart,
+                                    -> {
                                         onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id)
                                         true
                                     }
 
-                                    DismissValue.Default -> {
+                                    SwipeToDismissBoxValue.Settled -> {
                                         false
                                     }
                                 }
                             },
-                            positionalThreshold = { 200.dp.toPx() },
+                            positionalThreshold = { swipeToDismissPositionalThreshold },
                         )
-                        SwipeToDismiss(
+                        SwipeToDismissBox(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .clipToBounds()
                                 .fillMaxWidth()
-                                .animateItemPlacement(),
+                                .animateItemPlacement()
+                                .onSizeChanged {
+                                    swipeToDismissPositionalThreshold = it.width.toFloat() / 2
+                                },
                             state = swipeToDismissState,
-                            background = {
+                            backgroundContent = {
                                 DeleteDismissBackground(
                                     modifier = Modifier.clip(CardDefaults.shape),
                                     dismissState = swipeToDismissState,
@@ -137,7 +149,7 @@ fun OverviewScreen(
                                     ),
                                 )
                             },
-                            dismissContent = {
+                            content = {
                                 SubscriptionCard(
                                     subscriptionWithPeriodInfo.subscription,
                                     subscriptionWithPeriodInfo.periodPrice,
