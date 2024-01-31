@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription.overview
 
+import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
@@ -10,6 +11,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.ui.navigation.AppDeeplink
 import dev.pott.abonity.navigation.destination.ArgumentDestination
 import dev.pott.abonity.navigation.destination.Arguments
+import dev.pott.abonity.navigation.destination.BundleArgumentParser
 import dev.pott.abonity.navigation.destination.Deeplinkable
 import dev.pott.abonity.navigation.destination.SavedStateArgumentParser
 import dev.pott.abonity.navigation.destination.createDeeplinkRoute
@@ -50,10 +52,17 @@ object OverviewScreenDestination :
             }
         }
 
-        companion object : SavedStateArgumentParser<Args> {
+        companion object : SavedStateArgumentParser<Args>, BundleArgumentParser<Args> {
             const val DETAIL_ID_KEY = "detail_id"
             override fun parse(savedStateHandle: SavedStateHandle): Args {
                 val subscriptionId = savedStateHandle.get<Long>(DETAIL_ID_KEY)?.takeIf {
+                    it != -1L
+                }?.let { SubscriptionId(it) }
+                return Args(subscriptionId)
+            }
+
+            override fun parse(bundle: Bundle): Args {
+                val subscriptionId = bundle.getLong(DETAIL_ID_KEY, -1L).takeIf {
                     it != -1L
                 }?.let { SubscriptionId(it) }
                 return Args(subscriptionId)

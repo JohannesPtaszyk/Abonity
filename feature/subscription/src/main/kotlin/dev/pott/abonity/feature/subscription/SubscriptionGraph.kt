@@ -24,6 +24,7 @@ fun NavGraphBuilder.subscriptionGraph(
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
                 onEditClick = { navController.navigateToAddScreen(it) },
+                args = it.arguments?.let { OverviewScreenDestination.Args.parse(it) },
             )
         }
     }

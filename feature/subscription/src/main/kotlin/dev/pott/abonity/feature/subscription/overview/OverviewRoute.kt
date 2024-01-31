@@ -2,6 +2,7 @@ package dev.pott.abonity.feature.subscription.overview
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -9,7 +10,11 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,10 +29,14 @@ fun OverviewRoute(
     modifier: Modifier = Modifier,
     overviewViewModel: OverviewViewModel = hiltViewModel(),
     detailViewModel: DetailViewModel = hiltViewModel(),
+    args: OverviewScreenDestination.Args?,
 ) {
     val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
+    var skipFirstDetailAnimation by rememberSaveable {
+        mutableStateOf(args?.detailId != null)
+    }
 
     LaunchedEffect(overviewState) {
         val loadedState = (overviewState as? OverviewState.Loaded) ?: return@LaunchedEffect
@@ -57,9 +66,18 @@ fun OverviewRoute(
         val showDetail = (overviewState as? OverviewState.Loaded)?.detailId != null
         AnimatedVisibility(
             showDetail,
-            enter = slideInHorizontally { it } + fadeIn(),
+            enter = if (skipFirstDetailAnimation) {
+                EnterTransition.None
+            } else {
+                slideInHorizontally { it } + fadeIn()
+            },
             exit = slideOutHorizontally { it } + fadeOut(),
         ) {
+            if (skipFirstDetailAnimation) {
+                SideEffect {
+                    skipFirstDetailAnimation = false
+                }
+            }
             BackHandler { overviewViewModel.consumeDetails() }
             DetailScreen(
                 state = detailState,
