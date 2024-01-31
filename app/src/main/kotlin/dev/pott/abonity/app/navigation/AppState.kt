@@ -9,7 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import dev.pott.abonity.feature.home.DashboardScreenDestination
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
+import dev.pott.abonity.feature.subscription.overview.OverviewScreenDestination
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -18,6 +20,7 @@ data class AppState(
     val selectedNavigationItem: NavigationItem,
     val navigationItems: ImmutableList<NavigationItem>,
     val subscriptionGraphState: SubscriptionGraphState,
+    val shouldShowAddFloatingActionbutton: Boolean,
 )
 
 @Suppress("SpreadOperator")
@@ -32,7 +35,8 @@ fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeCl
             } != null
         }
     }
-    return remember(selectedNavigationItem) {
+    return remember(selectedNavigationItem, navBackStackEntry) {
+        val route = navBackStackEntry?.destination?.route
         val selected = selectedNavigationItem ?: NavigationItem.HOME
         val navigationSuiteType = calculateFromAdaptiveInfo(windowSizeClass)
         val subscriptionGraphState = calculateSubscriptionGraphState(windowSizeClass)
@@ -41,8 +45,14 @@ fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeCl
             selected,
             navigationItems,
             subscriptionGraphState,
+            showAddFab(navigationSuiteType, route),
         )
     }
+}
+
+private fun showAddFab(navigationSuiteType: NavigationType, route: String?): Boolean {
+    return navigationSuiteType == NavigationType.NAVIGATION_BAR &&
+        (route == DashboardScreenDestination.route || route == OverviewScreenDestination.route)
 }
 
 private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowSizeClass): NavigationType {

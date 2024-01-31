@@ -48,7 +48,7 @@ fun PeriodicPriceInfo(
 
         PaymentPeriod.YEARS ->
             pluralStringResource(
-                id = R.plurals.payment_period_weeks,
+                id = R.plurals.payment_period_years,
                 count = paymentType.periodCount,
                 formattedPeriodPrice,
                 paymentType.periodCount,

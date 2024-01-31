@@ -154,7 +154,6 @@ fun DashboardScreen(
 
 @Composable
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
     ExperimentalPermissionsApi::class,
 )
@@ -205,8 +204,8 @@ private fun LoadedContent(
                 NotificationPermissionTeaser(
                     notificationPermissionState,
                     onCloseClicked = onCloseNotificationTeaserClick,
+                    modifier = Modifier.animateItemPlacement(),
                 )
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
         item(
@@ -237,7 +236,7 @@ private fun LoadedContent(
                     NoUpcomingSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
                         period = dashboardState.upcomingSubscriptions.period,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
                     )
                 }
             }
@@ -248,7 +247,7 @@ private fun LoadedContent(
                 ) {
                     NoSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
                     )
                 }
             }

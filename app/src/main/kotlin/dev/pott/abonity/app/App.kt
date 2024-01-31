@@ -2,6 +2,7 @@
 
 package dev.pott.abonity.app
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import dev.pott.abonity.app.navigation.navigateTabItem
 import dev.pott.abonity.app.navigation.rememberAppState
 import dev.pott.abonity.core.ui.components.navigation.AddFloatingActionButton
 import dev.pott.abonity.feature.subscription.add.AddScreenDestination
+import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 
 @Composable
 fun App(
@@ -62,7 +64,9 @@ fun App(
             }
         },
         floatingActionButton = {
-            if (appState.navigationType == NavigationType.NAVIGATION_BAR) {
+            AnimatedVisibility(
+                visible = appState.shouldShowAddFloatingActionbutton,
+            ) {
                 AddFloatingActionButton(
                     onClick = { navController.navigate(AddScreenDestination.route) },
                     expanded = false,
@@ -75,7 +79,7 @@ fun App(
             if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {
                 NavigationRail {
                     AddFloatingActionButton(
-                        onClick = { navController.navigate(AddScreenDestination.route) },
+                        onClick = { navController.navigateToAddScreen() },
                         expanded = false,
                     )
                     Spacer(Modifier.height(32.dp))

@@ -10,6 +10,6 @@ import java.util.Locale
 fun rememberDefaultLocale(): Locale {
     val configuration = LocalConfiguration.current
     return remember(configuration) {
-        ConfigurationCompat.getLocales(configuration).get(0) ?: Locale.getDefault()
+        ConfigurationCompat.getLocales(configuration)[0] ?: Locale.getDefault()
     }
 }

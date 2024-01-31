@@ -46,7 +46,7 @@ fun ValidatedInput.localizedError(): String? {
         when (it) {
             ValidationError.EmptyOrBlank -> stringResource(id = R.string.add_validation_error_empty)
             ValidationError.MustBePositiveValue -> stringResource(
-                id = R.string.add_validation_error_empty,
+                id = R.string.add_validation_error_must_be_positive,
             )
         }
     }.joinToString(System.lineSeparator())
