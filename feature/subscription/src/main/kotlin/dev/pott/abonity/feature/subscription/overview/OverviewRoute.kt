@@ -26,10 +26,10 @@ import dev.pott.abonity.feature.subscription.detail.DetailViewModel
 fun OverviewRoute(
     showAsMultiColumn: Boolean,
     onEditClick: (SubscriptionId) -> Unit,
+    args: OverviewScreenDestination.Args?,
     modifier: Modifier = Modifier,
     overviewViewModel: OverviewViewModel = hiltViewModel(),
     detailViewModel: DetailViewModel = hiltViewModel(),
-    args: OverviewScreenDestination.Args?,
 ) {
     val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
