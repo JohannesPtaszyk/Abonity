@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.sonar) apply false
     alias(libs.plugins.compose.compiler.report) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.appsweep) apply false
     id("dev.pott.project")
 }
 
