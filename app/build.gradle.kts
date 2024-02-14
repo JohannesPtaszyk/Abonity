@@ -3,6 +3,7 @@ plugins {
     id("dev.pott.hilt")
     id("dev.pott.android.room")
     id(libs.plugins.gms.get().pluginId)
+    id(libs.plugins.appsweep.get().pluginId)
 }
 
 android {

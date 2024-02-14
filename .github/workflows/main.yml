@@ -68,3 +68,6 @@ jobs:
 
       - name: Assemble Debug APK
         run: ./gradlew assembleDebug
+
+      - name: Appsweep Scan
+        run: ./gradlew uploadToAppSweepDebug
