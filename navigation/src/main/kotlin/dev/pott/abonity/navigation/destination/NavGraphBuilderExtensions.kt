@@ -11,6 +11,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navigation
+import dev.pott.abonity.navigation.destination.dialog.DialogEdgeToEdgeEffect
 import kotlinx.collections.immutable.persistentListOf
 
 typealias Enter = AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
@@ -63,6 +64,34 @@ fun NavGraphBuilder.dialog(
         },
         dialogProperties = dialogProperties,
         content = content,
+    )
+}
+
+fun NavGraphBuilder.edgeToEdgeDialog(
+    destination: Destination,
+    dialogProperties: DialogProperties = DialogProperties(
+        usePlatformDefaultWidth = true,
+        decorFitsSystemWindows = false,
+    ),
+    content: @Composable (NavBackStackEntry) -> Unit,
+) {
+    dialog(
+        route = destination.route,
+        arguments = if (destination is ArgumentDestination<*>) {
+            destination.requiredArguments + destination.optionalArguments
+        } else {
+            persistentListOf()
+        },
+        deepLinks = if (destination is Deeplinkable) {
+            destination.deeplinks
+        } else {
+            persistentListOf()
+        },
+        dialogProperties = dialogProperties,
+        content = {
+            DialogEdgeToEdgeEffect()
+            content(it)
+        },
     )
 }
 
