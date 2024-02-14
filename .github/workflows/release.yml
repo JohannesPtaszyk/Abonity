@@ -49,6 +49,9 @@ jobs:
       - name: Google Play Release
         run: ./gradlew publishReleaseBundle
 
+      - name: AppSweep Scan
+        run: ./gradlew uploadToAppSweepDebug
+
       - name: Create RC Tag
         run: |
           ./gradlew createRcTag --push=true

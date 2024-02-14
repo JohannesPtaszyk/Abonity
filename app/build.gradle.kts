@@ -10,6 +10,7 @@ plugins {
     id(libs.plugins.firebase.distribution.get().pluginId)
     id(libs.plugins.secrets.get().pluginId)
     id(libs.plugins.play.publisher.get().pluginId)
+    id(libs.plugins.appsweep.get().pluginId)
 }
 
 android {
