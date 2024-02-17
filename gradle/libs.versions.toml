@@ -1,7 +1,7 @@
 [versions]
 compileSdkVersion = "34"
-targetSdkVersion = "34"
 minSdkVersion = "21"
+targetSdkVersion = "34"
 
 accompanist = "0.34.0"
 androidDesugarJdkLibs = "2.0.4"
@@ -42,12 +42,12 @@ kotlinxCoroutines = "1.8.0"
 kotlinxDatetime = "0.5.0"
 kotlinxSerialization = "1.6.3"
 kover = "0.7.6"
-ktlint = "1.0.1"
 ksp = "1.9.22-1.0.17"
+ktlint = "1.0.1"
 robolectric = "4.11.1"
 room = "2.6.1"
-spotless = "6.25.0"
 sonar = "4.4.1.3373"
+spotless = "6.25.0"
 turbine = "1.0.0"
 
 [libraries]
@@ -68,21 +68,21 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
-androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
 androidx-window-manager = { module = "androidx.window:window", version.ref = "androidxWindowManager" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
-detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-composeRules = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektComposeRules" }
+detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "faker" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display-ktx" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 firebase-performance-gradle = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }
 google-oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "googleOss" }
@@ -95,8 +95,8 @@ hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.r
 javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junitBom" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
-junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
 junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
@@ -121,8 +121,8 @@ firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "per
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 sonar-gradlePlugin = { group = "org.sonarsource.scanner.gradle", name = "sonarqube-gradle-plugin", version.ref = "sonar" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -130,13 +130,13 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose-compiler-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "composeCompilerReport" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-sonar = { id = "org.sonarqube", version.ref = "sonar" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
+gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
+sonar = { id = "org.sonarqube", version.ref = "sonar" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
