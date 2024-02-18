@@ -1,4 +1,6 @@
 import com.google.firebase.appdistribution.gradle.AppDistributionExtension
+import util.GitAppVersionValueSource
+import util.RcTagVersionCodeValueSource
 
 plugins {
     id("dev.pott.android.app")
@@ -14,8 +16,8 @@ android {
 
     defaultConfig {
         applicationId = "dev.pott.abonity"
-        versionCode = 1
-        versionName = "2024.1.0"
+        versionCode = providers.of(RcTagVersionCodeValueSource::class) {}.get()
+        versionName = providers.of(GitAppVersionValueSource::class) {}.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "$applicationId.test"

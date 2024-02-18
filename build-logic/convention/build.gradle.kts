@@ -23,6 +23,8 @@ dependencies {
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
     compileOnly(libs.sonar.gradlePlugin)
+
+    implementation(libs.versioncompare)
 }
 
 gradlePlugin {

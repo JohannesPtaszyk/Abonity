@@ -50,6 +50,7 @@ room = "2.6.1"
 sonar = "4.4.1.3373"
 spotless = "6.25.0"
 turbine = "1.0.0"
+versionCompare = "1.5.0"
 
 [libraries]
 accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -114,6 +115,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+versioncompare = { group = "io.github.g00fy2", name = "versioncompare", version.ref = "versionCompare" }
 
 # build-src dependencies
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
