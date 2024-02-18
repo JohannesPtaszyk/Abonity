@@ -1,3 +1,5 @@
+import com.google.firebase.appdistribution.gradle.AppDistributionExtension
+
 plugins {
     id("dev.pott.android.app")
     id("dev.pott.hilt")
@@ -36,7 +38,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
-            firebaseAppDistribution {
+            configure<AppDistributionExtension> {
                 artifactType = "APK"
                 groups = "internal, friends-&-family"
             }
@@ -50,7 +52,7 @@ android {
                 "proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
-            firebaseAppDistribution {
+            configure<AppDistributionExtension> {
                 artifactType = "AAB"
                 groups = "internal, friends-&-family, external"
             }
