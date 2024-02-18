@@ -43,7 +43,7 @@ android {
             configure<AppDistributionExtension> {
                 artifactType = "APK"
                 groups = "internal, friends-&-family"
-                serviceCredentialsFile = "./firebase-service-account.json"
+                serviceCredentialsFile = "firebase-service-account.json"
             }
         }
         val release by getting {
@@ -58,7 +58,7 @@ android {
             configure<AppDistributionExtension> {
                 artifactType = "AAB"
                 groups = "internal, friends-&-family, external"
-                serviceCredentialsFile = "./firebase-service-account.json"
+                serviceCredentialsFile = "firebase-service-account.json"
             }
         }
     }
