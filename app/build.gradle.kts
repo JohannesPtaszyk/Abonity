@@ -3,6 +3,7 @@ plugins {
     id("dev.pott.hilt")
     id("dev.pott.android.room")
     id(libs.plugins.gms.get().pluginId)
+    id(libs.plugins.firebase.distribution.get().pluginId)
 }
 
 android {
@@ -12,26 +13,47 @@ android {
     defaultConfig {
         applicationId = "dev.pott.abonity"
         versionCode = 1
-        versionName = "2023.1.0"
+        versionName = "2024.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "$applicationId.test"
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        resourceConfigurations.addAll(listOf("en", "de"))
+    }
+
+    signingConfigs {
+        val release by creating {
+            storeFile = file("../abonity.keystore")
+            storePassword = System.getenv("ABONITY_KEY_STORE_PASSWORD") ?: ""
+            keyAlias = System.getenv("ABONITY_KEY_STORE_KEY_ALIAS") ?: ""
+            keyPassword = System.getenv("ABONITY_KEY_STORE_KEY_PASSWORD") ?: ""
+        }
     }
 
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            firebaseAppDistribution {
+                artifactType = "APK"
+                groups = "internal, friends-&-family"
+            }
         }
         val release by getting {
+            isDebuggable = false
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            firebaseAppDistribution {
+                artifactType = "AAB"
+                groups = "internal, friends-&-family, external"
+            }
         }
     }
 }

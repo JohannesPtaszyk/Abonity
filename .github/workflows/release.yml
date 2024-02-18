@@ -1,0 +1,38 @@
+name: Android Release
+
+on:
+  push:
+    branches: [ "release/**" ]
+  pull_request:
+    branches: [ "release/**" ]
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Set up config files
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          ABONITY_KEYSTORE_GPG_FILE: ${{ secrets.ABONITY_KEYSTORE_GPG_FILE }}
+          ABONITY_KEYSTORE_GPG_PASSPHRASE: ${{ secrets.ABONITY_KEYSTORE_GPG_PASSPHRASE }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+          echo $ABONITY_KEYSTORE_GPG_FILE > ./abonity.keystore.asc
+          gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
+
+      - name: Bundle Release AAB
+        run: ./gradlew bundleRelease
+
+      - name: App Distribution
+        run: ./gradlew appDistributionUploadRelease

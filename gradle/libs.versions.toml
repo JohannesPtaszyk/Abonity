@@ -25,6 +25,7 @@ composeCompilerReport = "1.1.0"
 detekt = "1.23.5"
 detektComposeRules = "0.3.11"
 faker = "1.16.0"
+firebaseDistributionPlugin = "4.1.0"
 firebaseBom = "32.7.2"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
@@ -130,6 +131,7 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 compose-compiler-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "composeCompilerReport" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+firebase-distribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseDistributionPlugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsPlugin" }
