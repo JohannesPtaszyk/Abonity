@@ -20,8 +20,18 @@ abstract class GitAppVersionValueSource : ValueSource<String, ValueSourceParamet
     abstract val execOperations: ExecOperations
 
     override fun obtain(): String {
-        val commitHash = execOperations.execToString("git", "rev-parse", "--short", "HEAD")
-        val branchName = execOperations.execToString("git", "rev-parse", "--abbrev-ref", "HEAD")
+        val commitHash = execOperations.execToString(
+            "git",
+            "rev-parse",
+            "--short",
+            "HEAD",
+        ).removeSuffix(System.lineSeparator())
+        val branchName = execOperations.execToString(
+            "git",
+            "rev-parse",
+            "--abbrev-ref",
+            "HEAD",
+        ).removeSuffix(System.lineSeparator())
         val versionName = if (branchName.startsWith("release")) {
             if (branchName.contains("/")) {
                 branchName.split("/").last()
