@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.invoke
  * Configure project for Gradle managed devices
  */
 @Suppress("UnstableApiUsage")
-internal fun configureGradleManagedDevices(commonExtension: CommonExtension<*, *, *, *, *>) {
+internal fun configureGradleManagedDevices(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     val pixel6 = GradleManagedDeviceConfig("Pixel 6", 34, "google")
 
     val allDevices = listOf(pixel6)
