@@ -1,8 +1,8 @@
-name: "Build Release"
+name: "Main"
 
 on:
   push:
-    branches: [ "release/**" ]
+    branches: [ "main" ]
 
 jobs:
   build-release:
@@ -32,17 +32,12 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
         run: |
           echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
-          echo $FIREBASE_SERVICE_ACCOUNT_JSON > ./firebase-service-account.json
           echo $ABONITY_KEYSTORE_GPG_FILE > ./abonity.keystore.asc
           gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
 
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
 
-      - name: App Distribution
-        run: ./gradlew appDistributionUploadRelease
-
-      - name: Create RC Tag
+      - name: Create Version Tag
         run: |
-          ./gradlew createRcTag --push=true
-          
+          ./gradlew createReleaseTagFromLatestRc --push=true

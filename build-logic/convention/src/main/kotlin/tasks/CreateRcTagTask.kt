@@ -1,19 +1,13 @@
 package tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.process.ExecOperations
 import util.RC_TAG_BUID_NUMBER_SEPERATOR
 import util.RC_TAG_PREFIX
 import util.execToString
 import util.getRcTags
 import util.getVersionNameFromBranchName
-import javax.inject.Inject
 
-abstract class CreateRcTagTask : DefaultTask() {
-
-    @get:Inject
-    abstract val execOperations: ExecOperations
+abstract class CreateRcTagTask : AbstractTagTask() {
 
     @TaskAction
     fun createRcTag() {
@@ -28,7 +22,7 @@ abstract class CreateRcTagTask : DefaultTask() {
             "$RC_TAG_PREFIX$versionFromBranch${RC_TAG_BUID_NUMBER_SEPERATOR}1"
         }
         execOperations.execToString("git", "tag", newTag)
-        execOperations.execToString("git", "push", "origin", newTag)
+        pushTag(newTag)
     }
 
     companion object {

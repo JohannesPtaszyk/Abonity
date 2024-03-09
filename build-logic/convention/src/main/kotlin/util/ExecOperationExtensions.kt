@@ -23,8 +23,8 @@ fun ExecOperations.execToString(vararg args: String): String {
 fun ExecOperations.getLatestVersionFromTags(): Version {
     return execToString("git", "tag")
         .split(System.lineSeparator())
-        .filter { it.isNotBlank() && it.startsWith(VERSION_TAG_PREFIX) }
-        .map { Version(it.removePrefix(VERSION_TAG_PREFIX)) }
+        .filter { it.isNotBlank() && it.startsWith(RELEASE_TAG_PREFIX) }
+        .map { Version(it.removePrefix(RELEASE_TAG_PREFIX)) }
         .maxBy { it }
 }
 
@@ -34,7 +34,7 @@ fun ExecOperations.getRcTags(): List<String> {
         .filter { it.isNotBlank() && it.startsWith(RC_TAG_PREFIX, ignoreCase = true) }
 }
 
-private fun ExecOperations.getTags() = execToString("git", "tag")
+fun ExecOperations.getTags() = execToString("git", "tag")
 
 fun ExecOperations.getVersionNameFromBranchName(): String {
     val logger = LoggerFactory.getLogger("getVersionNameFromBranchName")

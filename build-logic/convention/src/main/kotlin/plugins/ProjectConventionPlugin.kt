@@ -7,6 +7,7 @@ import configurations.applySpotless
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import tasks.CreateRcTagTask
+import tasks.CreateReleaseTagTask
 
 @Suppress("unused")
 class ProjectConventionPlugin : Plugin<Project> {
@@ -18,6 +19,7 @@ class ProjectConventionPlugin : Plugin<Project> {
             applySonar()
 
             tasks.register(CreateRcTagTask.NAME, CreateRcTagTask::class.java)
+            tasks.register(CreateReleaseTagTask.NAME, CreateReleaseTagTask::class.java)
         }
     }
 }
