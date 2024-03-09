@@ -2,4 +2,4 @@ package configurations
 
 import org.gradle.api.JavaVersion
 
-val projectJavaVersion = JavaVersion.VERSION_17
+val projectJavaVersion = JavaVersion.VERSION_21
