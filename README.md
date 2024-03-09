@@ -48,8 +48,10 @@ Thank you for choosing Abonity. Together, we'll redefine the way you handle subs
 ## Project Health Overview
 
 ### Workflows
-![CI/CD](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/main.yml/badge.svg)
-![Gradle Wraper Validation](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/gradle-wrapper-validation.yml/badge.svg)
+[![Build Release](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/release.yml/badge.svg)](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/release.yml)
+[![Build Debug](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/debug.yml/badge.svg)](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/debug.yml)
+[![Verify](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/verify.yml/badge.svg)](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/verify.yml)
+[![Validate Gradle Wrapper](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/gradle-wrapper-validation.yml/badge.svg)](https://github.com/JohannesPtaszyk/Abonity/actions/workflows/gradle-wrapper-validation.yml)
 
 ### SonarCloud
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JohannesPtaszyk_Abonity&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=JohannesPtaszyk_Abonity)
