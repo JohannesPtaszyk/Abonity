@@ -13,9 +13,7 @@ abstract class RcTagVersionCodeValueSource : ValueSource<Int, ValueSourceParamet
     abstract val execOperations: ExecOperations
 
     override fun obtain(): Int {
-        val rcTags = execOperations.execToString("git", "tag")
-            .split(System.lineSeparator())
-            .filter { it.isNotBlank() && it.startsWith("rc", ignoreCase = true) }
+        val rcTags = execOperations.getRcTags()
         val versionCode = rcTags.count() + VERSION_CODE_OFFSET
         println("Version Code: $versionCode")
         return versionCode

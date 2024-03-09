@@ -1,4 +1,4 @@
-name: Verify
+name: "Verify"
 
 on:
   push

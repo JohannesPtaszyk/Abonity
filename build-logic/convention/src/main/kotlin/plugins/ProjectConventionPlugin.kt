@@ -6,6 +6,7 @@ import configurations.applySonar
 import configurations.applySpotless
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import tasks.CreateRcTagTask
 
 @Suppress("unused")
 class ProjectConventionPlugin : Plugin<Project> {
@@ -15,6 +16,8 @@ class ProjectConventionPlugin : Plugin<Project> {
             applyKoverProject()
             applyDetekt()
             applySonar()
+
+            tasks.register(CreateRcTagTask.NAME, CreateRcTagTask::class.java)
         }
     }
 }
