@@ -44,6 +44,8 @@ import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.ads.AdCard
+import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.navigation.BackButton
 import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
@@ -226,6 +228,8 @@ private fun DetailLoadedContent(
                 Text(text = stringResource(id = R.string.subscription_id_label))
             },
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        AdCard(adId = AdId.DETAILS_BANNER)
     }
 }
 

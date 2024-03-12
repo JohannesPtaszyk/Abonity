@@ -23,6 +23,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import co.touchlab.kermit.Logger
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import dagger.hilt.android.AndroidEntryPoint
 import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.ui.theme.AppTheme
@@ -30,6 +33,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val logger = Logger.withTag(this::class.java.simpleName)
 
     private val mainViewModel by viewModels<MainActivityViewModel>()
 
@@ -93,7 +98,16 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+
+        MobileAds.initialize(this) { logger.i { "Initialized Ads" } }
+        MobileAds.setRequestConfiguration(
+            RequestConfiguration.Builder()
+                .setTestDeviceIds(getMobileAdsTestDeviceIds())
+                .build(),
+        )
     }
+
+    private fun getMobileAdsTestDeviceIds() = BuildConfig.TEST_DEVICE_IDS.split(",")
 }
 
 @Composable

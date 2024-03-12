@@ -8,6 +8,7 @@ plugins {
     id("dev.pott.android.room")
     id(libs.plugins.gms.get().pluginId)
     id(libs.plugins.firebase.distribution.get().pluginId)
+    id(libs.plugins.secrets.get().pluginId)
 }
 
 android {
@@ -28,6 +29,10 @@ android {
         resourceConfigurations.addAll(listOf("en", "de"))
 
         setProperty("archivesBaseName", "$applicationId($versionName)-$versionCode")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     signingConfigs {
@@ -77,6 +82,7 @@ dependencies {
     implementation(projects.feature.settings)
     implementation(projects.navigation)
 
+    implementation(libs.ads)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)

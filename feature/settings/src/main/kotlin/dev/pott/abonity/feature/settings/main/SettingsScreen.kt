@@ -33,6 +33,8 @@ import dev.pott.abonity.core.entity.settings.Settings
 import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.ads.AdCard
+import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 import dev.pott.abonity.core.ui.theme.AppIcons
@@ -90,6 +92,7 @@ fun SettingsScreen(
                 AppearanceSection(settings, onThemeChanged, onEnableAdaptiveColorChanged)
                 item { HorizontalDivider() }
                 MoreSection(onOpenNotificationSettingsClick, onOpenOssLicensesClick)
+                item { AdCard(adId = AdId.SETTINGS_BANNER) }
             }
         }
     }

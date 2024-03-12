@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +51,8 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.ads.AdCard
+import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
@@ -236,7 +239,9 @@ private fun LoadedContent(
                     NoUpcomingSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
                         period = dashboardState.upcomingSubscriptions.period,
-                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItemPlacement(),
                     )
                 }
             }
@@ -247,7 +252,9 @@ private fun LoadedContent(
                 ) {
                     NoSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
-                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItemPlacement(),
                     )
                 }
             }
@@ -270,6 +277,14 @@ private fun LoadedContent(
             )
             if (index != dashboardState.upcomingSubscriptions.subscriptions.lastIndex) {
                 Spacer(Modifier.height(16.dp))
+            }
+        }
+        if (dashboardState.upcomingSubscriptions.hasAnySubscriptions) {
+            item {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.height(16.dp))
+                    AdCard(adId = AdId.DASHBOARD_BANNER)
+                }
             }
         }
     }
