@@ -1,6 +1,8 @@
 package dev.pott.abonity.core.local.fakes
 
 import dev.pott.abonity.core.local.subscription.db.SubscriptionDao
+import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionCategoryCrossRef
+import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionCategoryEntity
 import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,45 +10,46 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 
 class FakeSubscriptionDao(
-    initialEntities: List<SubscriptionEntity> = emptyList(),
+    initialEntities: List<SubscriptionCategoryEntity> = emptyList(),
 ) : SubscriptionDao {
 
-    private val entities: MutableStateFlow<List<SubscriptionEntity>> =
-        MutableStateFlow(initialEntities)
+    private val entities = MutableStateFlow(initialEntities)
+    private val crossRefs = MutableStateFlow(emptyList<SubscriptionCategoryCrossRef>())
 
     override suspend fun upsertSubscription(subscription: SubscriptionEntity): Long {
-        val currentEntities = entities.value.toMutableList()
-        val indexOfEntity = currentEntities.indexOfFirst { it.id == subscription.id }
-        if (indexOfEntity != -1) {
-            currentEntities[indexOfEntity] = subscription
+        val index = entities.value.indexOfFirst { it.subscription.id == subscription.id }
+        if (index == -1) {
+            entities.update { it + SubscriptionCategoryEntity(subscription, emptyList()) }
         } else {
-            currentEntities.add(subscription)
+            entities.update {
+                it.toMutableList()
+                    .apply { set(index, SubscriptionCategoryEntity(subscription, emptyList())) }
+            }
         }
-        entities.value = currentEntities
-        return currentEntities.size.toLong()
+        return subscription.id
     }
 
-    override fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>> {
+    override suspend fun insertSubscriptionCategoryCrossRefs(
+        subscriptionCategoryCrossRefs: List<SubscriptionCategoryCrossRef>,
+    ) {
+        crossRefs.update { it + subscriptionCategoryCrossRefs }
+    }
+
+    override fun getSubscriptionsFlow(): Flow<List<SubscriptionCategoryEntity>> {
         return entities
     }
 
-    override fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity> {
-        return entities.mapNotNull { subscriptionEntities ->
-            subscriptionEntities.find { it.id == id }
-        }
-    }
-
-    override suspend fun delete(ids: List<Long>) {
-        entities.update { currentEntities ->
-            val indexOfId = currentEntities.filter { ids.contains(it.id) }.toSet()
-            currentEntities - indexOfId
+    override fun getSubscriptionFlow(id: Long): Flow<SubscriptionCategoryEntity?> {
+        return entities.mapNotNull { subscriptionCategoryEntities ->
+            subscriptionCategoryEntities.find { it.subscription.id == id }
         }
     }
 
     override suspend fun delete(id: Long) {
-        entities.update { currentEntities ->
-            val indexOfId = currentEntities.first { it.id == id }
-            currentEntities - indexOfId
-        }
+        entities.update { it.filterNot { it.subscription.id == id } }
+    }
+
+    override suspend fun delete(ids: List<Long>) {
+        entities.update { it.filterNot { ids.contains(it.subscription.id) } }
     }
 }

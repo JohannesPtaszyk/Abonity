@@ -110,9 +110,13 @@
     <string name="subscription_detail_edit_label">Edit Payment: %s</string>
     <string name="subscription_detail_empty_label">Select an item to get more information!</string>
     <string name="subscription_detail_name_label">Name</string>
+    <string name="subscription_detail_categories_label">Categories</string>
     <string name="subscription_filter_current_period">This %s</string>
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
     <string name="subscription_overview_swipe_delete_label">Delete Payment: %s</string>
+    <string name="category_add_dialog_title">Add Category</string>
+    <string name="category_add_dialog_input_placeholder">Category Name</string>
+    <string name="category_add_dialog_cta_add">Add</string>
 </resources>

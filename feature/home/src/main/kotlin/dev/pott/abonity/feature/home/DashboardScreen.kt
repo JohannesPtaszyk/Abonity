@@ -42,6 +42,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -58,6 +59,7 @@ import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
+import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.feature.home.components.NoSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NoUpcomingSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NotificationPermissionTeaser
@@ -126,7 +128,6 @@ fun DashboardScreen(
                     DashboardState.Loading -> "Loading"
                 }
             },
-            modifier = Modifier.padding(paddingValues),
             label = "content_animation",
         ) { dashboardState ->
             when (dashboardState) {
@@ -139,12 +140,13 @@ fun DashboardScreen(
                         onSubscriptionClick,
                         onAddNewSubscriptionClicked,
                         scrollBehavior.nestedScrollConnection,
+                        paddingValues,
                     )
                 }
 
                 DashboardState.Loading -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
@@ -168,6 +170,7 @@ private fun LoadedContent(
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     onAddNewSubscriptionClicked: () -> Unit,
     nestedScrollConnection: NestedScrollConnection,
+    paddingValues: PaddingValues,
 ) {
     var showNotificationDialog by remember { mutableStateOf(false) }
     val notificationPermissionState =
@@ -191,7 +194,7 @@ private fun LoadedContent(
     }
 
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp) + paddingValues,
         modifier = Modifier.nestedScroll(nestedScrollConnection),
     ) {
         val shouldShowNotificationTeaser = dashboardState.shouldShowNotificationTeaser
@@ -375,6 +378,7 @@ private fun DashboardScreenPreview() {
                                             .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                                         PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                                     ),
+                                    categories = listOf(Category(name = "Category")),
                                 ),
                                 periodPrice = Price(99.99, Currency.getInstance("EUR")),
                                 nextPaymentDate = LocalDate(2023, 12, 12),

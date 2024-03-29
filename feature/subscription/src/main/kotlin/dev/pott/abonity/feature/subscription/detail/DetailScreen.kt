@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,12 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -37,6 +36,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -49,9 +49,11 @@ import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.navigation.BackButton
 import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
+import dev.pott.abonity.core.ui.components.subscription.categories.Categories
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -100,7 +102,7 @@ fun DetailScreen(
                     DetailLoadedContent(
                         it,
                         state,
-                        Modifier.padding(paddingValues),
+                        paddingValues,
                     )
                 }
             }
@@ -160,76 +162,107 @@ private fun DetailLoadingContent(modifier: Modifier = Modifier) {
 private fun DetailLoadedContent(
     subscription: Subscription,
     state: DetailState,
+    paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    val scrollState = rememberScrollState()
-    Column(modifier = modifier.verticalScroll(scrollState)) {
-        PaymentInfoCard(
-            subscription.paymentInfo,
-            Modifier.padding(horizontal = 16.dp),
-        )
-        Spacer(Modifier.height(16.dp))
-        HorizontalDivider()
-        ListItem(
-            headlineContent = {
-                Text(text = subscription.name)
-            },
-            overlineContent = {
-                Text(text = stringResource(id = R.string.subscription_detail_name_label))
-            },
-        )
-        HorizontalDivider()
-        ListItem(
-            headlineContent = {
-                Text(text = subscription.description.orEmpty())
-            },
-            overlineContent = {
-                Text(
-                    text = stringResource(
-                        id = R.string.subscription_detail_description_label,
-                    ),
-                )
-            },
-        )
-        HorizontalDivider()
-        ListItem(
-            headlineContent = {
-                FormattedDate(date = subscription.paymentInfo.firstPayment)
-            },
-            overlineContent = {
-                Text(
-                    text = stringResource(
-                        id = R.string.subscription_first_payment_date_label,
-                    ),
-                )
-            },
-        )
-        state.nextPayment?.let { nextPayment ->
-            HorizontalDivider()
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = paddingValues,
+    ) {
+        item {
+            PaymentInfoCard(
+                subscription.paymentInfo,
+                Modifier.padding(horizontal = 16.dp),
+            )
+        }
+        item {
+            Spacer(Modifier.height(16.dp))
+        }
+        item {
             ListItem(
                 headlineContent = {
-                    FormattedDate(date = nextPayment)
+                    Text(text = subscription.name)
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_detail_name_label))
+                },
+            )
+        }
+        item {
+            ListItem(
+                headlineContent = {
+                    Categories(
+                        categories = subscription.categories.toImmutableList(),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 },
                 overlineContent = {
                     Text(
                         text = stringResource(
-                            id = R.string.subscription_next_payment_date_label,
+                            id = R.string.subscription_detail_categories_label,
                         ),
                     )
                 },
             )
         }
-        HorizontalDivider()
-        ListItem(
-            headlineContent = {
-                Text(text = subscription.id.value.toString())
-            },
-            overlineContent = {
-                Text(text = stringResource(id = R.string.subscription_id_label))
-            },
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        AdCard(adId = AdId.DETAILS_BANNER)
+        state.subscription?.description?.let { description ->
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(text = description)
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_detail_description_label,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+        item {
+            ListItem(
+                headlineContent = {
+                    FormattedDate(date = subscription.paymentInfo.firstPayment)
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_first_payment_date_label))
+                },
+            )
+        }
+        state.nextPayment?.let { nextPayment ->
+            item {
+                ListItem(
+                    headlineContent = {
+                        FormattedDate(date = nextPayment)
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_next_payment_date_label,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+        item {
+            ListItem(
+                headlineContent = {
+                    Text(text = subscription.id.value.toString())
+                },
+                overlineContent = {
+                    Text(text = stringResource(id = R.string.subscription_id_label))
+                },
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        item {
+            AdCard(adId = AdId.DETAILS_BANNER)
+        }
     }
 }
 
@@ -320,6 +353,7 @@ private fun DetailScreenPreview() {
                         Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
                         PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                     ),
+                    categories = listOf(Category(name = "Category")),
                 ),
             ),
             close = {

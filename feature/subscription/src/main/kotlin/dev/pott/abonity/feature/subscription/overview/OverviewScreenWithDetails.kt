@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -139,6 +140,7 @@ private fun OverviewWithDetailScreenPreview() {
                             today,
                             PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                         ),
+                        categories = listOf(Category(name = "Category")),
                     ),
                     periodPrice = Price(99.99, currency),
                     nextPaymentDate = LocalDate(2023, 12, 12),
@@ -164,6 +166,7 @@ private fun OverviewWithDetailScreenPreview() {
                         today,
                         PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                     ),
+                    categories = listOf(Category(name = "Category")),
                 ),
             ),
             onSubscriptionClicked = {},

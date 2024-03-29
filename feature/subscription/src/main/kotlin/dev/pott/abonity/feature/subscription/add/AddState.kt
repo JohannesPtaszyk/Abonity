@@ -1,10 +1,13 @@
 package dev.pott.abonity.feature.subscription.add
 
+import dev.pott.abonity.core.entity.subscription.Category
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+
 data class AddState(
     val showNameAsTitle: Boolean = false,
-    val input: AddFormState = AddFormState(),
-    val savingState: SavingState = SavingState.IDLE,
-    val loading: Boolean,
+    val formState: AddFormState = AddFormState(),
+    val categories: ImmutableList<Category> = persistentListOf(),
 ) {
     enum class SavingState {
         IDLE,

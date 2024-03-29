@@ -10,11 +10,15 @@ import dev.pott.abonity.core.domain.notification.NotificationTeaserRepositoryImp
 import dev.pott.abonity.core.domain.settings.SettingsLocalDataSource
 import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.settings.SettingsRepositoryImpl
+import dev.pott.abonity.core.domain.subscription.CategoryLocalDataSource
+import dev.pott.abonity.core.domain.subscription.CategoryRepository
+import dev.pott.abonity.core.domain.subscription.CategoryRepositoryImpl
 import dev.pott.abonity.core.domain.subscription.SubscriptionLocalDataSource
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
 import dev.pott.abonity.core.local.notification.NotificationTeaserDataStoreDataSource
 import dev.pott.abonity.core.local.settings.SettingsDataStoreDataSource
+import dev.pott.abonity.core.local.subscription.RoomCategoryDataSource
 import dev.pott.abonity.core.local.subscription.RoomSubscriptionDataSource
 
 @Module
@@ -27,6 +31,12 @@ interface CoreModule {
     fun bindsSubscriptionLocalDataSource(
         impl: RoomSubscriptionDataSource,
     ): SubscriptionLocalDataSource
+
+    @Binds
+    fun bindsCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
+
+    @Binds
+    fun bindsCategoryLocalDataSource(impl: RoomCategoryDataSource): CategoryLocalDataSource
 
     @Binds
     fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository

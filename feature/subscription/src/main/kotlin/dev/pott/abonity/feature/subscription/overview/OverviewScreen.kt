@@ -33,6 +33,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -210,6 +211,7 @@ private fun OverviewScreenPreview() {
                                         .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                                     PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                                 ),
+                                categories = listOf(Category(name = "Category")),
                             ),
                             periodPrice = Price(99.99, Currency.getInstance("EUR")),
                             nextPaymentDate = LocalDate(22, 12, 22),
