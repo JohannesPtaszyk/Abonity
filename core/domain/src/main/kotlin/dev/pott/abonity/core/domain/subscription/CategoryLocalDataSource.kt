@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryLocalDataSource {
     suspend fun addOrUpdateCategory(category: Category): Category
     fun getCategoriesFlow(): Flow<List<Category>>
-    suspend fun deleteCategory(categoryId: CategoryId)
+    suspend fun deleteCategory(categoryIds: List<CategoryId>)
 }

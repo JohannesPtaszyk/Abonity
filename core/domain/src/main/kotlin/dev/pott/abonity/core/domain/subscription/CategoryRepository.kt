@@ -9,5 +9,5 @@ interface CategoryRepository {
 
     fun getCategoriesFlow(): Flow<List<Category>>
 
-    suspend fun deleteCategory(categoryId: CategoryId)
+    suspend fun deleteCategory(categoryIds: List<CategoryId>)
 }

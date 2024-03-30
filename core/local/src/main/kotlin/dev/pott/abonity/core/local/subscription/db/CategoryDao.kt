@@ -14,6 +14,6 @@ interface CategoryDao {
     @Query("SELECT * FROM category_entity")
     fun getCategoriesFlow(): Flow<List<CategoryEntity>>
 
-    @Query("DELETE FROM subscription_entity WHERE id==:id")
-    fun delete(id: Long)
+    @Query("DELETE FROM category_entity WHERE id IN (:ids)")
+    suspend fun delete(ids: List<Long>)
 }

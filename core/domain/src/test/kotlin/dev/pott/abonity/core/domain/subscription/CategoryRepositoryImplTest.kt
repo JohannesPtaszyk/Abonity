@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class CategoryRepositoryImplTest {
 
     @Test
-    fun `GIVEN a category WHEN addOrUpdateCategory THEN return category`() =
+    fun `GIVEN a category WHEN addOrUpdateCategory THEN return category`() {
         runTest {
             val category = Category(CategoryId(1), "name")
             val localDataSource = FakeCategoryLocalDataSource(
@@ -25,6 +25,7 @@ class CategoryRepositoryImplTest {
             assertThat(result).isEqualTo(category)
             assertThat(localDataSource.addedCategories).isEqualTo(listOf(category))
         }
+    }
 
     @Test
     fun `GIVEN a category WHEN getCategoriesFlow THEN return flow of categories`() =
@@ -42,11 +43,11 @@ class CategoryRepositoryImplTest {
     @Test
     fun `GIVEN a category WHEN deleteCategory THEN delete category`() =
         runTest {
-            val categoryId = CategoryId(1)
+            val categoryIds = listOf(CategoryId(1))
             val localDataSource = FakeCategoryLocalDataSource()
             val tested = CategoryRepositoryImpl(localDataSource)
 
-            tested.deleteCategory(categoryId)
-            assertThat(localDataSource.deletedCategories).isEqualTo(listOf(categoryId))
+            tested.deleteCategory(categoryIds)
+            assertThat(localDataSource.deletedCategories).isEqualTo(categoryIds)
         }
 }

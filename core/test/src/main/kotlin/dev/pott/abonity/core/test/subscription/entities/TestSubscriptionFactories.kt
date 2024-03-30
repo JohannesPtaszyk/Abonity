@@ -9,3 +9,13 @@ fun createTestCategory(id: Long = 1, name: String = "Test Category"): Category {
         name,
     )
 }
+
+fun createTestCategories(
+    count: Int,
+    idStart: Long = 1,
+    nameStart: String = "Test Category",
+): List<Category> {
+    return (1..count).map {
+        createTestCategory(idStart + it, "$nameStart $it")
+    }
+}

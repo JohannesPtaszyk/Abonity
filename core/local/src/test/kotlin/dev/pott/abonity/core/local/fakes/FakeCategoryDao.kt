@@ -19,7 +19,7 @@ class FakeCategoryDao(
         return entities
     }
 
-    override fun delete(id: Long) {
-        entities.value = entities.value.filterNot { it.id == id }
+    override suspend fun delete(ids: List<Long>) {
+        entities.value = entities.value.filter { it.id !in ids }
     }
 }

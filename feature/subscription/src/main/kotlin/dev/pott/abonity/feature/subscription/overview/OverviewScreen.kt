@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -29,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
@@ -48,6 +51,7 @@ import dev.pott.abonity.core.ui.components.dismiss.DeleteDismissBackground
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilter
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
+import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.Clock
@@ -66,6 +70,7 @@ fun OverviewScreen(
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
     onSwipeToDelete: (id: SubscriptionId) -> Unit,
+    onOpenCategoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -76,6 +81,14 @@ fun OverviewScreen(
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.overview_screen_title)) },
                 scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(onClick = onOpenCategoriesClick) {
+                        Icon(
+                            painter = rememberVectorPainter(AppIcons.Categories),
+                            contentDescription = "Show Categories",
+                        )
+                    }
+                },
             )
         },
     ) { paddingValues ->
@@ -231,6 +244,9 @@ private fun OverviewScreenPreview() {
             },
             onSwipeToDelete = {
                 // On Swipe to delete
+            },
+            onOpenCategoriesClick = {
+                // On Open Categories Click
             },
         )
     }

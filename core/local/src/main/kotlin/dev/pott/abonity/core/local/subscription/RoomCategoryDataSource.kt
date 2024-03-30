@@ -22,7 +22,7 @@ class RoomCategoryDataSource @Inject constructor(
         return dao.getCategoriesFlow().map { it.map { entity -> entity.toDomain() } }
     }
 
-    override suspend fun deleteCategory(categoryId: CategoryId) {
-        dao.delete(categoryId.value)
+    override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
+        dao.delete(categoryIds.map { it.value })
     }
 }

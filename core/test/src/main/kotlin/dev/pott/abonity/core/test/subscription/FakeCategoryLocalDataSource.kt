@@ -22,7 +22,7 @@ class FakeCategoryLocalDataSource(
         return testCategoriesFlow
     }
 
-    override suspend fun deleteCategory(categoryId: CategoryId) {
-        deletedCategories.add(categoryId)
+    override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
+        deletedCategories.addAll(categoryIds)
     }
 }

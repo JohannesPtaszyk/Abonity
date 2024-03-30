@@ -16,7 +16,7 @@ class CategoryRepositoryImpl @Inject constructor(
         return localDataSource.getCategoriesFlow()
     }
 
-    override suspend fun deleteCategory(categoryId: CategoryId) {
-        localDataSource.deleteCategory(categoryId)
+    override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
+        localDataSource.deleteCategory(categoryIds)
     }
 }

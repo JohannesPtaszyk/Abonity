@@ -70,7 +70,7 @@ class RoomCategoryDataSourceTest {
             val dao = FakeCategoryDao(initialEntities = categories)
 
             val tested = RoomCategoryDataSource(dao)
-            tested.deleteCategory(CategoryId(1))
+            tested.deleteCategory(listOf(CategoryId(1)))
 
             dao.getCategoriesFlow().test {
                 assertThat(awaitItem()).isEqualTo(

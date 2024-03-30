@@ -53,6 +53,7 @@ fun OverviewScreenWithDetails(
     onEditClicked: (id: SubscriptionId) -> Unit,
     onDeleteClicked: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
+    onOpenCategoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -67,6 +68,7 @@ fun OverviewScreenWithDetails(
             onFilterItemSelected = onFilterItemSelected,
             onSwipeToDelete = onDeleteClicked,
             listState = listState,
+            onOpenCategoriesClick = onOpenCategoriesClick,
             modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -174,6 +176,7 @@ private fun OverviewWithDetailScreenPreview() {
             onEditClicked = {},
             onDeleteClicked = {},
             closeDetails = {},
+            onOpenCategoriesClick = {},
         )
     }
 }
