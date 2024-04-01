@@ -102,9 +102,10 @@ fun CategoryScreen(
     }
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
-fun CategoryScreenPreview() {
+private fun CategoryScreenPreview() {
     val categories = buildList {
         repeat(10) { add(Category(name = "Category $it")) }
     }.toImmutableList()

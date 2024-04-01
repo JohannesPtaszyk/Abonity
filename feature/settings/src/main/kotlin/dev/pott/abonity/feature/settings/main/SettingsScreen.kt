@@ -45,6 +45,8 @@ import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 fun SettingsScreen(
     openOssLicenses: () -> Unit,
     openNotificationSettings: () -> Unit,
+    openConsentDialog: () -> Unit,
+    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -56,6 +58,8 @@ fun SettingsScreen(
         onEnableAdaptiveColorChanged = viewModel::enableAdaptiveColors,
         onPaymentPeriodChanged = viewModel::setPeriod,
         onOpenNotificationSettingsClick = openNotificationSettings,
+        openConsentDialog = openConsentDialog,
+        openUrl = openUrl,
         modifier = modifier,
     )
 }
@@ -69,6 +73,8 @@ fun SettingsScreen(
     onEnableAdaptiveColorChanged: (Boolean) -> Unit,
     onPaymentPeriodChanged: (PaymentPeriod) -> Unit,
     onOpenNotificationSettingsClick: () -> Unit,
+    openConsentDialog: () -> Unit,
+    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -91,7 +97,13 @@ fun SettingsScreen(
                 item { HorizontalDivider() }
                 AppearanceSection(settings, onThemeChanged, onEnableAdaptiveColorChanged)
                 item { HorizontalDivider() }
-                MoreSection(onOpenNotificationSettingsClick, onOpenOssLicensesClick)
+                MoreSection(
+                    state,
+                    onOpenNotificationSettingsClick,
+                    onOpenOssLicensesClick,
+                    openConsentDialog,
+                    openUrl,
+                )
                 item { AdCard(adId = AdId.SETTINGS_BANNER) }
             }
         }
@@ -268,8 +280,11 @@ private fun LazyListScope.AppearanceSection(
 
 @Suppress("FunctionName")
 private fun LazyListScope.MoreSection(
+    state: SettingsState,
     onOpenNotificationSettingsClick: () -> Unit,
     onOpenOssLicensesClick: () -> Unit,
+    openConsentDialog: () -> Unit,
+    openUrl: (String) -> Unit,
 ) {
     item {
         SectionHeader(
@@ -299,11 +314,53 @@ private fun LazyListScope.MoreSection(
             },
             leadingContent = {
                 Icon(
-                    painter = rememberVectorPainter(image = AppIcons.Description),
+                    painter = rememberVectorPainter(image = AppIcons.Legal),
                     contentDescription = null,
                 )
             },
             modifier = Modifier.clickable { onOpenOssLicensesClick() },
+        )
+    }
+    item {
+        ListItem(
+            headlineContent = {
+                Text(text = stringResource(id = R.string.settings_consent_item_label))
+            },
+            leadingContent = {
+                Icon(
+                    painter = rememberVectorPainter(image = AppIcons.Cookie),
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.clickable { openConsentDialog() },
+        )
+    }
+    item {
+        ListItem(
+            headlineContent = {
+                Text(text = stringResource(id = R.string.settings_privacy_policy_item_label))
+            },
+            leadingContent = {
+                Icon(
+                    painter = rememberVectorPainter(image = AppIcons.Legal),
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.clickable { openUrl(state.privacyPolicyUrl) },
+        )
+    }
+    item {
+        ListItem(
+            headlineContent = {
+                Text(text = stringResource(id = R.string.settings_imprint_item_label))
+            },
+            leadingContent = {
+                Icon(
+                    painter = rememberVectorPainter(image = AppIcons.Legal),
+                    contentDescription = null,
+                )
+            },
+            modifier = Modifier.clickable { openUrl(state.imprintUrl) },
         )
     }
 }

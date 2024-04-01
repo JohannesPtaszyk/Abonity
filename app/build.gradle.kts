@@ -80,6 +80,7 @@ dependencies {
     implementation(projects.feature.home)
     implementation(projects.feature.subscription)
     implementation(projects.feature.settings)
+    implementation(projects.feature.legal)
     implementation(projects.navigation)
 
     implementation(libs.ads)

@@ -17,7 +17,10 @@ class NotificationTeaserEntitySerializer : Serializer<NotificationTeaserEntity> 
         try {
             return Json.decodeFromString(input.readBytes().decodeToString())
         } catch (serialization: SerializationException) {
-            throw CorruptionException("Unable to read UserPrefs", serialization)
+            throw CorruptionException(
+                "Unable to read Notification Teaser local data",
+                serialization,
+            )
         }
     }
 

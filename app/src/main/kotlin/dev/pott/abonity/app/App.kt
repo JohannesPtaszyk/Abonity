@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
 package dev.pott.abonity.app
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -37,6 +34,7 @@ import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 fun App(
     windowSizeClass: WindowSizeClass,
     openNotificationSettings: () -> Unit,
+    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -106,6 +104,7 @@ fun App(
                     appState,
                     navController,
                     openNotificationSettings,
+                    openUrl = openUrl,
                 )
             }
         }

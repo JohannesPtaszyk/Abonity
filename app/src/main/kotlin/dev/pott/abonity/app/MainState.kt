@@ -8,5 +8,6 @@ sealed interface MainState {
     data class Success(
         val theme: Theme,
         val adaptiveColorsEnabled: Boolean,
+        val showConsent: Boolean,
     ) : MainState
 }
