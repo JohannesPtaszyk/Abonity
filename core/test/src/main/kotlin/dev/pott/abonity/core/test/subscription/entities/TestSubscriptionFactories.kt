@@ -12,7 +12,7 @@ fun createTestCategory(id: Long = 1, name: String = "Test Category"): Category {
 
 fun createTestCategories(
     count: Int,
-    idStart: Long = 1,
+    idStart: Long = 0,
     nameStart: String = "Test Category",
 ): List<Category> {
     return (1..count).map {

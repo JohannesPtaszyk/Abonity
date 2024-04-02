@@ -78,27 +78,21 @@ class AddViewModel @Inject constructor(
             emitAll(formState)
         }
 
-    val state: StateFlow<AddState> = if (args.subscriptionId != null) {
-        combine(
-            getPrefilledFormState(args.subscriptionId),
-            categoryRepository.getCategoriesFlow(),
-        ) { formState, categories ->
-            AddState(
-                showNameAsTitle = true,
-                formState = formState,
-                categories = categories.toImmutableList(),
-            )
-        }
-    } else {
-        combine(
-            formState,
-            categoryRepository.getCategoriesFlow(),
-        ) { formState, categories ->
-            AddState(
-                formState = formState,
-                categories = categories.toImmutableList(),
-            )
-        }
+    val state: StateFlow<AddState> = combine(
+        if (args.subscriptionId != null) {
+            getPrefilledFormState(args.subscriptionId)
+        } else {
+            formState
+        },
+        categoryRepository.getCategoriesFlow(),
+    ) { formState, categories ->
+        AddState(
+            showNameAsTitle = true,
+            formState = formState,
+            categories = categories
+                .sortedBy { !formState.selectedCategories.contains(it) }
+                .toImmutableList(),
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
@@ -158,7 +152,11 @@ class AddViewModel @Inject constructor(
 
     fun addCategory(name: String) {
         viewModelScope.launch {
-            categoryRepository.addOrUpdateCategory(Category(name = name))
+            val category = categoryRepository.addOrUpdateCategory(Category(name = name))
+            formState.update {
+                it.copy(selectedCategories = (it.selectedCategories + category).toImmutableList())
+            }
+            closeAddCategoryDialog()
         }
     }
 

@@ -1,25 +1,25 @@
 package dev.pott.abonity.feature.subscription.add
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,6 +153,15 @@ fun AddScreen(
                     .imePadding(),
             ) {
                 item {
+                    CategoryInput(
+                        categories = state.categories,
+                        selectedCategories = state.formState.selectedCategories,
+                        onCategorySelected = onCategorySelected,
+                        onOpenAddNewCategory = onOpenAddNewCategory,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                item {
                     NameInput(
                         name = state.formState.name,
                         onNameChanged = onNameChanged,
@@ -164,14 +175,6 @@ fun AddScreen(
                         onPriceChanged = onPriceChanged,
                         onCurrencyChanged = onCurrencyChanged,
                         modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                item {
-                    CategoryInput(
-                        state.categories,
-                        state.formState.selectedCategories,
-                        onCategorySelected,
-                        onOpenAddNewCategory,
                     )
                 }
                 item {
@@ -199,43 +202,39 @@ fun AddScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CategoryInput(
     categories: ImmutableList<Category>,
     selectedCategories: ImmutableList<Category>,
     onCategorySelected: (category: Category) -> Unit,
     onOpenAddNewCategory: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Categories",
-            style = MaterialTheme.typography.titleSmall,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            item {
-                AssistChip(
-                    onClick = onOpenAddNewCategory,
-                    label = { Text(text = "New") },
-                    leadingIcon = {
-                        Icon(
-                            painter = rememberVectorPainter(image = AppIcons.Add),
-                            contentDescription = null,
-                        )
-                    },
-                )
-            }
-            items(categories) {
-                InputChip(
-                    selected = selectedCategories.contains(it),
-                    onClick = { onCategorySelected(it) },
-                    label = { Text(text = it.name) },
-                )
-            }
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        item(key = "add_new_category") {
+            AssistChip(
+                onClick = onOpenAddNewCategory,
+                label = { Text(text = stringResource(id = R.string.add_new_category_cta)) },
+                leadingIcon = {
+                    Icon(
+                        painter = rememberVectorPainter(image = AppIcons.Add),
+                        contentDescription = null,
+                    )
+                },
+                modifier = Modifier.animateItemPlacement(),
+            )
+        }
+        items(categories, key = { it.id.value }) {
+            InputChip(
+                selected = selectedCategories.contains(it),
+                onClick = { onCategorySelected(it) },
+                label = { Text(text = it.name) },
+                modifier = Modifier.animateItemPlacement(),
+            )
         }
     }
 }
@@ -257,6 +256,11 @@ private fun AddNewCategoryDialog(
                 },
                 value = input,
                 onValueChange = { input = it },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { onAddNewCategory(input) }),
             )
         },
         onDismissRequest = onCloseAddNewCategory,

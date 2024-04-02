@@ -5,16 +5,21 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
+import dev.pott.abonity.core.test.subscription.entities.createTestCategories
 import dev.pott.abonity.core.test.subscription.entities.createTestCategory
 import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -240,7 +245,8 @@ class AddViewModelTest {
     fun `GIVEN full periodic input WHEN save THEN periodic subscription is created`() {
         runTest {
             val subscriptionRepository = FakeSubscriptionRepository()
-            val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
+            val testCategories = createTestCategories(10)
+            val categoryRepository = FakeCategoryRepository(flowOf(testCategories))
             val tested = AddViewModel(
                 SavedStateHandle(),
                 FakeClock(),
@@ -268,26 +274,32 @@ class AddViewModelTest {
                     setPeriodic(!isOneTime)
                     setPaymentPeriod(paymentPeriod)
                     setPaymentPeriodCount(paymentPeriodCount)
-                    selectCategory(createTestCategory())
+                    selectCategory(testCategories.last())
                     save()
                     runCurrent()
                 }
                 assertThat(awaitItem()).isEqualTo(AddState())
-                assertThat(awaitItem().formState).isEqualTo(
-                    AddFormState(
-                        paymentDateEpochMillis = nowEpochMilliseconds,
-                        name = ValidatedInput("Test Subscription"),
-                        description = "Test Description",
-                        priceValue = ValidatedInput("9.99"),
-                        currency = Currency.getInstance("EUR"),
-                        isOneTimePayment = false,
-                        paymentPeriod = PaymentPeriod.MONTHS,
-                        paymentPeriodCount = ValidatedInput("1"),
-                        saving = AddState.SavingState.SAVED,
-                        selectedCategories = persistentListOf(createTestCategory()),
+                assertThat(awaitItem()).isEqualTo(
+                    AddState(
+                        formState = AddFormState(
+                            paymentDateEpochMillis = nowEpochMilliseconds,
+                            name = ValidatedInput("Test Subscription"),
+                            description = "Test Description",
+                            priceValue = ValidatedInput("9.99"),
+                            currency = Currency.getInstance("EUR"),
+                            isOneTimePayment = false,
+                            paymentPeriod = PaymentPeriod.MONTHS,
+                            paymentPeriodCount = ValidatedInput("1"),
+                            saving = AddState.SavingState.SAVED,
+                            selectedCategories = persistentListOf(testCategories.last()),
+                        ),
+                        categories = buildList {
+                            add(testCategories.last())
+                            addAll(testCategories.dropLast(1))
+                        }.toImmutableList(),
+                        showNameAsTitle = true,
                     ),
                 )
-                cancelAndConsumeRemainingEvents()
             }
 
             assertThat(subscriptionRepository.addedSubscriptions).isEqualTo(
@@ -299,6 +311,7 @@ class AddViewModelTest {
                                 TimeZone.currentSystemDefault(),
                             ).date,
                         ),
+                        categories = listOf(testCategories.last()),
                     ),
                 ),
             )
@@ -617,6 +630,59 @@ class AddViewModelTest {
                 assertThat(awaitItem()).isEqualTo(AddState())
                 assertThat(awaitItem().formState.showCategoryDialog).isEqualTo(true)
                 assertThat(awaitItem().formState.showCategoryDialog).isEqualTo(false)
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN initial state WHEN closeCategorySelection THEN category selection is closed`() {
+        runTest {
+            val subscriptionRepository = FakeSubscriptionRepository()
+            val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
+            val tested = AddViewModel(
+                SavedStateHandle(),
+                FakeClock(),
+                subscriptionRepository,
+                categoryRepository,
+            )
+
+            tested.state.test {
+                tested.openAddCategoryDialog()
+                runCurrent()
+                tested.closeAddCategoryDialog()
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState())
+                assertThat(awaitItem().formState.showCategoryDialog).isTrue()
+                assertThat(awaitItem().formState.showCategoryDialog).isFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN category WHEN addCategory THEN category is added to selected categories`() {
+        runTest {
+            val subscriptionRepository = FakeSubscriptionRepository()
+            val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
+            val tested = AddViewModel(
+                SavedStateHandle(),
+                FakeClock(),
+                subscriptionRepository,
+                categoryRepository,
+            )
+
+            tested.state.test {
+                tested.openAddCategoryDialog()
+                runCurrent()
+
+                tested.addCategory("name")
+                runCurrent()
+
+                assertThat(awaitItem()).isEqualTo(AddState())
+                assertThat(awaitItem().formState.showCategoryDialog).isTrue()
+                val item = awaitItem()
+                assertThat(item.formState.selectedCategories).contains(Category(name = "name"))
+                assertThat(item.formState.showCategoryDialog).isFalse()
             }
         }
     }
