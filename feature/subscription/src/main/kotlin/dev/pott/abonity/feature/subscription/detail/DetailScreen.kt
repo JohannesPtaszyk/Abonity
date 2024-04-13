@@ -189,7 +189,7 @@ private fun DetailLoadedContent(
             )
         }
 
-        if(subscription.categories.isNotEmpty()) {
+        if (subscription.categories.isNotEmpty()) {
             item {
                 ListItem(
                     headlineContent = {

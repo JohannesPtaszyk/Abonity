@@ -17,7 +17,7 @@ fun ConsentBottomSheet(
     viewModel: ConsentViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state.shouldClose) {
+    LaunchedEffect(state.shouldClose, close) {
         if (state.shouldClose) close()
     }
     ModalBottomSheet(

@@ -62,7 +62,7 @@ fun AddScreen(
     viewModel: AddViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state.formState.saving) {
+    LaunchedEffect(state.formState.saving, close) {
         if (state.formState.saving == AddState.SavingState.SAVED) close()
     }
     AddScreen(
