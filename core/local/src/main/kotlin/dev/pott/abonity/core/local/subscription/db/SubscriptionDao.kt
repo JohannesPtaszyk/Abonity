@@ -32,7 +32,13 @@ interface SubscriptionDao {
         subscriptionCategoryCrossRefs: List<SubscriptionCategoryCrossRef>,
     )
 
-    @Query("DELETE FROM subscription_category_cross_ref WHERE subscription_id IS :id AND category_id NOT IN (:categoryIds)")
+    @Query(
+        """ 
+            DELETE FROM subscription_category_cross_ref
+            WHERE subscription_id IS :id
+            AND category_id NOT IN (:categoryIds)
+            """,
+    )
     suspend fun deleteRemovedSubscriptionCategoryCrossRefs(id: Long, categoryIds: List<Long>)
 
     @Transaction
