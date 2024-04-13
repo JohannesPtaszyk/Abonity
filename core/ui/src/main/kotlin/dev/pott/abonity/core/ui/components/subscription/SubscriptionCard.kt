@@ -81,6 +81,7 @@ fun SubscriptionCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 Categories(
                     subscription.categories.toImmutableList(),
                     modifier = Modifier.fillMaxWidth(),

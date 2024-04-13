@@ -21,6 +21,7 @@ interface SubscriptionDao {
         val id = upsertSubscription(subscription.subscription)
             .takeIf { it > 0 }
             ?: subscription.subscription.id
+        deleteRemovedSubscriptionCategoryCrossRefs(id, subscription.categories.map { it.id })
         val crossRefs = subscription.categories.map { SubscriptionCategoryCrossRef(id, it.id) }
         insertSubscriptionCategoryCrossRefs(crossRefs)
         return id
@@ -30,6 +31,9 @@ interface SubscriptionDao {
     suspend fun insertSubscriptionCategoryCrossRefs(
         subscriptionCategoryCrossRefs: List<SubscriptionCategoryCrossRef>,
     )
+
+    @Query("DELETE FROM subscription_category_cross_ref WHERE subscription_id IS :id AND category_id NOT IN (:categoryIds)")
+    suspend fun deleteRemovedSubscriptionCategoryCrossRefs(id: Long, categoryIds: List<Long>)
 
     @Transaction
     @Query("SELECT * FROM subscription_entity")

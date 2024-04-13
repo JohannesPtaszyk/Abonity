@@ -188,23 +188,27 @@ private fun DetailLoadedContent(
                 },
             )
         }
-        item {
-            ListItem(
-                headlineContent = {
-                    Categories(
-                        categories = subscription.categories.toImmutableList(),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                overlineContent = {
-                    Text(
-                        text = stringResource(
-                            id = R.string.subscription_detail_categories_label,
-                        ),
-                    )
-                },
-            )
+
+        if(subscription.categories.isNotEmpty()) {
+            item {
+                ListItem(
+                    headlineContent = {
+                        Categories(
+                            categories = subscription.categories.toImmutableList(),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    },
+                    overlineContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.subscription_detail_categories_label,
+                            ),
+                        )
+                    },
+                )
+            }
         }
+
         state.subscription?.description?.let { description ->
             item {
                 ListItem(

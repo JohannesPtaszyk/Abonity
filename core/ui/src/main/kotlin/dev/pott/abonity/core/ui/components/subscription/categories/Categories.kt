@@ -17,7 +17,7 @@ fun Categories(categories: ImmutableList<Category>, modifier: Modifier = Modifie
     FlowRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         categories.forEach { category ->
             AssistChip(
