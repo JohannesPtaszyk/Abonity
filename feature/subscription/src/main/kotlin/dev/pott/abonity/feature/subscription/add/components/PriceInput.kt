@@ -112,7 +112,10 @@ fun PriceInput(
 
     if (showCurrencyBottomSheet) {
         CurrencyBottomSheet(
-            onCurrencyChanged,
+            onCurrencyChanged = {
+                showCurrencyBottomSheet = false
+                onCurrencyChanged(it)
+            },
             onDismissRequest = { showCurrencyBottomSheet = false },
         )
     }

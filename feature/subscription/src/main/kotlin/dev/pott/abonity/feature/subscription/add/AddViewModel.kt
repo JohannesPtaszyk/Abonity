@@ -87,7 +87,7 @@ class AddViewModel @Inject constructor(
         categoryRepository.getCategoriesFlow(),
     ) { formState, categories ->
         AddState(
-            showNameAsTitle = true,
+            showNameAsTitle = args.subscriptionId != null,
             formState = formState,
             categories = categories
                 .sortedBy { !formState.selectedCategories.contains(it) }
