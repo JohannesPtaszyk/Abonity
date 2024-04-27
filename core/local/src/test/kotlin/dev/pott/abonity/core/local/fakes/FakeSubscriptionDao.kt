@@ -35,6 +35,15 @@ class FakeSubscriptionDao(
         crossRefs.update { it + subscriptionCategoryCrossRefs }
     }
 
+    override suspend fun deleteRemovedSubscriptionCategoryCrossRefs(
+        id: Long,
+        categoryIds: List<Long>,
+    ) {
+        crossRefs.update { refs ->
+            refs.filterNot { it.subscriptionId == id && it.categoryId in categoryIds }
+        }
+    }
+
     override fun getSubscriptionsFlow(): Flow<List<SubscriptionCategoryEntity>> {
         return entities
     }

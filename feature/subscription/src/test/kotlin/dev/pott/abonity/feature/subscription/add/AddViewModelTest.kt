@@ -297,7 +297,7 @@ class AddViewModelTest {
                             add(testCategories.last())
                             addAll(testCategories.dropLast(1))
                         }.toImmutableList(),
-                        showNameAsTitle = true,
+                        showNameAsTitle = false,
                     ),
                 )
             }
