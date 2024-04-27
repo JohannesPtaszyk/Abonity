@@ -33,8 +33,12 @@ render.experimental.xml
 *.asc
 
 # Google Services (e.g. APIs or Firebase)
+# Firebase-generated Google Services File
 google-services.json
+# Google Cloud Account for Firebase Managment
 firebase-service-account.json
+# Google Cloud Account for Play Developer Console
+google-play-publisher-account.json
 
 # Android Profiling
 *.hprof

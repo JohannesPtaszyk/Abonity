@@ -9,6 +9,7 @@ plugins {
     id(libs.plugins.gms.get().pluginId)
     id(libs.plugins.firebase.distribution.get().pluginId)
     id(libs.plugins.secrets.get().pluginId)
+    id(libs.plugins.play.publisher.get().pluginId)
 }
 
 android {
@@ -69,6 +70,10 @@ android {
             }
         }
     }
+}
+
+play {
+    serviceAccountCredentials.set(file("../google-play-publisher-account.json"))
 }
 
 dependencies {

@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kover) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.play.publisher) apply false
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.sonar) apply false
     alias(libs.plugins.spotless) apply false
