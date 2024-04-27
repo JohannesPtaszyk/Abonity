@@ -148,5 +148,4 @@
     <string name="tracking_consent_dialog_cta_privacy_policy">Privacy Policy</string>
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">For more details, please visit our Privacy Policy</string>
     <string name="add_new_category_cta">New</string>
-
 </resources>

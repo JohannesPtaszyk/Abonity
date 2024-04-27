@@ -27,7 +27,7 @@ android {
             useSupportLibrary = true
         }
 
-        resourceConfigurations.addAll(listOf("en", "de"))
+        resourceConfigurations.addAll(listOf("en", "de", "fr"))
 
         setProperty("archivesBaseName", "$applicationId($versionName)-$versionCode")
     }
