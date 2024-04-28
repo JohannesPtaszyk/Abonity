@@ -82,8 +82,8 @@
     <string name="settings_adaptive_colors_item_label">Adaptive Farben</string>
     <string name="settings_notification_item_label">Benachrichtigungen</string>
     <string name="settings_oss_item_label">Lizenzen Dritter</string>
-    <string name="settings_consent_item_label">Einwilligungseinstellungen</string>
-    <string name="settings_privacy_policy_item_label">Datenschutz-Bestimmungen</string>
+    <string name="settings_consent_item_label">Tracking</string>
+    <string name="settings_privacy_policy_item_label">Datenschutzbestimmungen</string>
     <string name="settings_imprint_item_label">Impressum</string>
     <string name="settings_period_item_label">Zahlungsperiode</string>
     <string name="settings_screen_title">Einstellungen</string>
@@ -95,7 +95,7 @@
     <string name="settings_theme_item_label">Thema</string>
     <string name="settings_theme_light">Hell</string>
     <string name="subscription_add_btn_one_time">Einmalig</string>
-    <string name="subscription_add_btn_periodic">Periodisch</string>
+    <string name="subscription_add_btn_periodic">Wiederholend</string>
     <string name="subscription_add_currency_label">Währung</string>
     <string name="subscription_add_label_date">Fälligkeitsdatum</string>
     <string name="subscription_add_label_description">Kommentar</string>
@@ -139,7 +139,7 @@
     <string name="tracking_service_firebase_in_app_messaging_description">Firebase In-App Messaging ist ein Tool zum Versenden von Nachrichten innerhalb von Apps. Es wird verwendet, um Benutzer einzeln oder kollektiv mit Nachrichten zu kontaktieren. Darüber hinaus werden Analyse-Daten zu den Nachrichten gesammelt. Firebase In-App Messaging wird von Google Ireland Limited (Google Building Gordon House, 4 Barrow St, Dublin, D04E5W5, Irland) betrieben.</string>
     <string name="tracking_service_firebase_installations_description">Firebase Installations ist ein Tool, das eine eindeutige Kennung für Benutzer generiert (oft als "Firebase-generierte Benutzer-ID" bezeichnet). Firebase Installations wird von Google Ireland Limited (Google Building Gordon House, 4 Barrow St, Dublin, D04E5W5, Irland) betrieben.</string>
     <string name="tracking_service_firebase_remote_config_description">Firebase Remote Config ist ein Tool zur Bereitstellung von Konfigurationsdaten, Inhalten und Personalisierung für das App-Erlebnis. Firebase Remote Config wird von Google Ireland Limited (Google Building Gordon House, 4 Barrow St, Dublin, D04E5W5, Irland) betrieben.</string>
-    <string name="tracking_consent_dialog_title">Zustimmung zur Verfolgung</string>
+    <string name="tracking_consent_dialog_title">Zustimmung zum Tracking</string>
     <string name="tracking_consent_dialog_description">Wir verwenden verschiedene Tracking-Dienste, um unsere App zu verbessern und Ihnen die bestmögliche Benutzererfahrung zu bieten. Darüber hinaus verwenden wir Anzeigen, um die App zu monetarisieren und sie unseren Nutzern kostenlos zur Verfügung zu stellen. Wir möchten Ihre Zustimmung zur Verwendung dieser Technologien einholen.</string>
     <string name="tracking_consent_dialog_cta_accept">Alle akzeptieren</string>
     <string name="tracking_consent_dialog_cta_decline">Alle ablehnen</string>
