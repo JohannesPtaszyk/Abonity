@@ -317,7 +317,7 @@ private fun PaymentInfoCard(paymentInfo: PaymentInfo, modifier: Modifier = Modif
 
                     PaymentPeriod.YEARS ->
                         pluralStringResource(
-                            id = R.plurals.payment_per_weeks,
+                            id = R.plurals.payment_per_years,
                             count = paymentType.periodCount,
                             paymentType.periodCount,
                         )
