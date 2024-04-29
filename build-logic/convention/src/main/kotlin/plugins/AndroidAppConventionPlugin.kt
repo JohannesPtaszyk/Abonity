@@ -25,7 +25,6 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("com.google.gms.google-services")
                 apply("com.google.android.gms.oss-licenses-plugin")
                 apply("dev.shreyaspatil.compose-compiler-report-generator")
-                apply("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
             }
 
             extensions.configure<ApplicationExtension> {

@@ -25,6 +25,9 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk =
                     libs.findVersion("targetSdkVersion").get().toString().toInt()
                 configureGradleManagedDevices(this)
+                libraryVariants.all {
+                    generateBuildConfigProvider?.configure { enabled = false }
+                }
             }
             applyKoverAndroid()
             dependencies {

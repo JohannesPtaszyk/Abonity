@@ -8,7 +8,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
 
@@ -17,7 +17,7 @@ fun DialogEdgeToEdgeEffect() {
     val activityWindow = LocalView.current.context.findActivityWindow() ?: return
     val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window ?: return
     val parentView = LocalView.current.parent as View
-    DisposableEffect(Unit) {
+    SideEffect {
         val attributes = WindowManager.LayoutParams().apply {
             copyFrom(activityWindow.attributes)
             type = dialogWindow.attributes.type
@@ -27,7 +27,6 @@ fun DialogEdgeToEdgeEffect() {
             activityWindow.decorView.width,
             activityWindow.decorView.height,
         )
-        onDispose {}
     }
 }
 

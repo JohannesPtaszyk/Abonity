@@ -46,5 +46,4 @@ include(
     ":feature:subscription",
     ":feature:settings",
     ":feature:home",
-    "feature:legal",
 )

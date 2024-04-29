@@ -18,7 +18,7 @@ naming:
 
 complexity:
   LongParameterList:
-    functionThreshold: 20
+    functionThreshold: 16
     ignoreDefaultParameters: true
   LongMethod:
     threshold: 180

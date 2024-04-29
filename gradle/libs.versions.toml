@@ -4,16 +4,15 @@ minSdkVersion = "21"
 targetSdkVersion = "34"
 
 accompanist = "0.34.0"
-ads = "23.0.0"
 androidDesugarJdkLibs = "2.0.4"
-androidGradlePlugin = "8.3.2"
-androidxActivity = "1.9.0"
+androidGradlePlugin = "8.3.0"
+androidxActivity = "1.8.2"
 androidxAppCompat = "1.6.1"
-androidxComposeBom = "2024.04.01"
-androidxComposeCompiler = "1.5.12"
-androidxCore = "1.13.0"
+androidxComposeBom = "2024.02.02"
+androidxComposeCompiler = "1.5.8"
+androidxCore = "1.12.0"
 androidxCoreSplashscreen = "1.0.1"
-androidxDataStore = "1.1.0"
+androidxDataStore = "1.0.0"
 androidxEspresso = "3.5.1"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.7.0"
@@ -21,49 +20,44 @@ androidxNavigation = "2.7.7"
 androidxTestCore = "1.5.0"
 androidxTestExt = "1.1.5"
 androidxWindowManager = "1.2.0"
-appsweepGradlePlugin = "1.5.6"
-assertk = "0.28.1"
-composeCompilerReport = "1.2.0"
-detekt = "1.23.6"
-detektComposeRules = "0.3.18"
+assertk = "0.28.0"
+composeCompilerReport = "1.1.0"
+detekt = "1.23.5"
+detektComposeRules = "0.3.12"
 faker = "1.16.0"
 firebaseDistributionPlugin = "4.2.0"
-firebaseBom = "32.8.1"
+firebaseBom = "32.7.4"
 firebaseCrashlyticsPlugin = "2.9.9"
 firebasePerfPlugin = "1.4.2"
 gmsPlugin = "4.4.1"
 googleOss = "17.0.1"
 googleOssPlugin = "0.10.6"
-hilt = "2.51.1"
+hilt = "2.51"
 hiltExt = "1.2.0"
 javaxInject = "1"
 junitBom = "5.10.2"
 kermit = "2.0.3"
-kotlin = "1.9.23"
+kotlin = "1.9.22"
 kotlinCollections = "0.3.7"
 kotlinxCoroutines = "1.8.0"
 kotlinxDatetime = "0.5.0"
 kotlinxSerialization = "1.6.3"
 kover = "0.7.6"
-ksp = "1.9.23-1.0.20"
-ktlint = "1.2.1"
-robolectric = "4.12.1"
+ksp = "1.9.23-1.0.19"
+ktlint = "1.0.1"
+robolectric = "4.11.1"
 room = "2.6.1"
-playPublisher = "3.9.1"
-secrets = "2.0.1"
-sonar = "5.0.0.4638"
+sonar = "4.4.1.3373"
 spotless = "6.25.0"
 turbine = "1.1.0"
 versionCompare = "1.5.0"
 
 [libraries]
 accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "ads" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
-android-composeCompiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidxComposeCompiler" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.1" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
@@ -90,7 +84,6 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display-ktx" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf-ktx" }
 firebase-performance-gradle = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }
@@ -116,7 +109,6 @@ kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coro
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-ktlint = { group = "com.pinterest.ktlint", name = "ktlint-ruleset-standard", version.ref = "ktlint" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 robolectric-shadows = { group = "org.robolectric", name = "shadows-framework", version.ref = "robolectric" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -132,7 +124,6 @@ firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "per
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-secrets-gradlePlugin = { group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name = "secrets-gradle-plugin", version.ref = "secrets" }
 sonar-gradlePlugin = { group = "org.sonarsource.scanner.gradle", name = "sonarqube-gradle-plugin", version.ref = "sonar" }
 spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
@@ -140,7 +131,6 @@ spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plug
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
-appsweep = { id = "com.guardsquare.appsweep", version.ref = "appsweepGradlePlugin" }
 compose-compiler-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "composeCompilerReport" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 firebase-distribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseDistributionPlugin" }
@@ -152,7 +142,5 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }
-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 sonar = { id = "org.sonarqube", version.ref = "sonar" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

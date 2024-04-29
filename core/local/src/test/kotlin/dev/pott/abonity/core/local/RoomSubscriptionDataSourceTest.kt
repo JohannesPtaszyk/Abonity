@@ -1,4 +1,4 @@
-package dev.pott.abonity.core.local.subscription
+package dev.pott.abonity.core.local
 
 import app.cash.turbine.test
 import assertk.assertThat
@@ -6,8 +6,9 @@ import assertk.assertions.isEqualTo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.local.fakes.FakeSubscriptionDao
-import dev.pott.abonity.core.local.testdata.createTestSubscriptionCategoryEntityWithOneTimePayment
-import dev.pott.abonity.core.local.testdata.createTestSubscriptionCategoryEntityWithPeriodicPayment
+import dev.pott.abonity.core.local.subscription.RoomSubscriptionDataSource
+import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithOneTimePayment
+import dev.pott.abonity.core.local.testdata.createSubscriptionEntityWithPeriodicPayment
 import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
 import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.test.runTest
@@ -18,8 +19,8 @@ class RoomSubscriptionDataSourceTest {
     fun `GIVEN flow of subscription entities WHEN getSubscriptionFlow THEN return flow of domain subscriptions`() {
         runTest {
             val entities = listOf(
-                createTestSubscriptionCategoryEntityWithPeriodicPayment(id = 1),
-                createTestSubscriptionCategoryEntityWithOneTimePayment(id = 2),
+                createSubscriptionEntityWithPeriodicPayment(id = 1),
+                createSubscriptionEntityWithOneTimePayment(id = 2),
             )
             val dao = FakeSubscriptionDao(initialEntities = entities)
             val dataSource = RoomSubscriptionDataSource(dao)

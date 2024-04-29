@@ -26,7 +26,6 @@ import dev.pott.abonity.feature.subscription.detail.DetailViewModel
 fun OverviewRoute(
     showAsMultiColumn: Boolean,
     onEditClick: (SubscriptionId) -> Unit,
-    onOpenCategoriesClick: () -> Unit,
     args: OverviewScreenDestination.Args?,
     modifier: Modifier = Modifier,
     overviewViewModel: OverviewViewModel = hiltViewModel(),
@@ -54,7 +53,6 @@ fun OverviewRoute(
             onEditClicked = onEditClick,
             onDeleteClicked = overviewViewModel::delete,
             closeDetails = overviewViewModel::consumeDetails,
-            onOpenCategoriesClick = onOpenCategoriesClick,
             listState = listState,
         )
     } else {
@@ -63,7 +61,6 @@ fun OverviewRoute(
             onSubscriptionClick = overviewViewModel::openDetails,
             onFilterItemSelected = overviewViewModel::toggleFilter,
             onSwipeToDelete = overviewViewModel::delete,
-            onOpenCategoriesClick = onOpenCategoriesClick,
             listState = listState,
         )
         val showDetail = (overviewState as? OverviewState.Loaded)?.detailId != null
@@ -76,8 +73,8 @@ fun OverviewRoute(
             },
             exit = slideOutHorizontally { it } + fadeOut(),
         ) {
-            SideEffect {
-                if (skipFirstDetailAnimation) {
+            if (skipFirstDetailAnimation) {
+                SideEffect {
                     skipFirstDetailAnimation = false
                 }
             }

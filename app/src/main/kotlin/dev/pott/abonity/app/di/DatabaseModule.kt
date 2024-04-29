@@ -12,8 +12,6 @@ import dagger.hilt.components.SingletonComponent
 import dev.pott.abonity.core.local.subscription.db.AppDatabase
 import javax.inject.Singleton
 
-private const val APP_DATABASE = "app-database"
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -23,8 +21,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            APP_DATABASE,
-        ).fallbackToDestructiveMigration()
-            .build()
+            "app-database",
+        ).build()
     }
 }

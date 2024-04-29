@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,7 +41,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -52,14 +50,11 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import dev.pott.abonity.core.ui.R
-import dev.pott.abonity.core.ui.components.ads.AdCard
-import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
-import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.feature.home.components.NoSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NoUpcomingSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NotificationPermissionTeaser
@@ -81,7 +76,7 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state, openDetails) {
+    LaunchedEffect(state) {
         val selectedId = (state as? DashboardState.Loaded)?.selectedId ?: return@LaunchedEffect
         openDetails(selectedId)
         viewModel.consumeSelectedId()
@@ -128,6 +123,7 @@ fun DashboardScreen(
                     DashboardState.Loading -> "Loading"
                 }
             },
+            modifier = Modifier.padding(paddingValues),
             label = "content_animation",
         ) { dashboardState ->
             when (dashboardState) {
@@ -140,13 +136,12 @@ fun DashboardScreen(
                         onSubscriptionClick,
                         onAddNewSubscriptionClicked,
                         scrollBehavior.nestedScrollConnection,
-                        paddingValues,
                     )
                 }
 
                 DashboardState.Loading -> {
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(paddingValues),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
@@ -170,7 +165,6 @@ private fun LoadedContent(
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
     onAddNewSubscriptionClicked: () -> Unit,
     nestedScrollConnection: NestedScrollConnection,
-    paddingValues: PaddingValues,
 ) {
     var showNotificationDialog by remember { mutableStateOf(false) }
     val notificationPermissionState =
@@ -194,7 +188,7 @@ private fun LoadedContent(
     }
 
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp) + paddingValues,
+        contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = Modifier.nestedScroll(nestedScrollConnection),
     ) {
         val shouldShowNotificationTeaser = dashboardState.shouldShowNotificationTeaser
@@ -242,9 +236,7 @@ private fun LoadedContent(
                     NoUpcomingSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
                         period = dashboardState.upcomingSubscriptions.period,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
+                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
                     )
                 }
             }
@@ -255,9 +247,7 @@ private fun LoadedContent(
                 ) {
                     NoSubscriptionTeaser(
                         onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
+                        modifier = Modifier.fillMaxWidth().animateItemPlacement(),
                     )
                 }
             }
@@ -280,14 +270,6 @@ private fun LoadedContent(
             )
             if (index != dashboardState.upcomingSubscriptions.subscriptions.lastIndex) {
                 Spacer(Modifier.height(16.dp))
-            }
-        }
-        if (dashboardState.upcomingSubscriptions.hasAnySubscriptions) {
-            item {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(Modifier.height(16.dp))
-                    AdCard(adId = AdId.DASHBOARD_BANNER)
-                }
             }
         }
     }
@@ -378,7 +360,6 @@ private fun DashboardScreenPreview() {
                                             .toLocalDateTime(TimeZone.currentSystemDefault()).date,
                                         PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                                     ),
-                                    categories = listOf(Category(name = "Category")),
                                 ),
                                 periodPrice = Price(99.99, Currency.getInstance("EUR")),
                                 nextPaymentDate = LocalDate(2023, 12, 12),

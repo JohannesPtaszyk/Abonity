@@ -2,7 +2,6 @@ package dev.pott.abonity.feature.subscription.add
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
 import kotlinx.collections.immutable.ImmutableList
@@ -19,10 +18,6 @@ data class AddFormState(
     val isOneTimePayment: Boolean = false,
     val paymentPeriod: PaymentPeriod = PaymentPeriod.MONTHS,
     val paymentPeriodCount: ValidatedInput = ValidatedInput("1"),
-    val selectedCategories: ImmutableList<Category> = persistentListOf(),
-    val isLoading: Boolean = false,
-    val saving: AddState.SavingState = AddState.SavingState.IDLE,
-    val showCategoryDialog: Boolean = false,
 ) {
     val isValid = paymentDateEpochMillis != null &&
         !name.isError &&

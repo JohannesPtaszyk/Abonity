@@ -1,4 +1,4 @@
-package dev.pott.abonity.core.local.subscription.mapper
+package dev.pott.abonity.core.local.subscription
 
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentPeriod

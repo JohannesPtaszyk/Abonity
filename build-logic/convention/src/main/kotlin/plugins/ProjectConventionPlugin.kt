@@ -2,7 +2,6 @@ package plugins
 
 import configurations.applyDetekt
 import configurations.applyKoverProject
-import configurations.applySecrets
 import configurations.applySonar
 import configurations.applySpotless
 import org.gradle.api.Plugin
@@ -18,7 +17,6 @@ class ProjectConventionPlugin : Plugin<Project> {
             applyKoverProject()
             applyDetekt()
             applySonar()
-            applySecrets()
 
             tasks.register(CreateRcTagTask.NAME, CreateRcTagTask::class.java)
             tasks.register(CreateReleaseTagTask.NAME, CreateReleaseTagTask::class.java)

@@ -6,9 +6,6 @@ import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
-import dev.pott.abonity.core.test.config.FakeConfigRepository
-import dev.pott.abonity.core.test.config.entities.TEST_IMPRINT_URL
-import dev.pott.abonity.core.test.config.entities.TEST_PRIVACY_POLICY_URL
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,10 +22,9 @@ class SettingsViewModelTest {
     fun `GIVEN default settings WHEN setTheme to light THEN settings value is updated`() =
         runTest {
             val settings = createTestSettings()
-            val settingsRepository = FakeSettingsRepository(settings)
-            val configRepository = FakeConfigRepository()
+            val repository = FakeSettingsRepository(settings)
 
-            val tested = SettingsViewModel(settingsRepository, configRepository)
+            val tested = SettingsViewModel(repository)
 
             tested.state.test {
                 runCurrent()
@@ -36,20 +32,8 @@ class SettingsViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(SettingsState())
-                assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings,
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
-                )
-                assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings.copy(theme = Theme.LIGHT),
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
-                )
+                assertThat(awaitItem()).isEqualTo(SettingsState(settings))
+                assertThat(awaitItem()).isEqualTo(SettingsState(settings.copy(theme = Theme.LIGHT)))
             }
         }
 
@@ -57,10 +41,9 @@ class SettingsViewModelTest {
     fun `GIVEN default settings WHEN setPeriod to years THEN settings value is updated`() {
         runTest {
             val settings = createTestSettings()
-            val settingsRepository = FakeSettingsRepository(settings)
-            val configRepository = FakeConfigRepository()
+            val repository = FakeSettingsRepository(settings)
 
-            val tested = SettingsViewModel(settingsRepository, configRepository)
+            val tested = SettingsViewModel(repository)
 
             tested.state.test {
                 runCurrent()
@@ -68,19 +51,9 @@ class SettingsViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(SettingsState())
+                assertThat(awaitItem()).isEqualTo(SettingsState(settings))
                 assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings,
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
-                )
-                assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings.copy(period = PaymentPeriod.YEARS),
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
+                    SettingsState(settings.copy(period = PaymentPeriod.YEARS)),
                 )
             }
         }
@@ -90,10 +63,9 @@ class SettingsViewModelTest {
     fun `GIVEN default settings WHEN enableAdaptiveColors THEN settings value is updated`() =
         runTest {
             val settings = createTestSettings()
-            val settingsRepository = FakeSettingsRepository(settings)
-            val configRepository = FakeConfigRepository()
+            val repository = FakeSettingsRepository(settings)
 
-            val tested = SettingsViewModel(settingsRepository, configRepository)
+            val tested = SettingsViewModel(repository)
 
             tested.state.test {
                 runCurrent()
@@ -101,20 +73,10 @@ class SettingsViewModelTest {
                 runCurrent()
 
                 assertThat(awaitItem()).isEqualTo(SettingsState())
-                assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings,
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
-                )
-                assertThat(awaitItem()).isEqualTo(
-                    SettingsState(
-                        settings.copy(enableAdaptiveColors = true),
-                        TEST_PRIVACY_POLICY_URL,
-                        TEST_IMPRINT_URL,
-                    ),
-                )
+                assertThat(awaitItem()).isEqualTo(SettingsState(settings))
+                assertThat(
+                    awaitItem(),
+                ).isEqualTo(SettingsState(settings.copy(enableAdaptiveColors = true)))
             }
         }
 }

@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -28,10 +27,8 @@ import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
-import dev.pott.abonity.core.ui.components.subscription.categories.Categories
 import dev.pott.abonity.core.ui.preview.PreviewCommonUiConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.LocalDate
 import java.util.Currency
 
@@ -54,7 +51,7 @@ fun SubscriptionCard(
             CardDefaults.cardColors()
         },
         border = if (isSelected) {
-            BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
+            BorderStroke(width = 4.dp, color = MaterialTheme.colorScheme.outline)
         } else {
             null
         },
@@ -73,18 +70,11 @@ fun SubscriptionCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                subscription.description?.let { description ->
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Categories(
-                    subscription.categories.toImmutableList(),
-                    modifier = Modifier.fillMaxWidth(),
+                Text(
+                    text = subscription.description.orEmpty(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Spacer(Modifier.width(8.dp))
@@ -151,7 +141,6 @@ private class SubscriptionCardPreviewProvider :
                                 PaymentPeriod.MONTHS,
                             ),
                         ),
-                        listOf(Category(name = "Category")),
                     ),
                     Price(999.11, currency),
                     LocalDate(2023, 12, 12),
@@ -169,7 +158,6 @@ private class SubscriptionCardPreviewProvider :
                             LocalDate(1999, 1, 1),
                             PaymentType.OneTime,
                         ),
-                        listOf(Category(name = "Category")),
                     ),
                     Price(0.99, Currency.getInstance("USD")),
                     LocalDate(2023, 12, 12),

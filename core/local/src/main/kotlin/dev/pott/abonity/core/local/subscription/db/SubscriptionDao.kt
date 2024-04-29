@@ -1,13 +1,8 @@
 package dev.pott.abonity.core.local.subscription.db
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Upsert
-import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionCategoryCrossRef
-import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionCategoryEntity
 import dev.pott.abonity.core.local.subscription.db.entities.SubscriptionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -16,38 +11,11 @@ interface SubscriptionDao {
     @Upsert
     suspend fun upsertSubscription(subscription: SubscriptionEntity): Long
 
-    @Transaction
-    suspend fun upsertSubscriptionCategory(subscription: SubscriptionCategoryEntity): Long {
-        val id = upsertSubscription(subscription.subscription)
-            .takeIf { it > 0 }
-            ?: subscription.subscription.id
-        deleteRemovedSubscriptionCategoryCrossRefs(id, subscription.categories.map { it.id })
-        val crossRefs = subscription.categories.map { SubscriptionCategoryCrossRef(id, it.id) }
-        insertSubscriptionCategoryCrossRefs(crossRefs)
-        return id
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSubscriptionCategoryCrossRefs(
-        subscriptionCategoryCrossRefs: List<SubscriptionCategoryCrossRef>,
-    )
-
-    @Query(
-        """ 
-            DELETE FROM subscription_category_cross_ref
-            WHERE subscription_id IS :id
-            AND category_id NOT IN (:categoryIds)
-            """,
-    )
-    suspend fun deleteRemovedSubscriptionCategoryCrossRefs(id: Long, categoryIds: List<Long>)
-
-    @Transaction
     @Query("SELECT * FROM subscription_entity")
-    fun getSubscriptionsFlow(): Flow<List<SubscriptionCategoryEntity>>
+    fun getSubscriptionsFlow(): Flow<List<SubscriptionEntity>>
 
-    @Transaction
     @Query("SELECT * FROM subscription_entity WHERE id==:id")
-    fun getSubscriptionFlow(id: Long): Flow<SubscriptionCategoryEntity?>
+    fun getSubscriptionFlow(id: Long): Flow<SubscriptionEntity?>
 
     @Query("DELETE FROM subscription_entity WHERE id==:id")
     suspend fun delete(id: Long)

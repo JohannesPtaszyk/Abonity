@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -53,7 +52,6 @@ fun OverviewScreenWithDetails(
     onEditClicked: (id: SubscriptionId) -> Unit,
     onDeleteClicked: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
-    onOpenCategoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -68,7 +66,6 @@ fun OverviewScreenWithDetails(
             onFilterItemSelected = onFilterItemSelected,
             onSwipeToDelete = onDeleteClicked,
             listState = listState,
-            onOpenCategoriesClick = onOpenCategoriesClick,
             modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -142,7 +139,6 @@ private fun OverviewWithDetailScreenPreview() {
                             today,
                             PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                         ),
-                        categories = listOf(Category(name = "Category")),
                     ),
                     periodPrice = Price(99.99, currency),
                     nextPaymentDate = LocalDate(2023, 12, 12),
@@ -168,7 +164,6 @@ private fun OverviewWithDetailScreenPreview() {
                         today,
                         PaymentType.Periodic(1, PaymentPeriod.MONTHS),
                     ),
-                    categories = listOf(Category(name = "Category")),
                 ),
             ),
             onSubscriptionClicked = {},
@@ -176,7 +171,6 @@ private fun OverviewWithDetailScreenPreview() {
             onEditClicked = {},
             onDeleteClicked = {},
             closeDetails = {},
-            onOpenCategoriesClick = {},
         )
     }
 }

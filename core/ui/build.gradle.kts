@@ -1,14 +1,9 @@
 plugins {
     id("dev.pott.android.lib.compose")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
     namespace = "dev.pott.abonity.core.ui"
-
-    buildFeatures {
-        buildConfig = true
-    }
 }
 
 dependencies {
@@ -16,7 +11,8 @@ dependencies {
 
     implementation(projects.core.domain)
 
-    implementation(libs.ads)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.kermit)

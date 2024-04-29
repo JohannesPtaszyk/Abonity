@@ -5,5 +5,4 @@ data class Subscription(
     val name: String,
     val description: String?,
     val paymentInfo: PaymentInfo,
-    val categories: List<Category>,
 )

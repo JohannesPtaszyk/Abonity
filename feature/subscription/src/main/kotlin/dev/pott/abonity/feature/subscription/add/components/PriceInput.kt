@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.common.text.rememberPriceValueFilter
 import dev.pott.abonity.core.ui.R
@@ -83,10 +82,7 @@ fun PriceInput(
             supportingText = {
                 priceValue.localizedError()?.let { Text(text = it) }
             },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Decimal,
-            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.weight(1f, fill = true),
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -112,10 +108,7 @@ fun PriceInput(
 
     if (showCurrencyBottomSheet) {
         CurrencyBottomSheet(
-            onCurrencyChanged = {
-                showCurrencyBottomSheet = false
-                onCurrencyChanged(it)
-            },
+            onCurrencyChanged,
             onDismissRequest = { showCurrencyBottomSheet = false },
         )
     }
