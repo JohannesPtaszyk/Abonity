@@ -30,17 +30,27 @@ jobs:
           ABONITY_KEYSTORE_GPG_FILE: ${{ secrets.ABONITY_KEYSTORE_GPG_FILE }}
           ABONITY_KEYSTORE_GPG_PASSPHRASE: ${{ secrets.ABONITY_KEYSTORE_GPG_PASSPHRASE }}
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON: ${{ secrets.GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON }}
+          ABONITY_SECRETS_FILE: ${{ secrets.ABONITY_SECRETS_FILE }}
         run: |
           echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
           echo $FIREBASE_SERVICE_ACCOUNT_JSON > ./firebase-service-account.json
+          echo $GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON > ./google-play-publisher-account.json
           echo $ABONITY_KEYSTORE_GPG_FILE > ./abonity.keystore.asc
           gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
+          echo $ABONITY_SECRETS_FILE > ./secrets.properties
 
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
 
       - name: App Distribution
         run: ./gradlew appDistributionUploadRelease
+
+      - name: Google Play Release
+        run: ./gradlew publishReleaseBundle
+
+      - name: AppSweep Scan
+        run: ./gradlew uploadToAppSweepDebug
 
       - name: Create RC Tag
         run: |

@@ -17,9 +17,10 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -33,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -44,7 +44,6 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.subscription.rememberFormattedDate
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
-import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 import dev.pott.abonity.feature.subscription.add.ValidatedInput
 import dev.pott.abonity.feature.subscription.add.localizedError
@@ -76,28 +75,19 @@ fun DateInput(
     }
 
     Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            OutlinedButton(
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+            SegmentedButton(
+                selected = isPeriodic,
                 onClick = { onIsPeriodicChanged(true) },
-                modifier = Modifier.weight(1f),
+                shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
             ) {
-                if (isPeriodic) {
-                    Icon(rememberVectorPainter(image = AppIcons.Check), null)
-                    Spacer(Modifier.width(8.dp))
-                }
                 Text(text = stringResource(id = R.string.subscription_add_btn_periodic))
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            OutlinedButton(
+            SegmentedButton(
+                selected = !isPeriodic,
                 onClick = { onIsPeriodicChanged(false) },
-                modifier = Modifier.weight(1f),
+                shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
             ) {
-                if (!isPeriodic) {
-                    Icon(rememberVectorPainter(image = AppIcons.Check), null)
-                    Spacer(Modifier.width(8.dp))
-                }
                 Text(text = stringResource(id = R.string.subscription_add_btn_one_time))
             }
         }

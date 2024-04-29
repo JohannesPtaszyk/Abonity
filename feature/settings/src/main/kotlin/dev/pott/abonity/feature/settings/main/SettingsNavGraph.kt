@@ -8,6 +8,9 @@ import dev.pott.abonity.navigation.destination.navigation
 fun NavGraphBuilder.settingsNavGraph(
     openOssLicenses: () -> Unit,
     openNotificationSettings: () -> Unit,
+    openConsentDialog: () -> Unit,
+    openUrl: (String) -> Unit,
+    nestedGraphs: NavGraphBuilder.() -> Unit = {},
 ) {
     navigation(
         destination = SettingsNavigationDestination,
@@ -17,7 +20,10 @@ fun NavGraphBuilder.settingsNavGraph(
             SettingsScreen(
                 openOssLicenses = openOssLicenses,
                 openNotificationSettings = openNotificationSettings,
+                openUrl = openUrl,
+                openConsentDialog = openConsentDialog,
             )
         }
+        nestedGraphs()
     }
 }

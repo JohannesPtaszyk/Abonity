@@ -1,0 +1,11 @@
+package dev.pott.abonity.core.entity.legal
+
+enum class ConsentServiceId {
+    FIREBASE_ANALYTICS,
+    FIREBASE_CRASHLYTICS,
+    FIREBASE_PERFORMANCE,
+    FIREBASE_CLOUD_MESSAGING,
+    FIREBASE_IN_APP_MESSAGING,
+    FIREBASE_INSTALLATIONS,
+    FIREBASE_REMOTE_CONFIG,
+}

@@ -1,9 +1,6 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
 package dev.pott.abonity.app
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,8 +14,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -37,6 +36,7 @@ import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 fun App(
     windowSizeClass: WindowSizeClass,
     openNotificationSettings: () -> Unit,
+    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navController = rememberNavController()
@@ -64,14 +64,15 @@ fun App(
             }
         },
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = appState.shouldShowAddFloatingActionbutton,
-            ) {
-                AddFloatingActionButton(
-                    onClick = { navController.navigate(AddScreenDestination.route) },
-                    expanded = false,
-                )
-            }
+            val fabScale by animateFloatAsState(
+                targetValue = if (appState.shouldShowAddFloatingActionbutton) 1f else 0f,
+                label = "FAB Scale Animation",
+            )
+            AddFloatingActionButton(
+                onClick = { navController.navigate(AddScreenDestination.route) },
+                expanded = false,
+                modifier = Modifier.scale(scale = fabScale),
+            )
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
     ) { paddingValues ->
@@ -106,6 +107,7 @@ fun App(
                     appState,
                     navController,
                     openNotificationSettings,
+                    openUrl = openUrl,
                 )
             }
         }

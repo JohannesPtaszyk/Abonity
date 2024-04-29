@@ -66,7 +66,7 @@ fun ExecOperations.getVersionNameFromBranchName(): String {
         } catch (e: Exception) {
             logger.error(
                 "Could not describe tags: ${e.message}, " +
-                    "using $FALLBACK_VERSION_NAME' as version name",
+                    "using $FALLBACK_VERSION_NAME as version name",
             )
             FALLBACK_VERSION_NAME
         }
