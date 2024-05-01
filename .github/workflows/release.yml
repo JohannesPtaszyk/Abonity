@@ -44,6 +44,7 @@ jobs:
         run: ./gradlew bundleRelease
 
       - name: Print BuildConfig
+        if: always()
         run: echo (< /home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java) | sed 's/./& /g'
 
 
