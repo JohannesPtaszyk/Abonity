@@ -43,7 +43,10 @@ jobs:
       - name: Test
         run: |
           ./gradlew :core:ui:compileReleaseJavaWithJavac --no-configuration-cache --rerun-tasks
-          echo echo "$(</home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java)"
+
+      - name: Print Build Config
+        if: always()
+        run: echo "$(</home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java)"
 
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease --stacktrace --info
