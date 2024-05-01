@@ -40,19 +40,23 @@ jobs:
           gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
           echo $ABONITY_SECRETS_FILE > ./secrets.properties
 
+      - name: Test
+        run: ./gradlew :core:ui:compileReleaseJavaWithJavac --no-configuration-cache --rerun-tasks
+
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease --stacktrace --info
 
-      - name: App Distribution
-        run: ./gradlew appDistributionUploadRelease
 
-      - name: Google Play Release
-        run: ./gradlew publishReleaseBundle
-
-      - name: AppSweep Scan
-        run: ./gradlew uploadToAppSweepDebug
-
-      - name: Create RC Tag
-        run: |
-          ./gradlew createRcTag --push=true
+#      - name: App Distribution
+#        run: ./gradlew appDistributionUploadRelease
+#
+#      - name: Google Play Release
+#        run: ./gradlew publishReleaseBundle
+#
+#      - name: AppSweep Scan
+#        run: ./gradlew uploadToAppSweepDebug
+#
+#      - name: Create RC Tag
+#        run: |
+#          ./gradlew createRcTag --push=true
           
