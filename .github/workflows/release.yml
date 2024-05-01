@@ -41,7 +41,9 @@ jobs:
           echo $ABONITY_SECRETS_FILE > ./secrets.properties
 
       - name: Test
-        run: ./gradlew :core:ui:compileReleaseJavaWithJavac --no-configuration-cache --rerun-tasks
+        run: |
+          ./gradlew :core:ui:compileReleaseJavaWithJavac --no-configuration-cache --rerun-tasks
+          echo echo "$(</home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java)"
 
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease --stacktrace --info
