@@ -50,14 +50,18 @@ jobs:
         run: ./gradlew appDistributionUploadRelease
 
       - name: Google Play Release
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
         run: ./gradlew publishReleaseBundle
+
+      - name: Create RC Tag
+        run: |
+          ./gradlew createRcTag --push=true
 
       - name: AppSweep Scan
         env:
           APPSWEEP_API_KEY: ${{ secrets.APPSWEEP_API_KEY }}
         run: ./gradlew uploadToAppSweepDebug
-
-      - name: Create RC Tag
-        run: |
-          ./gradlew createRcTag --push=true
           
