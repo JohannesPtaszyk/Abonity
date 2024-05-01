@@ -43,6 +43,9 @@ jobs:
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
 
+      - name: Promote Internal to Release
+        run: ./gradlew promoteArtifact --from-track internal --promote-track production
+
       - name: Create Version Tag
         run: |
           ./gradlew createReleaseTagFromLatestRc --push=true
