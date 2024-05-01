@@ -28,7 +28,7 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > ./firebase-service-account.json
           echo "$GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON" > ./google-play-publisher-account.json
           echo "$ABONITY_KEYSTORE_GPG_FILE" > ./abonity.keystore.asc
-          gpg -d -passphrase "$ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
+          gpg -d -passphrase $ABONITY_KEYSTORE_GPG_PASSPHRASE --batch ./abonity.keystore.asc > ./abonity.keystore
           echo "$ABONITY_SECRETS_FILE" > ./secrets.properties
 
       - name: Set up JDK
