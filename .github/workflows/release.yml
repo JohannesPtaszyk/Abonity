@@ -29,7 +29,7 @@ jobs:
           echo $GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON > ./google-play-publisher-account.json
           echo $ABONITY_KEYSTORE_GPG_FILE > ./abonity.keystore.asc
           gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
-          echo $ABONITY_SECRETS_FILE > ./secrets.properties
+          echo "$ABONITY_SECRETS_FILE" > ./secrets.properties
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -42,11 +42,6 @@ jobs:
 
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
-
-      - name: Print BuildConfig
-        if: always()
-        run: echo "$(< /home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java)" | sed 's/./& /g'
-
 
 #      - name: App Distribution
 #        run: ./gradlew appDistributionUploadRelease
