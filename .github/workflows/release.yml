@@ -41,7 +41,10 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Bundle Release AAB
-        run: ./gradlew bundleRelease --stacktrace --info
+        run: ./gradlew bundleRelease
+
+      - name: Print BuildConfig
+        run: echo (< /home/runner/work/Abonity/Abonity/core/ui/build/generated/source/buildConfig/release/dev/pott/abonity/core/ui/BuildConfig.java) | sed 's/./& /g'
 
 
 #      - name: App Distribution
