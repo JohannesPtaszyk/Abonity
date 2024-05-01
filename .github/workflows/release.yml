@@ -41,7 +41,7 @@ jobs:
           echo $ABONITY_SECRETS_FILE > ./secrets.properties
 
       - name: Bundle Release AAB
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease --stacktrace --info
 
       - name: App Distribution
         run: ./gradlew appDistributionUploadRelease
