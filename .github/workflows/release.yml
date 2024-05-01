@@ -43,16 +43,16 @@ jobs:
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
 
-#      - name: App Distribution
-#        run: ./gradlew appDistributionUploadRelease
-#
-#      - name: Google Play Release
-#        run: ./gradlew publishReleaseBundle
-#
-#      - name: AppSweep Scan
-#        run: ./gradlew uploadToAppSweepDebug
-#
-#      - name: Create RC Tag
-#        run: |
-#          ./gradlew createRcTag --push=true
+      - name: App Distribution
+        run: ./gradlew appDistributionUploadRelease
+
+      - name: Google Play Release
+        run: ./gradlew publishReleaseBundle
+
+      - name: AppSweep Scan
+        run: ./gradlew uploadToAppSweepDebug
+
+      - name: Create RC Tag
+        run: |
+          ./gradlew createRcTag --push=true
           
