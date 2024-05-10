@@ -10,15 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: zulu
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-
       - name: Git config
         run: |
           git config user.name "GitHub Actions Bot"
@@ -28,31 +19,49 @@ jobs:
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
           ABONITY_KEYSTORE_GPG_FILE: ${{ secrets.ABONITY_KEYSTORE_GPG_FILE }}
-          ABONITY_KEYSTORE_GPG_PASSPHRASE: ${{ secrets.ABONITY_KEYSTORE_GPG_PASSPHRASE }}
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON: ${{ secrets.GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON }}
           ABONITY_SECRETS_FILE: ${{ secrets.ABONITY_SECRETS_FILE }}
         run: |
-          echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
-          echo $FIREBASE_SERVICE_ACCOUNT_JSON > ./firebase-service-account.json
-          echo $GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON > ./google-play-publisher-account.json
-          echo $ABONITY_KEYSTORE_GPG_FILE > ./abonity.keystore.asc
-          gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
-          echo $ABONITY_SECRETS_FILE > ./secrets.properties
+          echo "$GOOGLE_SERVICES_JSON" > ./app/google-services.json
+          echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > ./firebase-service-account.json
+          echo "$GOGGLE_PLAY_PUBLISHER_ACCOUNT_JSON" > ./google-play-publisher-account.json
+          echo $ABONITY_KEYSTORE_GPG_FILE > keystore.txt
+          base64 -d keystore.txt > abonity.keystore
+          echo "$ABONITY_SECRETS_FILE" > ./secrets.properties
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: zulu
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
 
       - name: Bundle Release AAB
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
         run: ./gradlew bundleRelease
 
       - name: App Distribution
         run: ./gradlew appDistributionUploadRelease
 
       - name: Google Play Release
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
         run: ./gradlew publishReleaseBundle
-
-      - name: AppSweep Scan
-        run: ./gradlew uploadToAppSweepDebug
 
       - name: Create RC Tag
         run: |
-          ./gradlew createRcTag --push=true
+          ./gradlew createRcTag --push
+
+      - name: AppSweep Scan
+        env:
+          APPSWEEP_API_KEY: ${{ secrets.APPSWEEP_API_KEY }}
+        run: ./gradlew uploadToAppSweepDebug
           

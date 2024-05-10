@@ -10,15 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: zulu
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-
       - name: Git config
         run: |
           git config user.name "GitHub Actions Bot"
@@ -40,6 +31,15 @@ jobs:
           gpg -d -passphrase "ABONITY_KEYSTORE_GPG_PASSPHRASE" --batch abonity.keystore.asc > ./abonity.keystore
           echo $ABONITY_SECRETS_FILE > ./secrets.properties
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: zulu
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
       - name: Bundle Release AAB
         run: ./gradlew bundleRelease
 
@@ -48,4 +48,4 @@ jobs:
 
       - name: Create Version Tag
         run: |
-          ./gradlew createReleaseTagFromLatestRc --push=true
+          ./gradlew createReleaseTagFromLatestRc --push
