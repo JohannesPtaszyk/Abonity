@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pott.abonity.core.domain.subscription.CategoryRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
+import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -37,12 +39,13 @@ import javax.inject.Inject
 class AddViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val clock: Clock,
-    private val repository: SubscriptionRepository,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
     private val args = AddScreenDestination.Args.parse(savedStateHandle)
 
-    private val inputState = MutableStateFlow(
+    private val formState = MutableStateFlow(
         if (args.subscriptionId != null) {
             AddFormState()
         } else {
@@ -50,17 +53,13 @@ class AddViewModel @Inject constructor(
         },
     )
 
-    private val savingState = MutableStateFlow(AddState.SavingState.IDLE)
-
-    private val loadingState = MutableStateFlow(args.subscriptionId != null)
-
-    val state: StateFlow<AddState> = if (args.subscriptionId != null) {
-        val prefilledInputState = flow {
-            val subscription = repository.getSubscriptionFlow(args.subscriptionId).first()
+    private fun getPrefilledFormState(id: SubscriptionId) =
+        flow {
+            val subscription = subscriptionRepository.getSubscriptionFlow(id).first()
             if (subscription != null) {
                 val periodicType = (subscription.paymentInfo.type as? PaymentType.Periodic)
                 val priceValue = subscription.paymentInfo.price.value.toString()
-                inputState.value = AddFormState(
+                formState.value = AddFormState(
                     TimeUnit.DAYS.toMillis(
                         subscription.paymentInfo.firstPayment.toEpochDays().toLong(),
                     ),
@@ -73,69 +72,96 @@ class AddViewModel @Inject constructor(
                     paymentPeriodCount = ValidatedInput(
                         periodicType?.periodCount?.toString() ?: "1",
                     ),
+                    selectedCategories = subscription.categories.toImmutableList(),
                 )
             }
-            emitAll(inputState)
+            emitAll(formState)
         }
-        combine(
-            prefilledInputState,
-            savingState,
-            loadingState,
-        ) { prefilledInputState, saving, loading ->
-            AddState(
-                showNameAsTitle = true,
-                input = prefilledInputState,
-                savingState = saving,
-                loading = loading,
-            )
-        }
-    } else {
-        combine(
-            inputState,
-            savingState,
-        ) { input, saving ->
-            AddState(
-                input = input,
-                savingState = saving,
-                loading = false,
-            )
-        }
+
+    val state: StateFlow<AddState> = combine(
+        if (args.subscriptionId != null) {
+            getPrefilledFormState(args.subscriptionId)
+        } else {
+            formState
+        },
+        categoryRepository.getCategoriesFlow(),
+    ) { formState, categories ->
+        AddState(
+            showNameAsTitle = args.subscriptionId != null,
+            formState = formState,
+            categories = categories
+                .sortedBy { !formState.selectedCategories.contains(it) }
+                .toImmutableList(),
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
-        AddState(loading = loadingState.value),
+        AddState(),
     )
 
     fun setPaymentDate(epochMilliseconds: Long) {
-        inputState.update { it.copy(paymentDateEpochMillis = epochMilliseconds) }
+        formState.update { it.copy(paymentDateEpochMillis = epochMilliseconds) }
     }
 
     fun setName(name: String) {
-        inputState.update { it.copy(name = validateName(name)) }
+        formState.update { it.copy(name = validateName(name)) }
     }
 
     fun setDescription(description: String) {
-        inputState.update { it.copy(description = description) }
+        formState.update { it.copy(description = description) }
     }
 
     fun setPrice(value: String) {
-        inputState.update { it.copy(priceValue = validatePrice(value)) }
+        formState.update { it.copy(priceValue = validatePrice(value)) }
     }
 
     fun setCurrency(currency: Currency) {
-        inputState.update { it.copy(currency = currency) }
+        formState.update { it.copy(currency = currency) }
     }
 
     fun setPeriodic(isPeriodic: Boolean) {
-        inputState.update { it.copy(isOneTimePayment = !isPeriodic) }
+        formState.update { it.copy(isOneTimePayment = !isPeriodic) }
     }
 
     fun setPaymentPeriod(paymentPeriod: PaymentPeriod) {
-        inputState.update { it.copy(paymentPeriod = paymentPeriod) }
+        formState.update { it.copy(paymentPeriod = paymentPeriod) }
     }
 
     fun setPaymentPeriodCount(periodCount: String) {
-        inputState.update { it.copy(paymentPeriodCount = validatePaymentPeriod(periodCount)) }
+        formState.update { it.copy(paymentPeriodCount = validatePaymentPeriod(periodCount)) }
+    }
+
+    fun openAddCategoryDialog() {
+        formState.update { it.copy(showCategoryDialog = true) }
+    }
+
+    fun closeAddCategoryDialog() {
+        formState.update { it.copy(showCategoryDialog = false) }
+    }
+
+    fun selectCategory(category: Category) {
+        formState.update {
+            val selectedCategories = if (it.selectedCategories.contains(category)) {
+                it.selectedCategories - category
+            } else {
+                it.selectedCategories + category
+            }
+            it.copy(selectedCategories = selectedCategories.toImmutableList())
+        }
+    }
+
+    fun addCategory(name: String) {
+        viewModelScope.launch {
+            val category = categoryRepository.addOrUpdateCategory(Category(name = name))
+            formState.update {
+                it.copy(selectedCategories = (it.selectedCategories + category).toImmutableList())
+            }
+            closeAddCategoryDialog()
+        }
+    }
+
+    fun resetSavingState() {
+        formState.update { it.copy(saving = AddState.SavingState.IDLE) }
     }
 
     private fun validateName(name: String): ValidatedInput {
@@ -169,25 +195,25 @@ class AddViewModel @Inject constructor(
 
     fun save() {
         viewModelScope.launch {
-            savingState.value = AddState.SavingState.SAVING
-            val validatedState = inputState.updateAndGet { formState ->
+            formState.update { it.copy(saving = AddState.SavingState.SAVING) }
+            val validatedState = formState.updateAndGet { formState ->
                 formState.copy(
                     name = validateName(formState.name.value),
                     priceValue = validatePrice(formState.priceValue.value),
                 )
             }
             if (!validatedState.isValid) {
-                savingState.value = AddState.SavingState.ERROR
+                formState.update { it.copy(saving = AddState.SavingState.ERROR) }
                 return@launch
             }
             val subscription = getSubscription()
-            repository.addOrUpdateSubscription(subscription)
-            savingState.value = AddState.SavingState.SAVED
+            subscriptionRepository.addOrUpdateSubscription(subscription)
+            formState.update { it.copy(saving = AddState.SavingState.SAVED) }
         }
     }
 
     private fun getSubscription(): Subscription {
-        val input = inputState.value
+        val input = formState.value
         val priceValue = parsePriceValue(input.priceValue.value)
         val price = Price(priceValue, input.currency)
         val date = calculateDate(input)
@@ -209,6 +235,7 @@ class AddViewModel @Inject constructor(
             name = input.name.value,
             description = input.description,
             paymentInfo = paymentInfo,
+            categories = input.selectedCategories,
         )
     }
 
@@ -223,9 +250,5 @@ class AddViewModel @Inject constructor(
 
     private fun parsePriceValue(value: String): Double {
         return value.replace(",", ".").toDouble()
-    }
-
-    fun resetSavingState() {
-        savingState.value = AddState.SavingState.IDLE
     }
 }

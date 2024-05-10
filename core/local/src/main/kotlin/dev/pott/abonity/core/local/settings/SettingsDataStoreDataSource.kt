@@ -6,8 +6,8 @@ import dev.pott.abonity.core.entity.settings.Settings
 import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.local.settings.datastore.entities.LocalTheme
 import dev.pott.abonity.core.local.settings.datastore.entities.SettingsEntity
-import dev.pott.abonity.core.local.subscription.toDomain
-import dev.pott.abonity.core.local.subscription.toEntity
+import dev.pott.abonity.core.local.subscription.mapper.toDomain
+import dev.pott.abonity.core.local.subscription.mapper.toEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

@@ -33,8 +33,12 @@ render.experimental.xml
 *.asc
 
 # Google Services (e.g. APIs or Firebase)
+# Firebase-generated Google Services File
 google-services.json
+# Google Cloud Account for Firebase Managment
 firebase-service-account.json
+# Google Cloud Account for Play Developer Console
+google-play-publisher-account.json
 
 # Android Profiling
 *.hprof
@@ -65,10 +69,6 @@ gen-external-apklibs
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Icon must end with two \r
-Icon
-
 
 # Thumbnails
 ._*
@@ -235,6 +235,9 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Secrets Properties
+secrets.properties
 
 ### AndroidStudio Patch ###
 
