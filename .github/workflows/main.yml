@@ -45,4 +45,4 @@ jobs:
 
       - name: Create Version Tag
         run: |
-          ./gradlew createReleaseTagFromLatestRc --push=true
+          ./gradlew createReleaseTagFromLatestRc --push
