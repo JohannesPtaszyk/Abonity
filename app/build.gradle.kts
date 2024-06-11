@@ -10,7 +10,7 @@ plugins {
     id(libs.plugins.firebase.distribution.get().pluginId)
     id(libs.plugins.secrets.get().pluginId)
     id(libs.plugins.play.publisher.get().pluginId)
-    id(libs.plugins.appsweep.get().pluginId)
+    // id(libs.plugins.appsweep.get().pluginId)
 }
 
 android {
@@ -109,6 +109,7 @@ dependencies {
     implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)
+    implementation(libs.androidx.dataStore)
 
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)
