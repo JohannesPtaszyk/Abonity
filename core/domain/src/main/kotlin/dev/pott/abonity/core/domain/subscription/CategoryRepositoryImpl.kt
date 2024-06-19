@@ -8,13 +8,10 @@ import javax.inject.Inject
 class CategoryRepositoryImpl @Inject constructor(
     private val localDataSource: CategoryLocalDataSource,
 ) : CategoryRepository {
-    override suspend fun addOrUpdateCategory(category: Category): Category {
-        return localDataSource.addOrUpdateCategory(category)
-    }
+    override suspend fun addOrUpdateCategory(category: Category): Category =
+        localDataSource.addOrUpdateCategory(category)
 
-    override fun getCategoriesFlow(): Flow<List<Category>> {
-        return localDataSource.getCategoriesFlow()
-    }
+    override fun getCategoriesFlow(): Flow<List<Category>> = localDataSource.getCategoriesFlow()
 
     override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
         localDataSource.deleteCategory(categoryIds)

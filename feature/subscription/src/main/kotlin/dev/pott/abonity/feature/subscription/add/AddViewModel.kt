@@ -248,7 +248,5 @@ class AddViewModel @Inject constructor(
         return instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
     }
 
-    private fun parsePriceValue(value: String): Double {
-        return value.replace(",", ".").toDouble()
-    }
+    private fun parsePriceValue(value: String): Double = value.replace(",", ".").toDouble()
 }

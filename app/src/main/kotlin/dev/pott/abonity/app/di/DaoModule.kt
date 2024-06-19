@@ -12,12 +12,9 @@ import dev.pott.abonity.core.local.subscription.db.SubscriptionDao
 @InstallIn(SingletonComponent::class)
 object DaoModule {
     @Provides
-    fun provideSubscriptionDao(appDatabase: AppDatabase): SubscriptionDao {
-        return appDatabase.subscriptionDao()
-    }
+    fun provideSubscriptionDao(appDatabase: AppDatabase): SubscriptionDao =
+        appDatabase.subscriptionDao()
 
     @Provides
-    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao {
-        return appDatabase.categoryDao()
-    }
+    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao = appDatabase.categoryDao()
 }

@@ -10,12 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class LegalDataStoreDataSource @Inject constructor(
-    private val dataStore: DataStore<LegalEntity>,
-) : LegalLocalDataSource {
-    override fun getLegal(): Flow<Legal> {
-        return dataStore.data.map { it.toDomain() }
-    }
+class LegalDataStoreDataSource @Inject constructor(private val dataStore: DataStore<LegalEntity>) :
+    LegalLocalDataSource {
+    override fun getLegal(): Flow<Legal> = dataStore.data.map { it.toDomain() }
 
     override suspend fun updateLegal(legal: Legal) {
         dataStore.updateData { legal.toEntity() }

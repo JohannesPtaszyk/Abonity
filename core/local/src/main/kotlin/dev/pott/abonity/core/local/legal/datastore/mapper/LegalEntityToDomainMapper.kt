@@ -9,21 +9,19 @@ import dev.pott.abonity.core.local.legal.datastore.entities.ConsentGrantEntity
 import dev.pott.abonity.core.local.legal.datastore.entities.ConsentServiceIdEntity
 import dev.pott.abonity.core.local.legal.datastore.entities.LegalEntity
 
-fun LegalEntity.toDomain(): Legal {
-    return Legal(
+fun LegalEntity.toDomain(): Legal =
+    Legal(
         consents = consents.map { it.toDomain() },
     )
-}
 
-fun ConsentEntity.toDomain(): Consent {
-    return Consent(
+fun ConsentEntity.toDomain(): Consent =
+    Consent(
         serviceId = serviceId.toDomain(),
         consentGrant = consentGrant.toDomain(),
     )
-}
 
-private fun ConsentServiceIdEntity.toDomain(): ConsentServiceId {
-    return when (this) {
+private fun ConsentServiceIdEntity.toDomain(): ConsentServiceId =
+    when (this) {
         ConsentServiceIdEntity.FIREBASE_ANALYTICS -> {
             ConsentServiceId.FIREBASE_ANALYTICS
         }
@@ -52,12 +50,10 @@ private fun ConsentServiceIdEntity.toDomain(): ConsentServiceId {
             ConsentServiceId.FIREBASE_REMOTE_CONFIG
         }
     }
-}
 
-private fun ConsentGrantEntity.toDomain(): ConsentGrant {
-    return when (this) {
+private fun ConsentGrantEntity.toDomain(): ConsentGrant =
+    when (this) {
         ConsentGrantEntity.GRANTED -> ConsentGrant.GRANTED
         ConsentGrantEntity.DENIED -> ConsentGrant.DENIED
         ConsentGrantEntity.UNKNOWN -> ConsentGrant.UNKNOWN
     }
-}

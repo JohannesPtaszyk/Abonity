@@ -14,9 +14,8 @@ fun createTestNotificationTeaser(
         nanosecond = 1,
     ),
     shouldNotShowAgain: Boolean = false,
-): NotificationTeaser {
-    return NotificationTeaser(
+): NotificationTeaser =
+    NotificationTeaser(
         lastClosed = lastClosed,
         shouldNotShowAgain = shouldNotShowAgain,
     )
-}

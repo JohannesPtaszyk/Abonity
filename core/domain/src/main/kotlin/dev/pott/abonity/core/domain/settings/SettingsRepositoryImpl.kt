@@ -7,9 +7,7 @@ import javax.inject.Inject
 class SettingsRepositoryImpl @Inject constructor(
     private val settingsLocalDataSource: SettingsLocalDataSource,
 ) : SettingsRepository {
-    override fun getSettingsFlow(): Flow<Settings> {
-        return settingsLocalDataSource.getSettingsFlow()
-    }
+    override fun getSettingsFlow(): Flow<Settings> = settingsLocalDataSource.getSettingsFlow()
 
     override suspend fun updateSettings(settings: Settings) {
         settingsLocalDataSource.updateSettings(settings)

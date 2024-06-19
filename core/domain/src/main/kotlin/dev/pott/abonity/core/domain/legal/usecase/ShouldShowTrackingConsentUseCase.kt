@@ -12,11 +12,10 @@ import javax.inject.Inject
 class ShouldShowTrackingConsentUseCase @Inject constructor(
     private val legalRepository: LegalRepository,
 ) {
-    operator fun invoke(): Flow<Boolean> {
-        return legalRepository.getLegal().map { legal ->
+    operator fun invoke(): Flow<Boolean> =
+        legalRepository.getLegal().map { legal ->
             !hasConsentsForAllServices(legal)
         }
-    }
 
     private fun hasConsentsForAllServices(legal: Legal): Boolean {
         val serviceIdsWithRequiredConsent = TrackingService.entries

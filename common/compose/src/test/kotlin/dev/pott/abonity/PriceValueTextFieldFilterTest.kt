@@ -38,8 +38,8 @@ class PriceValueTextFieldFilterTest {
     companion object {
         @JvmStatic
         @Suppress("UnusedPrivateMember")
-        private fun provideTestData(): List<FilterTestData> {
-            return listOf(
+        private fun provideTestData(): List<FilterTestData> =
+            listOf(
                 FilterTestData("", true, ""),
                 FilterTestData("123", true, "123"),
                 FilterTestData("abc.!@", false),
@@ -49,6 +49,5 @@ class PriceValueTextFieldFilterTest {
                 FilterTestData("22131.939", false),
 
             )
-        }
     }
 }

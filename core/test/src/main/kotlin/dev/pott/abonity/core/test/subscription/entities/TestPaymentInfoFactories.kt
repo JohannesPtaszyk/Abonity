@@ -9,10 +9,9 @@ fun createTestPaymentInfo(
     price: Price = createTestPrice(),
     firstPayment: LocalDate = LocalDate(2020, 2, 2),
     type: PaymentType = createPeriodicallyPaymentType(),
-): PaymentInfo {
-    return PaymentInfo(
+): PaymentInfo =
+    PaymentInfo(
         price,
         firstPayment,
         type,
     )
-}

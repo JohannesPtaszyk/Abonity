@@ -4,8 +4,8 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentPeriod
 import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentType
 
-fun LocalPaymentType.toDomain(periodCount: Int?, period: LocalPaymentPeriod?): PaymentType {
-    return when (this) {
+fun LocalPaymentType.toDomain(periodCount: Int?, period: LocalPaymentPeriod?): PaymentType =
+    when (this) {
         LocalPaymentType.ONE_TIME -> PaymentType.OneTime
         LocalPaymentType.PERIODICALLY -> {
             val nonNullPeriodCount = checkNotNull(periodCount) {
@@ -17,7 +17,6 @@ fun LocalPaymentType.toDomain(periodCount: Int?, period: LocalPaymentPeriod?): P
             PaymentType.Periodic(nonNullPeriodCount, localPaymentPeriod.toDomain())
         }
     }
-}
 
 fun PaymentType.toEntity() =
     when (this) {

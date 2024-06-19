@@ -8,9 +8,8 @@ class NotificationTeaserRepositoryImpl @Inject constructor(
     private val localDataSource: NotificationTeaserLocalDataSource,
 ) : NotificationTeaserRepository {
 
-    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> {
-        return localDataSource.getNotificationTeaserFlow()
-    }
+    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> =
+        localDataSource.getNotificationTeaserFlow()
 
     override suspend fun closeTeaser(shouldNotShowAgain: Boolean) {
         localDataSource.closeTeaser(shouldNotShowAgain)

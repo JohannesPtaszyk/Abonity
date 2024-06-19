@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 
 class DigitsOnlyTextFieldFilter(block: (String) -> Unit) : TextFieldFilter(block) {
-    override fun isValid(newValue: String): Boolean {
-        return newValue.all { it.isDigit() }
-    }
+    override fun isValid(newValue: String): Boolean = newValue.all { it.isDigit() }
 }
 
 @Composable

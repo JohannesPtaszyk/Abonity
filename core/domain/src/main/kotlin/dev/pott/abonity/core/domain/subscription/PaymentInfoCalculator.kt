@@ -47,8 +47,8 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
     fun getTotalPricesForPeriod(
         paymentInfos: List<PaymentInfo>,
         period: PaymentPeriod,
-    ): List<Price> {
-        return paymentInfos.groupBy {
+    ): List<Price> =
+        paymentInfos.groupBy {
             it.price.currency
         }.map { currencyListEntry ->
             val currency = currencyListEntry.key
@@ -60,7 +60,6 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
         }.filter {
             it.value > 0
         }
-    }
 
     fun getPaymentDatesForCurrentPeriod(
         firstPayment: LocalDate,
@@ -107,8 +106,8 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
     fun getNextDateByType(
         type: PaymentType.Periodic,
         from: LocalDate = clock.todayIn(TimeZone.currentSystemDefault()),
-    ): LocalDate {
-        return when (type.period) {
+    ): LocalDate =
+        when (type.period) {
             PaymentPeriod.DAYS -> {
                 from + DatePeriod(days = type.periodCount)
             }
@@ -125,7 +124,6 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
                 from + DatePeriod(years = type.periodCount)
             }
         }
-    }
 
     fun findFirstPaymentOfPeriod(
         firstPayment: LocalDate,

@@ -7,8 +7,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
-fun LocalDate.getFirstDayOfCurrentPeriod(targetPeriod: PaymentPeriod): LocalDate {
-    return when (targetPeriod) {
+fun LocalDate.getFirstDayOfCurrentPeriod(targetPeriod: PaymentPeriod): LocalDate =
+    when (targetPeriod) {
         PaymentPeriod.DAYS -> this
         PaymentPeriod.WEEKS -> {
             this - DatePeriod(days = this.dayOfWeek.ordinal)
@@ -18,7 +18,6 @@ fun LocalDate.getFirstDayOfCurrentPeriod(targetPeriod: PaymentPeriod): LocalDate
 
         PaymentPeriod.YEARS -> LocalDate(year, 1, 1)
     }
-}
 
 fun LocalDate.getLastDayOfCurrentPeriod(targetPeriod: PaymentPeriod): LocalDate {
     val firstDayOfCurrentPeriod = getFirstDayOfCurrentPeriod(targetPeriod)

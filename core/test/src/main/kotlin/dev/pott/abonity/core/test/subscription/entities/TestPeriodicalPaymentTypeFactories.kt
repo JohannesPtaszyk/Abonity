@@ -6,6 +6,4 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 fun createPeriodicallyPaymentType(
     periodCount: Int = 1,
     period: PaymentPeriod = PaymentPeriod.MONTHS,
-): PaymentType.Periodic {
-    return PaymentType.Periodic(periodCount, period)
-}
+): PaymentType.Periodic = PaymentType.Periodic(periodCount, period)
