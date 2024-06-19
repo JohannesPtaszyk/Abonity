@@ -46,11 +46,10 @@ object OverviewScreenDestination :
 
     data class Args(val detailId: SubscriptionId?) : Arguments {
 
-        override fun toMap(): Map<String, Any> {
-            return buildMap {
+        override fun toMap(): Map<String, Any> =
+            buildMap {
                 detailId?.let { put(DETAIL_ID_KEY, it.value) }
             }
-        }
 
         companion object : SavedStateArgumentParser<Args>, BundleArgumentParser<Args> {
             const val DETAIL_ID_KEY = "detail_id"

@@ -214,8 +214,8 @@ class AddViewModelTest {
     }
 
     @TestFactory
-    fun `GIVEN no input WHEN setPaymentPeriod THEN input state is updated`(): List<DynamicTest> {
-        return PaymentPeriod.entries.map { period ->
+    fun `GIVEN no input WHEN setPaymentPeriod THEN input state is updated`(): List<DynamicTest> =
+        PaymentPeriod.entries.map { period ->
             dynamicTest(
                 "GIVEN no input WHEN setPaymentPeriod: $period THEN input state is updated",
             ) {
@@ -239,7 +239,6 @@ class AddViewModelTest {
                 }
             }
         }
-    }
 
     @Test
     fun `GIVEN full periodic input WHEN save THEN periodic subscription is created`() {

@@ -18,8 +18,8 @@ class NotificationTeaserDataStoreDataSource @Inject constructor(
     private val dataStore: DataStore<NotificationTeaserEntity>,
 ) : NotificationTeaserLocalDataSource {
 
-    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> {
-        return dataStore.data.map { entity ->
+    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> =
+        dataStore.data.map { entity ->
             val lastClosed = entity.lastClosedLocalDateTime?.let {
                 val storedTimeZone = TimeZone.of(entity.timeZoneId!!)
                 val dateTime = LocalDateTime.parse(it)
@@ -31,7 +31,6 @@ class NotificationTeaserDataStoreDataSource @Inject constructor(
                 entity.shouldNotShowAgain,
             )
         }
-    }
 
     override suspend fun closeTeaser(shouldNotShowAgain: Boolean) {
         dataStore.updateData {

@@ -17,15 +17,14 @@ fun createTestSubscription(
     description: String = "Test Description",
     paymentInfo: PaymentInfo = createTestPaymentInfo(),
     categories: List<Category> = listOf(Category(CategoryId(1), "Test Category")),
-): Subscription {
-    return Subscription(
+): Subscription =
+    Subscription(
         SubscriptionId(id),
         name,
         description,
         paymentInfo,
         categories,
     )
-}
 
 fun createTestSubscriptionList(size: Int = 5): List<Subscription> {
     val random = Random(System.currentTimeMillis())

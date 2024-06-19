@@ -34,9 +34,7 @@ fun Subscription.toEntity(): SubscriptionCategoryEntity {
     )
 }
 
-fun SubscriptionCategoryEntity.toDomain(): Subscription {
-    return subscription.toDomain(categories)
-}
+fun SubscriptionCategoryEntity.toDomain(): Subscription = subscription.toDomain(categories)
 
 private fun SubscriptionEntity.toDomain(categories: List<CategoryEntity>): Subscription {
     val currency = Currency.getInstance(currency)

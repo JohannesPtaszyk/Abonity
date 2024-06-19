@@ -4,7 +4,5 @@ object AppDeeplink {
     const val SCHEME = "android-app://"
     const val HOST = "dev.pott.abonity"
 
-    operator fun invoke(path: String): String {
-        return "$HOST${SCHEME}$path"
-    }
+    operator fun invoke(path: String): String = "$HOST${SCHEME}$path"
 }

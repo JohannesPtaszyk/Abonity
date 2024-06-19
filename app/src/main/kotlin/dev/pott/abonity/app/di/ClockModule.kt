@@ -10,7 +10,5 @@ import kotlinx.datetime.Clock
 @InstallIn(SingletonComponent::class)
 object ClockModule {
     @Provides
-    fun provideClock(): Clock {
-        return Clock.System
-    }
+    fun provideClock(): Clock = Clock.System
 }

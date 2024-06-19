@@ -31,8 +31,8 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
 
     operator fun invoke(
         selectedFilterItemsFlow: Flow<List<SubscriptionFilterItem>>,
-    ): Flow<SubscriptionsWithFilter> {
-        return combine(
+    ): Flow<SubscriptionsWithFilter> =
+        combine(
             getSubscription().map { subscriptions ->
                 val totalPrices = calculator.getTotalPricesForPeriod(
                     subscriptions.map { it.subscription.paymentInfo },
@@ -62,7 +62,6 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
                 ),
             )
         }.flowOn(defaultDispatcher)
-    }
 
     private fun applySelectedFilter(
         period: PaymentPeriod,

@@ -13,11 +13,7 @@ class FakeConfigRepository(
 
     private val configFlow = MutableStateFlow(initialValue)
 
-    override fun getConfig(): Flow<Config> {
-        return configFlow
-    }
+    override fun getConfig(): Flow<Config> = configFlow
 
-    override suspend fun refresh(): Result<Unit> {
-        return refreshResult
-    }
+    override suspend fun refresh(): Result<Unit> = refreshResult
 }

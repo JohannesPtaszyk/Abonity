@@ -9,17 +9,14 @@ class SubscriptionRepositoryImpl @Inject constructor(
     private val localDataSource: SubscriptionLocalDataSource,
 ) : SubscriptionRepository {
 
-    override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
-        return localDataSource.addOrUpdateSubscription(subscription)
-    }
+    override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription =
+        localDataSource.addOrUpdateSubscription(subscription)
 
-    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
-        return localDataSource.getSubscriptionsFlow()
-    }
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> =
+        localDataSource.getSubscriptionsFlow()
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
-        return localDataSource.getSubscriptionFlow(subscriptionId)
-    }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> =
+        localDataSource.getSubscriptionFlow(subscriptionId)
 
     override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
         localDataSource.deleteSubscription(subscriptionId)

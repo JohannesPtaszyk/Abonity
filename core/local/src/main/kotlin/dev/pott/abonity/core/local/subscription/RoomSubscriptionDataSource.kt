@@ -10,26 +10,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class RoomSubscriptionDataSource @Inject constructor(
-    private val dao: SubscriptionDao,
-) : SubscriptionLocalDataSource {
+class RoomSubscriptionDataSource @Inject constructor(private val dao: SubscriptionDao) :
+    SubscriptionLocalDataSource {
 
     override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription {
         val id = dao.upsertSubscriptionCategory(subscription.toEntity())
         return subscription.copy(id = SubscriptionId(id))
     }
 
-    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
-        return dao.getSubscriptionsFlow().map { subscriptions ->
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> =
+        dao.getSubscriptionsFlow().map { subscriptions ->
             subscriptions.map { entity ->
                 entity.toDomain()
             }
         }
-    }
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
-        return dao.getSubscriptionFlow(subscriptionId.value).map { it?.toDomain() }
-    }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> =
+        dao.getSubscriptionFlow(subscriptionId.value).map {
+            it?.toDomain()
+        }
 
     override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
         dao.delete(subscriptionId.value)

@@ -18,9 +18,7 @@ class FakeCategoryLocalDataSource(
         return category
     }
 
-    override fun getCategoriesFlow(): Flow<List<Category>> {
-        return testCategoriesFlow
-    }
+    override fun getCategoriesFlow(): Flow<List<Category>> = testCategoriesFlow
 
     override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
         deletedCategories.addAll(categoryIds)

@@ -20,8 +20,8 @@ class GetUpcomingSubscriptionsUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository,
     @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
-    operator fun invoke(): Flow<UpcomingSubscriptions> {
-        return combine(
+    operator fun invoke(): Flow<UpcomingSubscriptions> =
+        combine(
             getSubscriptionsWithPeriodPrice(),
             settingsRepository.getSettingsFlow(),
         ) { subscriptions, settings ->
@@ -35,5 +35,4 @@ class GetUpcomingSubscriptionsUseCase @Inject constructor(
                 settings.period,
             )
         }.flowOn(defaultDispatcher)
-    }
 }

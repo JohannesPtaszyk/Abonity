@@ -15,9 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository,
-) : ViewModel() {
+class CategoryViewModel @Inject constructor(private val categoryRepository: CategoryRepository) :
+    ViewModel() {
 
     private val selectedCategories = MutableStateFlow(emptyList<Category>())
     private val isDeleting = MutableStateFlow(false)

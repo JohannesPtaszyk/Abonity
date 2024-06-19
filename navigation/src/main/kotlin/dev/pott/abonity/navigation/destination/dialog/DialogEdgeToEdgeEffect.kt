@@ -31,10 +31,9 @@ fun DialogEdgeToEdgeEffect() {
     }
 }
 
-private tailrec fun Context.findActivityWindow(): Window? {
-    return when (this) {
+private tailrec fun Context.findActivityWindow(): Window? =
+    when (this) {
         is Activity -> window
         is ContextWrapper -> baseContext.findActivityWindow()
         else -> null
     }
-}

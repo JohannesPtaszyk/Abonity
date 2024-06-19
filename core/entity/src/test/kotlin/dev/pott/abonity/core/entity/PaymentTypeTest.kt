@@ -11,8 +11,8 @@ class PaymentTypeTest {
     @Nested
     inner class Periodic {
         @TestFactory
-        fun `PaymentType constructor throws for period count below 1`(): List<DynamicTest> {
-            return listOf(
+        fun `PaymentType constructor throws for period count below 1`(): List<DynamicTest> =
+            listOf(
                 0 to PaymentPeriod.DAYS,
                 -1 to PaymentPeriod.WEEKS,
             ).map {
@@ -29,6 +29,5 @@ class PaymentTypeTest {
                     }
                 }
             }
-        }
     }
 }

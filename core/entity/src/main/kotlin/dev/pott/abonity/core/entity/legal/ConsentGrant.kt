@@ -9,11 +9,10 @@ enum class ConsentGrant {
     val isGranted: Boolean
         get() = this == GRANTED
 
-    fun toggle(): ConsentGrant {
-        return when (this) {
+    fun toggle(): ConsentGrant =
+        when (this) {
             GRANTED -> DENIED
             DENIED -> GRANTED
             UNKNOWN -> GRANTED
         }
-    }
 }

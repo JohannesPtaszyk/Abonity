@@ -22,7 +22,8 @@ private const val FIREBASE_CONFIG_TRACE = "fetch_and_active_firebase_config"
 @Singleton
 class FirebaseRemoteConfigDataSource @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig,
-) : RemoteConfigDataSource, LocalConfigDataSource {
+) : RemoteConfigDataSource,
+    LocalConfigDataSource {
 
     private val logger = Logger.withTag(this::class.simpleName.orEmpty())
 
@@ -54,9 +55,7 @@ class FirebaseRemoteConfigDataSource @Inject constructor(
         }
     }
 
-    override fun getConfiguration(): Flow<Config> {
-        return configFlow
-    }
+    override fun getConfiguration(): Flow<Config> = configFlow
 
     override suspend fun refresh(): Result<Unit> {
         val result = runCatching {

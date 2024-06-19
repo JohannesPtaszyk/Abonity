@@ -21,14 +21,13 @@ class GetSubscriptionsWithPeriodPrice @Inject constructor(
     private val infoCalculator: PaymentInfoCalculator,
     @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
-    operator fun invoke(): Flow<List<SubscriptionWithPeriodInfo>> {
-        return combine(
+    operator fun invoke(): Flow<List<SubscriptionWithPeriodInfo>> =
+        combine(
             subscriptionRepository.getSubscriptionsFlow(),
             settingsRepository.getSettingsFlow(),
         ) { subscriptions, settings ->
             subscriptions.map { subscription -> map(subscription, settings.period) }
         }.flowOn(defaultDispatcher)
-    }
 
     private fun map(subscription: Subscription, period: PaymentPeriod): SubscriptionWithPeriodInfo {
         val nextPaymentDate = when (val type = subscription.paymentInfo.type) {

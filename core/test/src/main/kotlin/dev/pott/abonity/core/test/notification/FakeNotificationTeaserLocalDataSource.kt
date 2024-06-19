@@ -11,9 +11,7 @@ class FakeNotificationTeaserLocalDataSource(
 
     var closedCount: Int = 0
 
-    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> {
-        return flow
-    }
+    override fun getNotificationTeaserFlow(): Flow<NotificationTeaser> = flow
 
     override suspend fun closeTeaser(shouldNotShowAgain: Boolean) {
         closedCount++

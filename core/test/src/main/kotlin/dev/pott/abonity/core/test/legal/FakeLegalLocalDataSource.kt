@@ -9,9 +9,7 @@ class FakeLegalLocalDataSource(initialValue: Legal) : LegalLocalDataSource {
 
     private val legalFlow = MutableStateFlow(initialValue)
 
-    override fun getLegal(): Flow<Legal> {
-        return legalFlow
-    }
+    override fun getLegal(): Flow<Legal> = legalFlow
 
     override suspend fun updateLegal(legal: Legal) {
         legalFlow.value = legal
