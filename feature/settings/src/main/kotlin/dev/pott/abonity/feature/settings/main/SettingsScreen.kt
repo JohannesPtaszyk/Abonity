@@ -54,9 +54,9 @@ fun SettingsScreen(
     SettingsScreen(
         state = state,
         onOpenOssLicensesClick = openOssLicenses,
-        onThemeChanged = viewModel::setTheme,
-        onEnableAdaptiveColorChanged = viewModel::enableAdaptiveColors,
-        onPaymentPeriodChanged = viewModel::setPeriod,
+        onThemeChange = viewModel::setTheme,
+        onEnableAdaptiveColorChange = viewModel::enableAdaptiveColors,
+        onPaymentPeriodChange = viewModel::setPeriod,
         onOpenNotificationSettingsClick = openNotificationSettings,
         openConsentDialog = openConsentDialog,
         openUrl = openUrl,
@@ -69,9 +69,9 @@ fun SettingsScreen(
 fun SettingsScreen(
     state: SettingsState,
     onOpenOssLicensesClick: () -> Unit,
-    onThemeChanged: (Theme) -> Unit,
-    onEnableAdaptiveColorChanged: (Boolean) -> Unit,
-    onPaymentPeriodChanged: (PaymentPeriod) -> Unit,
+    onThemeChange: (Theme) -> Unit,
+    onEnableAdaptiveColorChange: (Boolean) -> Unit,
+    onPaymentPeriodChange: (PaymentPeriod) -> Unit,
     onOpenNotificationSettingsClick: () -> Unit,
     openConsentDialog: () -> Unit,
     openUrl: (String) -> Unit,
@@ -93,9 +93,9 @@ fun SettingsScreen(
                 contentPadding = paddingValues + PaddingValues(horizontal = 16.dp),
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
-                SubscriptionSettings(settings, onPaymentPeriodChanged)
+                SubscriptionSettings(settings, onPaymentPeriodChange)
                 item { HorizontalDivider() }
-                AppearanceSection(settings, onThemeChanged, onEnableAdaptiveColorChanged)
+                AppearanceSection(settings, onThemeChange, onEnableAdaptiveColorChange)
                 item { HorizontalDivider() }
                 MoreSection(
                     state,

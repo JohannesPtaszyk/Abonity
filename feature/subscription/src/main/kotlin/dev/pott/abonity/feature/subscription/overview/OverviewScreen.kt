@@ -68,7 +68,7 @@ private const val SUBSCRIPTION_CARD = "SubscriptionFilter"
 fun OverviewScreen(
     state: OverviewState,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
-    onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
+    onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
     onSwipeToDelete: (id: SubscriptionId) -> Unit,
     onOpenCategoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -106,7 +106,7 @@ fun OverviewScreen(
                     ) {
                         SubscriptionFilter(
                             state.filter,
-                            onItemSelected = onFilterItemSelected,
+                            onItemSelect = onFilterItemSelect,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .animateItemPlacement(),
@@ -239,7 +239,7 @@ private fun OverviewScreenPreview() {
             onSubscriptionClick = {
                 // On Subscription click
             },
-            onFilterItemSelected = {
+            onFilterItemSelect = {
                 // On Filter Item Selected
             },
             onSwipeToDelete = {

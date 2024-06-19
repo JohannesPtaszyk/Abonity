@@ -14,13 +14,13 @@ import dev.pott.abonity.core.ui.R
 @Composable
 fun DescriptionInput(
     description: String?,
-    onDescriptionChanged: (name: String) -> Unit,
+    onDescriptionChange: (name: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TextField(
         label = { Text(text = stringResource(id = R.string.subscription_add_label_description)) },
         value = description.orEmpty(),
-        onValueChange = onDescriptionChanged,
+        onValueChange = onDescriptionChange,
         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
         modifier = modifier.heightIn(min = 200.dp),
     )

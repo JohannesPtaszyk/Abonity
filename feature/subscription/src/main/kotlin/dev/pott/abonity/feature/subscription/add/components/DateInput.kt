@@ -55,10 +55,10 @@ fun DateInput(
     paymentDateEpochMillis: Long?,
     periodCount: ValidatedInput,
     period: PaymentPeriod,
-    onIsPeriodicChanged: (isPeriodic: Boolean) -> Unit,
-    onPeriodCountChanged: (countValue: String) -> Unit,
-    onPeriodChanged: (period: PaymentPeriod) -> Unit,
-    onPaymentDateChanged: (epochMilliseconds: Long) -> Unit,
+    onIsPeriodicChange: (isPeriodic: Boolean) -> Unit,
+    onPeriodCountChange: (countValue: String) -> Unit,
+    onPeriodChange: (period: PaymentPeriod) -> Unit,
+    onPaymentDateChange: (epochMilliseconds: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -78,14 +78,14 @@ fun DateInput(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             SegmentedButton(
                 selected = isPeriodic,
-                onClick = { onIsPeriodicChanged(true) },
+                onClick = { onIsPeriodicChange(true) },
                 shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
             ) {
                 Text(text = stringResource(id = R.string.subscription_add_btn_periodic))
             }
             SegmentedButton(
                 selected = !isPeriodic,
-                onClick = { onIsPeriodicChanged(false) },
+                onClick = { onIsPeriodicChange(false) },
                 shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
             ) {
                 Text(text = stringResource(id = R.string.subscription_add_btn_one_time))
@@ -101,9 +101,9 @@ fun DateInput(
                     date,
                     interactionSource,
                     periodCount,
-                    onPeriodCountChanged,
+                    onPeriodCountChange,
                     period,
-                    onPeriodChanged,
+                    onPeriodChange,
                 )
             } else {
                 TextField(
@@ -125,7 +125,7 @@ fun DateInput(
             confirmButton = {
                 Button(
                     onClick = {
-                        datePickerState.selectedDateMillis?.let(onPaymentDateChanged)
+                        datePickerState.selectedDateMillis?.let(onPaymentDateChange)
                         showDatePicker = false
                     },
                 ) {
@@ -148,9 +148,9 @@ private fun PeriodicInput(
     date: String?,
     interactionSource: MutableInteractionSource,
     periodCount: ValidatedInput,
-    onPeriodCountChanged: (countValue: String) -> Unit,
+    onPeriodCountChange: (countValue: String) -> Unit,
     period: PaymentPeriod?,
-    onPeriodChanged: (period: PaymentPeriod) -> Unit,
+    onPeriodChange: (period: PaymentPeriod) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier) {
@@ -168,7 +168,7 @@ private fun PeriodicInput(
         Row(Modifier.fillMaxWidth()) {
             TextField(
                 value = periodCount.value,
-                onValueChange = rememberDigitsFilter(onPeriodCountChanged),
+                onValueChange = rememberDigitsFilter(onPeriodCountChange),
                 label = {
                     Text(text = stringResource(id = R.string.subscription_add_label_period_count))
                 },
@@ -180,7 +180,7 @@ private fun PeriodicInput(
                 },
             )
             Spacer(Modifier.width(8.dp))
-            PeriodDropDown(period, periodCount, onPeriodChanged, Modifier.weight(weight = 0.6f))
+            PeriodDropDown(period, periodCount, onPeriodChange, Modifier.weight(weight = 0.6f))
         }
     }
 }
@@ -190,7 +190,7 @@ private fun PeriodicInput(
 private fun PeriodDropDown(
     period: PaymentPeriod?,
     currentPeriodCount: ValidatedInput,
-    onPeriodChanged: (period: PaymentPeriod) -> Unit,
+    onPeriodChange: (period: PaymentPeriod) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val locale = rememberDefaultLocale()
@@ -252,7 +252,7 @@ private fun PeriodDropDown(
                         )
                     },
                     modifier = Modifier.clickable(role = Role.Button) {
-                        onPeriodChanged(it)
+                        onPeriodChange(it)
                         showPeriodDropdown = false
                     },
                 )

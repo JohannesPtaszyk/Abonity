@@ -21,7 +21,7 @@ import dev.pott.abonity.core.ui.preview.PreviewCommonUiConfig
 import dev.pott.abonity.core.ui.theme.AppTheme
 
 @Composable
-fun NoSubscriptionTeaser(onAddNewSubscriptionClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun NoSubscriptionTeaser(onAddNewSubscriptionClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(16.dp),
@@ -38,7 +38,7 @@ fun NoSubscriptionTeaser(onAddNewSubscriptionClicked: () -> Unit, modifier: Modi
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(24.dp))
-        FilledTonalButton(onClick = onAddNewSubscriptionClicked) {
+        FilledTonalButton(onClick = onAddNewSubscriptionClick) {
             Text(text = stringResource(id = R.string.no_subscription_teaser_cta))
         }
     }
@@ -49,6 +49,6 @@ fun NoSubscriptionTeaser(onAddNewSubscriptionClicked: () -> Unit, modifier: Modi
 @Composable
 private fun NoUpcomingSubscriptionTeaserPreview() {
     AppTheme {
-        NoSubscriptionTeaser(onAddNewSubscriptionClicked = {})
+        NoSubscriptionTeaser(onAddNewSubscriptionClick = {})
     }
 }

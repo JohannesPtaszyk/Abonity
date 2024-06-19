@@ -15,13 +15,13 @@ import dev.pott.abonity.feature.subscription.add.localizedError
 @Composable
 fun NameInput(
     name: ValidatedInput,
-    onNameChanged: (name: String) -> Unit,
+    onNameChange: (name: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TextField(
         label = { Text(text = stringResource(id = R.string.subscription_add_label_name)) },
         value = name.value,
-        onValueChange = onNameChanged,
+        onValueChange = onNameChange,
         isError = name.isError,
         supportingText = {
             name.localizedError()?.let { Text(text = it) }
