@@ -1,13 +1,12 @@
 package configurations
 
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
-import kotlinx.kover.gradle.plugin.dsl.KoverReportExtension
-import kotlinx.kover.gradle.plugin.dsl.KoverReportFilters
+import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
+import kotlinx.kover.gradle.plugin.dsl.KoverReportFiltersConfig
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.configure
 
-fun KoverReportFilters.coverageExclusions() {
+fun KoverReportFiltersConfig.coverageExclusions() {
     excludes {
         classes(
             "*Impl_Factory.*",
@@ -34,31 +33,38 @@ fun KoverReportFilters.coverageExclusions() {
 
 fun Project.applyKover() {
     pluginManager.apply(KoverGradlePlugin::class)
-    configure<KoverReportExtension> {
-        filters {
-            coverageExclusions()
+    extensions.configure<KoverProjectExtension>("kover") {
+        reports {
+            filters {
+                coverageExclusions()
+            }
         }
     }
 }
 
 fun Project.applyKoverAndroid() {
     pluginManager.apply(KoverGradlePlugin::class)
-    configure<KoverReportExtension> {
-        defaults {
-            mergeWith("debug")
-            mergeWith("release")
+    extensions.configure<KoverProjectExtension>("kover") {
+        currentProject {
+            createVariant("kover") {
+                addWithDependencies("debug", "release")
+            }
         }
-        filters {
-            coverageExclusions()
+        reports {
+            filters {
+                coverageExclusions()
+            }
         }
     }
 }
 
 fun Project.applyKoverProject() {
     pluginManager.apply(KoverGradlePlugin::class)
-    configure<KoverReportExtension> {
-        filters {
-            coverageExclusions()
+    extensions.configure<KoverProjectExtension>("kover") {
+        reports {
+            filters {
+                coverageExclusions()
+            }
         }
     }
 }
