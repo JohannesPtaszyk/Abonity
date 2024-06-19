@@ -1,6 +1,5 @@
 package dev.pott.abonity.feature.home.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,20 +55,20 @@ fun NotificationPermissionTeaser(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
                 Icon(
                     painter = rememberVectorPainter(image = AppIcons.Notification),
                     contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterStart),
+                    modifier = Modifier.minimumInteractiveComponentSize(),
                 )
                 Text(
                     text = stringResource(id = R.string.notification_permission_teaser_title),
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.align(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f, fill = true),
                 )
                 IconButton(
                     onClick = { onCloseClick(shouldNotShowAgain) },
-                    modifier = Modifier.align(Alignment.CenterEnd),
                 ) {
                     Icon(
                         rememberVectorPainter(image = AppIcons.Close),
