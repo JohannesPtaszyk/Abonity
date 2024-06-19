@@ -39,7 +39,7 @@ import dev.pott.abonity.core.ui.theme.AppTheme
 @Composable
 fun NotificationPermissionTeaser(
     notificationPermissionState: PermissionState,
-    onCloseClicked: (shouldNotShowAgain: Boolean) -> Unit,
+    onCloseClick: (shouldNotShowAgain: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var shouldNotShowAgain by remember { mutableStateOf(false) }
@@ -67,7 +67,7 @@ fun NotificationPermissionTeaser(
                     modifier = Modifier.align(Alignment.Center),
                 )
                 IconButton(
-                    onClick = { onCloseClicked(shouldNotShowAgain) },
+                    onClick = { onCloseClick(shouldNotShowAgain) },
                     modifier = Modifier.align(Alignment.CenterEnd),
                 ) {
                     Icon(
@@ -118,7 +118,7 @@ private fun NotificationPermissionTeaserPreview() {
                     // Request
                 }
             },
-            onCloseClicked = {
+            onCloseClick = {
                 // Close clicked
             },
         )

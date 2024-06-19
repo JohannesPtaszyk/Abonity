@@ -67,21 +67,21 @@ fun AddScreen(
     }
     AddScreen(
         state = state,
-        onPaymentDateChanged = viewModel::setPaymentDate,
-        onNameChanged = viewModel::setName,
-        onDescriptionChanged = viewModel::setDescription,
-        onPriceChanged = viewModel::setPrice,
-        onCurrencyChanged = viewModel::setCurrency,
-        onIsPeriodicChanged = viewModel::setPeriodic,
-        onPeriodChanged = viewModel::setPaymentPeriod,
-        onPeriodCountChanged = viewModel::setPaymentPeriodCount,
+        onPaymentDateChange = viewModel::setPaymentDate,
+        onNameChange = viewModel::setName,
+        onDescriptionChange = viewModel::setDescription,
+        onPriceChange = viewModel::setPrice,
+        onCurrencyChange = viewModel::setCurrency,
+        onIsPeriodicChange = viewModel::setPeriodic,
+        onPeriodChange = viewModel::setPaymentPeriod,
+        onPeriodCountChange = viewModel::setPaymentPeriodCount,
         resetSavingState = viewModel::resetSavingState,
         onSaveClick = viewModel::save,
         onCloseClick = close,
         onAddNewCategory = viewModel::addCategory,
         onCloseAddNewCategory = viewModel::closeAddCategoryDialog,
         onOpenAddNewCategory = viewModel::openAddCategoryDialog,
-        onCategorySelected = viewModel::selectCategory,
+        onCategorySelect = viewModel::selectCategory,
         modifier = modifier,
     )
 }
@@ -90,14 +90,14 @@ fun AddScreen(
 @Composable
 fun AddScreen(
     state: AddState,
-    onPaymentDateChanged: (epochMilliseconds: Long) -> Unit,
-    onNameChanged: (name: String) -> Unit,
-    onDescriptionChanged: (name: String) -> Unit,
-    onPriceChanged: (priceValue: String) -> Unit,
-    onCurrencyChanged: (currency: Currency) -> Unit,
-    onIsPeriodicChanged: (isPeriodic: Boolean) -> Unit,
-    onPeriodChanged: (period: PaymentPeriod) -> Unit,
-    onPeriodCountChanged: (countValue: String) -> Unit,
+    onPaymentDateChange: (epochMilliseconds: Long) -> Unit,
+    onNameChange: (name: String) -> Unit,
+    onDescriptionChange: (name: String) -> Unit,
+    onPriceChange: (priceValue: String) -> Unit,
+    onCurrencyChange: (currency: Currency) -> Unit,
+    onIsPeriodicChange: (isPeriodic: Boolean) -> Unit,
+    onPeriodChange: (period: PaymentPeriod) -> Unit,
+    onPeriodCountChange: (countValue: String) -> Unit,
     resetSavingState: () -> Unit,
     onSaveClick: () -> Unit,
     onCloseClick: () -> Unit,
@@ -105,7 +105,7 @@ fun AddScreen(
     onCloseAddNewCategory: () -> Unit,
     onOpenAddNewCategory: () -> Unit,
     modifier: Modifier = Modifier,
-    onCategorySelected: (category: Category) -> Unit,
+    onCategorySelect: (category: Category) -> Unit,
 ) {
     if (state.formState.saving == AddState.SavingState.ERROR) {
         SavingErrorDialog(resetSavingState)
@@ -156,7 +156,7 @@ fun AddScreen(
                     CategoryInput(
                         categories = state.categories,
                         selectedCategories = state.formState.selectedCategories,
-                        onCategorySelected = onCategorySelected,
+                        onCategorySelecte = onCategorySelect,
                         onOpenAddNewCategory = onOpenAddNewCategory,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -164,7 +164,7 @@ fun AddScreen(
                 item {
                     NameInput(
                         name = state.formState.name,
-                        onNameChanged = onNameChanged,
+                        onNameChange = onNameChange,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -172,8 +172,8 @@ fun AddScreen(
                     PriceInput(
                         priceValue = state.formState.priceValue,
                         currency = state.formState.currency,
-                        onPriceChanged = onPriceChanged,
-                        onCurrencyChanged = onCurrencyChanged,
+                        onPriceChange = onPriceChange,
+                        onCurrencyChange = onCurrencyChange,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -183,17 +183,17 @@ fun AddScreen(
                         paymentDateEpochMillis = state.formState.paymentDateEpochMillis,
                         periodCount = state.formState.paymentPeriodCount,
                         period = state.formState.paymentPeriod,
-                        onIsPeriodicChanged = onIsPeriodicChanged,
-                        onPeriodCountChanged = onPeriodCountChanged,
-                        onPeriodChanged = onPeriodChanged,
-                        onPaymentDateChanged = onPaymentDateChanged,
+                        onIsPeriodicChange = onIsPeriodicChange,
+                        onPeriodCountChange = onPeriodCountChange,
+                        onPeriodChange = onPeriodChange,
+                        onPaymentDateChange = onPaymentDateChange,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 item {
                     DescriptionInput(
                         description = state.formState.description,
-                        onDescriptionChanged = onDescriptionChanged,
+                        onDescriptionChange = onDescriptionChange,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -207,7 +207,7 @@ fun AddScreen(
 private fun CategoryInput(
     categories: ImmutableList<Category>,
     selectedCategories: ImmutableList<Category>,
-    onCategorySelected: (category: Category) -> Unit,
+    onCategorySelecte: (category: Category) -> Unit,
     onOpenAddNewCategory: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -231,7 +231,7 @@ private fun CategoryInput(
         items(categories, key = { it.id.value }) {
             InputChip(
                 selected = selectedCategories.contains(it),
-                onClick = { onCategorySelected(it) },
+                onClick = { onCategorySelecte(it) },
                 label = { Text(text = it.name) },
                 modifier = Modifier.animateItemPlacement(),
             )
@@ -314,20 +314,20 @@ private fun AddScreenPreview() {
         state = AddState(
             formState = AddFormState(Clock.System.now().toEpochMilliseconds()),
         ),
-        onPaymentDateChanged = {},
-        onNameChanged = {},
-        onDescriptionChanged = {},
-        onPriceChanged = {},
-        onCurrencyChanged = {},
-        onIsPeriodicChanged = {},
-        onPeriodChanged = {},
-        onPeriodCountChanged = {},
+        onPaymentDateChange = {},
+        onNameChange = {},
+        onDescriptionChange = {},
+        onPriceChange = {},
+        onCurrencyChange = {},
+        onIsPeriodicChange = {},
+        onPeriodChange = {},
+        onPeriodCountChange = {},
         resetSavingState = {},
         onSaveClick = {},
         onCloseClick = {},
         onAddNewCategory = {},
         onCloseAddNewCategory = {},
         onOpenAddNewCategory = {},
-        onCategorySelected = {},
+        onCategorySelect = {},
     )
 }

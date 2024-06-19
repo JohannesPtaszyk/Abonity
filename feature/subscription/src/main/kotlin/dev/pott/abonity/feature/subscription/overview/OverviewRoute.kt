@@ -49,10 +49,10 @@ fun OverviewRoute(
             modifier = modifier,
             overviewState = overviewState,
             detailState = detailState,
-            onSubscriptionClicked = overviewViewModel::openDetails,
-            onFilterItemSelected = overviewViewModel::toggleFilter,
-            onEditClicked = onEditClick,
-            onDeleteClicked = overviewViewModel::delete,
+            onSubscriptionClick = overviewViewModel::openDetails,
+            onFilterItemSelect = overviewViewModel::toggleFilter,
+            onEditClick = onEditClick,
+            onDeleteClick = overviewViewModel::delete,
             closeDetails = overviewViewModel::consumeDetails,
             onOpenCategoriesClick = onOpenCategoriesClick,
             listState = listState,
@@ -61,7 +61,7 @@ fun OverviewRoute(
         OverviewScreen(
             state = overviewState,
             onSubscriptionClick = overviewViewModel::openDetails,
-            onFilterItemSelected = overviewViewModel::toggleFilter,
+            onFilterItemSelect = overviewViewModel::toggleFilter,
             onSwipeToDelete = overviewViewModel::delete,
             onOpenCategoriesClick = onOpenCategoriesClick,
             listState = listState,
@@ -84,8 +84,8 @@ fun OverviewRoute(
             BackHandler { overviewViewModel.consumeDetails() }
             DetailScreen(
                 state = detailState,
-                onEditClicked = onEditClick,
-                onDeleteClicked = overviewViewModel::delete,
+                onEditClick = onEditClick,
+                onDeleteClick = overviewViewModel::delete,
                 close = overviewViewModel::consumeDetails,
             )
         }

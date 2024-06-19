@@ -62,8 +62,8 @@ private const val PRICE_PLACEHOLDER = 9.99
 fun PriceInput(
     priceValue: ValidatedInput,
     currency: Currency,
-    onPriceChanged: (priceValue: String) -> Unit,
-    onCurrencyChanged: (currency: Currency) -> Unit,
+    onPriceChange: (priceValue: String) -> Unit,
+    onCurrencyChange: (currency: Currency) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showCurrencyBottomSheet by remember { mutableStateOf(false) }
@@ -78,7 +78,7 @@ fun PriceInput(
                 Text(text = format.format(PRICE_PLACEHOLDER), Modifier.alpha(alpha = 0.8f))
             },
             value = priceValue.value,
-            onValueChange = rememberPriceValueFilter(onPriceChanged),
+            onValueChange = rememberPriceValueFilter(onPriceChange),
             isError = priceValue.isError,
             supportingText = {
                 priceValue.localizedError()?.let { Text(text = it) }
@@ -112,9 +112,9 @@ fun PriceInput(
 
     if (showCurrencyBottomSheet) {
         CurrencyBottomSheet(
-            onCurrencyChanged = {
+            onCurrencyChange = {
                 showCurrencyBottomSheet = false
-                onCurrencyChanged(it)
+                onCurrencyChange(it)
             },
             onDismissRequest = { showCurrencyBottomSheet = false },
         )
@@ -128,7 +128,7 @@ private const val CURRENCY_ITEM = "Currency"
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 private fun CurrencyBottomSheet(
-    onCurrencyChanged: (currency: Currency) -> Unit,
+    onCurrencyChange: (currency: Currency) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val locale = rememberDefaultLocale()
@@ -208,7 +208,7 @@ private fun CurrencyBottomSheet(
                         modifier = Modifier
                             .animateItemPlacement()
                             .fillMaxWidth()
-                            .clickable { onCurrencyChanged(it) },
+                            .clickable { onCurrencyChange(it) },
                     )
                 }
                 item(key = SPACER_ITEM, contentType = SPACER_ITEM) {

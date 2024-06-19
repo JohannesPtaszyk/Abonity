@@ -24,7 +24,7 @@ import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 @Composable
 fun SubscriptionFilter(
     state: SubscriptionFilter,
-    onItemSelected: (SubscriptionFilterItem) -> Unit,
+    onItemSelect: (SubscriptionFilterItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -39,7 +39,7 @@ fun SubscriptionFilter(
     ) {
         items(state.items, key = { it.hashCode() }) {
             FilterChip(
-                onClick = { onItemSelected(it) },
+                onClick = { onItemSelect(it) },
                 selected = state.selectedItems.contains(it),
                 label = {
                     when (it) {

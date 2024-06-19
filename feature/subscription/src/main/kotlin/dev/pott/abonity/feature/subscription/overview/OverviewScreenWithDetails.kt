@@ -48,10 +48,10 @@ import java.util.Currency
 fun OverviewScreenWithDetails(
     overviewState: OverviewState,
     detailState: DetailState,
-    onSubscriptionClicked: (id: SubscriptionId) -> Unit,
-    onFilterItemSelected: (item: SubscriptionFilterItem) -> Unit,
-    onEditClicked: (id: SubscriptionId) -> Unit,
-    onDeleteClicked: (id: SubscriptionId) -> Unit,
+    onSubscriptionClick: (id: SubscriptionId) -> Unit,
+    onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
+    onEditClick: (id: SubscriptionId) -> Unit,
+    onDeleteClick: (id: SubscriptionId) -> Unit,
     closeDetails: () -> Unit,
     onOpenCategoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -64,9 +64,9 @@ fun OverviewScreenWithDetails(
     ) {
         OverviewScreen(
             state = overviewState,
-            onSubscriptionClick = onSubscriptionClicked,
-            onFilterItemSelected = onFilterItemSelected,
-            onSwipeToDelete = onDeleteClicked,
+            onSubscriptionClick = onSubscriptionClick,
+            onFilterItemSelect = onFilterItemSelect,
+            onSwipeToDelete = onDeleteClick,
             listState = listState,
             onOpenCategoriesClick = onOpenCategoriesClick,
             modifier = Modifier.weight(1f),
@@ -80,8 +80,8 @@ fun OverviewScreenWithDetails(
                 close = {
                     closeDetails()
                 },
-                onEditClicked = onEditClicked,
-                onDeleteClicked = onDeleteClicked,
+                onEditClick = onEditClick,
+                onDeleteClick = onDeleteClick,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -171,10 +171,10 @@ private fun OverviewWithDetailScreenPreview() {
                     categories = listOf(Category(name = "Category")),
                 ),
             ),
-            onSubscriptionClicked = {},
-            onFilterItemSelected = {},
-            onEditClicked = {},
-            onDeleteClicked = {},
+            onSubscriptionClick = {},
+            onFilterItemSelect = {},
+            onEditClick = {},
+            onDeleteClick = {},
             closeDetails = {},
             onOpenCategoriesClick = {},
         )
