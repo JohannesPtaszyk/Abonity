@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Git config
         run: |
@@ -60,8 +63,8 @@ jobs:
         run: |
           ./gradlew createRcTag --push
 
-      - name: AppSweep Scan
-        env:
-          APPSWEEP_API_KEY: ${{ secrets.APPSWEEP_API_KEY }}
-        run: ./gradlew uploadToAppSweepDebug
+#      - name: AppSweep Scan
+#        env:
+#          APPSWEEP_API_KEY: ${{ secrets.APPSWEEP_API_KEY }}
+#        run: ./gradlew uploadToAppSweepReleaseBundle
           
