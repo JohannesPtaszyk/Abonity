@@ -19,13 +19,10 @@ class FakeSubscriptionLocalDataSource(
         return subscription
     }
 
-    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
-        return testSubscriptionsFlow
-    }
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> = testSubscriptionsFlow
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
-        return testSubscriptionFlow
-    }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> =
+        testSubscriptionFlow
 
     override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
         deletedSubscriptions.add(subscriptionId)

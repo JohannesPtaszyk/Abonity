@@ -10,8 +10,8 @@ import javax.inject.Inject
 class GetTrackingServicesWithGrantUseCase @Inject constructor(
     private val legalRepository: LegalRepository,
 ) {
-    operator fun invoke(): Flow<Map<TrackingService, ConsentGrant>> {
-        return legalRepository.getLegal().map { legal ->
+    operator fun invoke(): Flow<Map<TrackingService, ConsentGrant>> =
+        legalRepository.getLegal().map { legal ->
             val consents = legal.consents
             TrackingService.entries.associateWith {
                 val serviceGrant = consents.find { consent ->
@@ -20,5 +20,4 @@ class GetTrackingServicesWithGrantUseCase @Inject constructor(
                 serviceGrant ?: ConsentGrant.UNKNOWN
             }
         }
-    }
 }

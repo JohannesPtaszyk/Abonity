@@ -19,12 +19,11 @@ private const val APP_DATABASE = "app-database"
 object DatabaseModule {
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             APP_DATABASE,
         ).fallbackToDestructiveMigration()
             .build()
-    }
 }

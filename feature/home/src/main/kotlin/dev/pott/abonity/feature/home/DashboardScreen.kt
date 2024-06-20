@@ -105,7 +105,7 @@ fun DashboardScreen(
     onOpenSubscriptionsClick: () -> Unit,
     onOpenNotificationSettingsClick: () -> Unit,
     onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
-    onAddNewSubscriptionClicked: () -> Unit,
+    onAddNewSubscriptionClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -138,7 +138,7 @@ fun DashboardScreen(
                         onCloseNotificationTeaserClick,
                         onOpenSubscriptionsClick,
                         onSubscriptionClick,
-                        onAddNewSubscriptionClicked,
+                        onAddNewSubscriptionClick,
                         scrollBehavior.nestedScrollConnection,
                         paddingValues,
                     )
@@ -168,7 +168,7 @@ private fun LoadedContent(
     onCloseNotificationTeaserClick: (shouldNotShowAgain: Boolean) -> Unit,
     onOpenSubscriptionsClick: () -> Unit,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
-    onAddNewSubscriptionClicked: () -> Unit,
+    onAddNewSubscriptionClick: () -> Unit,
     nestedScrollConnection: NestedScrollConnection,
     paddingValues: PaddingValues,
 ) {
@@ -209,7 +209,7 @@ private fun LoadedContent(
             ) {
                 NotificationPermissionTeaser(
                     notificationPermissionState,
-                    onCloseClicked = onCloseNotificationTeaserClick,
+                    onCloseClick = onCloseNotificationTeaserClick,
                     modifier = Modifier.animateItemPlacement(),
                 )
             }
@@ -240,7 +240,7 @@ private fun LoadedContent(
                     contentType = "no_upcoming_subscription_teaser",
                 ) {
                     NoUpcomingSubscriptionTeaser(
-                        onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
+                        onAddNewSubscriptionClick = onAddNewSubscriptionClick,
                         period = dashboardState.upcomingSubscriptions.period,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -254,7 +254,7 @@ private fun LoadedContent(
                     contentType = "no_subscription_teaser",
                 ) {
                     NoSubscriptionTeaser(
-                        onAddNewSubscriptionClicked = onAddNewSubscriptionClicked,
+                        onAddNewSubscriptionClick = onAddNewSubscriptionClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .animateItemPlacement(),
@@ -403,8 +403,8 @@ private fun DashboardScreenPreview() {
             onCloseNotificationTeaserClick = {
                 // On Close Notification Teaser Click
             },
-            onAddNewSubscriptionClicked = {
-                // On Add New Subscription Clicked
+            onAddNewSubscriptionClick = {
+                // On Add New Subscription Click
             },
         )
     }

@@ -64,8 +64,8 @@ import java.util.Currency
 fun DetailScreen(
     state: DetailState,
     close: () -> Unit,
-    onEditClicked: (SubscriptionId) -> Unit,
-    onDeleteClicked: (SubscriptionId) -> Unit,
+    onEditClick: (SubscriptionId) -> Unit,
+    onDeleteClick: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val subscription = state.subscription
@@ -83,7 +83,7 @@ fun DetailScreen(
                 },
                 navigationIcon = { BackButton(close) },
                 actions = {
-                    DetailActions(subscription, onEditClicked, onDeleteClicked)
+                    DetailActions(subscription, onEditClick, onDeleteClick)
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -113,8 +113,8 @@ fun DetailScreen(
 @Composable
 private fun DetailActions(
     subscription: Subscription?,
-    onEditClicked: (SubscriptionId) -> Unit,
-    onDeleteClicked: (SubscriptionId) -> Unit,
+    onEditClick: (SubscriptionId) -> Unit,
+    onDeleteClick: (SubscriptionId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -125,7 +125,7 @@ private fun DetailActions(
     ) {
         Row {
             subscription?.let {
-                IconButton(onClick = { onEditClicked(subscription.id) }) {
+                IconButton(onClick = { onEditClick(subscription.id) }) {
                     Icon(
                         painter = rememberVectorPainter(image = AppIcons.Edit),
                         contentDescription = stringResource(
@@ -134,7 +134,7 @@ private fun DetailActions(
                         ),
                     )
                 }
-                IconButton(onClick = { onDeleteClicked(subscription.id) }) {
+                IconButton(onClick = { onDeleteClick(subscription.id) }) {
                     Icon(
                         painter = rememberVectorPainter(image = AppIcons.Delete),
                         contentDescription = stringResource(
@@ -363,10 +363,10 @@ private fun DetailScreenPreview() {
             close = {
                 // Close Screen
             },
-            onEditClicked = {
+            onEditClick = {
                 // Open Edit Screen
             },
-            onDeleteClicked = {
+            onDeleteClick = {
                 // Delete
             },
         )

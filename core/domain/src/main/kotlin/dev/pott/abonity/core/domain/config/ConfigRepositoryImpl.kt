@@ -8,11 +8,7 @@ class ConfigRepositoryImpl @Inject constructor(
     private val remoteConfigDataSource: RemoteConfigDataSource,
     private val localConfigDataSource: LocalConfigDataSource,
 ) : ConfigRepository {
-    override fun getConfig(): Flow<Config> {
-        return localConfigDataSource.getConfiguration()
-    }
+    override fun getConfig(): Flow<Config> = localConfigDataSource.getConfiguration()
 
-    override suspend fun refresh(): Result<Unit> {
-        return remoteConfigDataSource.refresh()
-    }
+    override suspend fun refresh(): Result<Unit> = remoteConfigDataSource.refresh()
 }

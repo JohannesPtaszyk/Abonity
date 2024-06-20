@@ -3,17 +3,23 @@ package configurations
 import com.android.build.api.dsl.CommonExtension
 import extensions.libs
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradleSubplugin
 
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+    pluginManager.apply(ComposeCompilerGradleSubplugin::class)
     commonExtension.apply {
         buildFeatures {
             compose = true
         }
 
-        composeOptions {
-            kotlinCompilerExtensionVersion =
-                libs.findVersion("androidxComposeCompiler").get().toString()
+        with(extensions.getByType<ComposeCompilerGradlePluginExtension>()) {
+            enableStrongSkippingMode = true
+            includeSourceInformation = true
         }
 
         @Suppress("UnstableApiUsage")

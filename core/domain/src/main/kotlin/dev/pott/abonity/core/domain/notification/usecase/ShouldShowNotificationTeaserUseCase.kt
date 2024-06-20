@@ -17,8 +17,8 @@ class ShouldShowNotificationTeaserUseCase @Inject constructor(
     private val repository: NotificationTeaserRepository,
 ) {
 
-    operator fun invoke(): Flow<Boolean> {
-        return repository.getNotificationTeaserFlow().map {
+    operator fun invoke(): Flow<Boolean> =
+        repository.getNotificationTeaserFlow().map {
             val lastClosed = it.lastClosed
             when {
                 it.shouldNotShowAgain -> false
@@ -30,5 +30,4 @@ class ShouldShowNotificationTeaserUseCase @Inject constructor(
                 }
             }
         }
-    }
 }

@@ -1,9 +1,6 @@
 package dev.pott.abonity.core.entity.legal
 
-enum class TrackingService(
-    val serviceId: ConsentServiceId,
-    val serviceCategory: ServiceCategory,
-) {
+enum class TrackingService(val serviceId: ConsentServiceId, val serviceCategory: ServiceCategory) {
     FIREBASE_ANALYTICS(
         serviceId = ConsentServiceId.FIREBASE_ANALYTICS,
         serviceCategory = ServiceCategory.ANALYTICS,

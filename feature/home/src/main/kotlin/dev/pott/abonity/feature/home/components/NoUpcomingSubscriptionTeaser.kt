@@ -26,7 +26,7 @@ import dev.pott.abonity.core.ui.theme.AppTheme
 @Composable
 fun NoUpcomingSubscriptionTeaser(
     period: PaymentPeriod,
-    onAddNewSubscriptionClicked: () -> Unit,
+    onAddNewSubscriptionClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -52,7 +52,7 @@ fun NoUpcomingSubscriptionTeaser(
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(24.dp))
-        FilledTonalButton(onClick = onAddNewSubscriptionClicked) {
+        FilledTonalButton(onClick = onAddNewSubscriptionClick) {
             Text(
                 text = stringResource(id = R.string.no_upcoming_subscription_teaser_cta),
             )
@@ -67,7 +67,7 @@ private fun NoUpcomingSubscriptionTeaserPreview() {
     AppTheme {
         NoUpcomingSubscriptionTeaser(
             period = PaymentPeriod.MONTHS,
-            onAddNewSubscriptionClicked = {},
+            onAddNewSubscriptionClick = {},
         )
     }
 }

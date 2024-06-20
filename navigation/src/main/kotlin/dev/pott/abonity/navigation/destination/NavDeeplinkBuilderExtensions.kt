@@ -7,9 +7,7 @@ import androidx.navigation.NavDeepLinkBuilder
 fun NavDeepLinkBuilder.setDestination(
     destination: Destination,
     arguments: Arguments?,
-): NavDeepLinkBuilder {
-    return setDestination(destRoute = destination.route, arguments?.let { bundle(it) })
-}
+): NavDeepLinkBuilder = setDestination(destRoute = destination.route, arguments?.let { bundle(it) })
 
 fun NavDeepLinkBuilder.setArguments(arguments: Arguments): NavDeepLinkBuilder {
     val bundle = bundle(arguments)

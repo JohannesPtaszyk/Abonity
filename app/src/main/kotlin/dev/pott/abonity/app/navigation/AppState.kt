@@ -50,24 +50,21 @@ fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeCl
     }
 }
 
-private fun showAddFab(navigationSuiteType: NavigationType, route: String?): Boolean {
-    return navigationSuiteType == NavigationType.NAVIGATION_BAR &&
+private fun showAddFab(navigationSuiteType: NavigationType, route: String?): Boolean =
+    navigationSuiteType == NavigationType.NAVIGATION_BAR &&
         (route == DashboardScreenDestination.route || route == OverviewScreenDestination.route)
-}
 
-private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowSizeClass): NavigationType {
-    return with(adaptiveInfo) {
+private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowSizeClass): NavigationType =
+    with(adaptiveInfo) {
         if (showNavigationBar()) {
             NavigationType.NAVIGATION_BAR
         } else {
             NavigationType.NAVIGATION_RAIL
         }
     }
-}
 
-private fun WindowSizeClass.showNavigationBar(): Boolean {
-    return heightSizeClass == WindowHeightSizeClass.Medium
-}
+private fun WindowSizeClass.showNavigationBar(): Boolean =
+    heightSizeClass == WindowHeightSizeClass.Medium
 
 private fun calculateSubscriptionGraphState(
     windowSizeClass: WindowSizeClass,

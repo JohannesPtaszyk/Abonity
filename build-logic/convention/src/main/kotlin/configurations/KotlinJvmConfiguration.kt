@@ -7,45 +7,16 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
         sourceCompatibility = projectJavaVersion
         targetCompatibility = projectJavaVersion
     }
-    configureKotlin()
+    configureKotlinTest()
 }
 
-internal fun Project.configureKotlin() {
-    // Workaround https://youtrack.jetbrains.com/issue/KT-55947
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = projectJavaVersion.toString()
-            allWarningsAsErrors = true
-            freeCompilerArgs +=
-                listOf(
-                    "-opt-in=kotlin.RequiresOptIn",
-                )
-        }
-
-        configurations.configureEach {
-            incoming.afterResolve {
-                dependencies.forEach {
-                    if (it.name.contains("kotlinx.coroutines")) {
-                        kotlinOptions {
-                            freeCompilerArgs +=
-                                listOf(
-                                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                                    "-opt-in=kotlinx.coroutines.FlowPreview",
-                                )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
+internal fun Project.configureKotlinTest() {
     tasks.withType<Test> {
         useJUnitPlatform()
         failFast = true

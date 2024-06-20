@@ -10,17 +10,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class RoomCategoryDataSource @Inject constructor(
-    private val dao: CategoryDao,
-) : CategoryLocalDataSource {
+class RoomCategoryDataSource @Inject constructor(private val dao: CategoryDao) :
+    CategoryLocalDataSource {
     override suspend fun addOrUpdateCategory(category: Category): Category {
         val id = dao.upsert(category.toEntity())
         return category.copy(id = CategoryId(id))
     }
 
-    override fun getCategoriesFlow(): Flow<List<Category>> {
-        return dao.getCategoriesFlow().map { it.map { entity -> entity.toDomain() } }
-    }
+    override fun getCategoriesFlow(): Flow<List<Category>> =
+        dao.getCategoriesFlow().map {
+            it.map { entity -> entity.toDomain() }
+        }
 
     override suspend fun deleteCategory(categoryIds: List<CategoryId>) {
         dao.delete(categoryIds.map { it.value })

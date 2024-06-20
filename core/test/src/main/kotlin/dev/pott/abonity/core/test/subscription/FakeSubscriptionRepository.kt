@@ -18,13 +18,10 @@ class FakeSubscriptionRepository(
         addedSubscriptions.add(subscription)
         return subscription
     }
-    override fun getSubscriptionsFlow(): Flow<List<Subscription>> {
-        return subscriptionsFlow
-    }
+    override fun getSubscriptionsFlow(): Flow<List<Subscription>> = subscriptionsFlow
 
-    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> {
-        return subscriptionFlow
-    }
+    override fun getSubscriptionFlow(subscriptionId: SubscriptionId): Flow<Subscription?> =
+        subscriptionFlow
 
     override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
         deletedIds.add(subscriptionId)

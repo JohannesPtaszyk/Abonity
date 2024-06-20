@@ -109,6 +109,7 @@ dependencies {
     implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)
+    implementation(libs.androidx.dataStore)
 
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)

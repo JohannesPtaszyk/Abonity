@@ -20,19 +20,17 @@ fun ExecOperations.execToString(vararg args: String): String {
     return String(output.toByteArray(), Charset.defaultCharset())
 }
 
-fun ExecOperations.getLatestVersionFromTags(): Version {
-    return execToString("git", "tag")
+fun ExecOperations.getLatestVersionFromTags(): Version =
+    execToString("git", "tag")
         .split(System.lineSeparator())
         .filter { it.isNotBlank() && it.startsWith(RELEASE_TAG_PREFIX) }
         .map { Version(it.removePrefix(RELEASE_TAG_PREFIX)) }
         .maxBy { it }
-}
 
-fun ExecOperations.getRcTags(): List<String> {
-    return getTags()
+fun ExecOperations.getRcTags(): List<String> =
+    getTags()
         .split(System.lineSeparator())
         .filter { it.isNotBlank() && it.startsWith(RC_TAG_PREFIX, ignoreCase = true) }
-}
 
 fun ExecOperations.getTags() = execToString("git", "tag")
 

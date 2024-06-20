@@ -7,8 +7,8 @@ import org.junit.jupiter.api.assertThrows
 class SubscriptionEntityTest {
 
     @TestFactory
-    fun `Test initialization throws for invalid periodic data`(): List<DynamicTest> {
-        return listOf(
+    fun `Test initialization throws for invalid periodic data`(): List<DynamicTest> =
+        listOf(
             PeriodicTestCase(period = null, periodCount = 1),
             PeriodicTestCase(period = LocalPaymentPeriod.MONTHS, periodCount = null),
         ).map {
@@ -28,10 +28,6 @@ class SubscriptionEntityTest {
                 }
             }
         }
-    }
 
-    data class PeriodicTestCase(
-        val period: LocalPaymentPeriod?,
-        val periodCount: Int?,
-    )
+    data class PeriodicTestCase(val period: LocalPaymentPeriod?, val periodCount: Int?)
 }

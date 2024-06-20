@@ -11,13 +11,14 @@
   ],
   "packageRules": [
     {
-      "extends": "monorepo:kotlin",
+      "groupName": "Kotlin and KSP",
       "matchPackagePatterns": [
-        "androidx.compose.compiler:compiler",
-        "org.jetbrains.kotlin.*",
-        "com.google.devtools.ksp"
+        "^org.jetbrains.kotlin",
+        "^com.google.devtools.ksp"
       ],
-      "groupName": "kotlin"
+      "excludePackagePatterns": [
+        "^org.jetbrains.kotlinx"
+      ]
     }
   ]
 }

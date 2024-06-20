@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 
-class FakeSubscriptionDao(
-    initialEntities: List<SubscriptionCategoryEntity> = emptyList(),
-) : SubscriptionDao {
+class FakeSubscriptionDao(initialEntities: List<SubscriptionCategoryEntity> = emptyList()) :
+    SubscriptionDao {
 
     private val entities = MutableStateFlow(initialEntities)
     private val crossRefs = MutableStateFlow(emptyList<SubscriptionCategoryCrossRef>())
@@ -44,15 +43,12 @@ class FakeSubscriptionDao(
         }
     }
 
-    override fun getSubscriptionsFlow(): Flow<List<SubscriptionCategoryEntity>> {
-        return entities
-    }
+    override fun getSubscriptionsFlow(): Flow<List<SubscriptionCategoryEntity>> = entities
 
-    override fun getSubscriptionFlow(id: Long): Flow<SubscriptionCategoryEntity?> {
-        return entities.mapNotNull { subscriptionCategoryEntities ->
+    override fun getSubscriptionFlow(id: Long): Flow<SubscriptionCategoryEntity?> =
+        entities.mapNotNull { subscriptionCategoryEntities ->
             subscriptionCategoryEntities.find { it.subscription.id == id }
         }
-    }
 
     override suspend fun delete(id: Long) {
         entities.update { it.filterNot { it.subscription.id == id } }

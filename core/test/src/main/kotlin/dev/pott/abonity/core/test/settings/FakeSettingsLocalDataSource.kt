@@ -9,9 +9,7 @@ class FakeSettingsLocalDataSource(initialSettings: Settings) : SettingsLocalData
 
     private val settingsFlow = MutableStateFlow(initialSettings)
 
-    override fun getSettingsFlow(): Flow<Settings> {
-        return settingsFlow
-    }
+    override fun getSettingsFlow(): Flow<Settings> = settingsFlow
 
     override suspend fun updateSettings(settings: Settings) {
         settingsFlow.value = settings

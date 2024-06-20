@@ -26,33 +26,30 @@ private const val LEGAL_FILE_NAME = "legal.json"
 object DataStoreModule {
     @Provides
     @Singleton
-    fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<SettingsEntity> {
-        return DataStoreFactory.create(
+    fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<SettingsEntity> =
+        DataStoreFactory.create(
             serializer = SettingsEntitySerializer(),
         ) {
             context.dataStoreFile(SETTINGS_FILE_NAME)
         }
-    }
 
     @Provides
     @Singleton
     fun provideNotificationDataStore(
         @ApplicationContext context: Context,
-    ): DataStore<NotificationTeaserEntity> {
-        return DataStoreFactory.create(
+    ): DataStore<NotificationTeaserEntity> =
+        DataStoreFactory.create(
             serializer = NotificationTeaserEntitySerializer(),
         ) {
             context.dataStoreFile(NOTIFICATION_TEASER_FILE_NAME)
         }
-    }
 
     @Provides
     @Singleton
-    fun provideLegalDataStore(@ApplicationContext context: Context): DataStore<LegalEntity> {
-        return DataStoreFactory.create(
+    fun provideLegalDataStore(@ApplicationContext context: Context): DataStore<LegalEntity> =
+        DataStoreFactory.create(
             serializer = LegalEntitySerializer(),
         ) {
             context.dataStoreFile(LEGAL_FILE_NAME)
         }
-    }
 }
