@@ -64,6 +64,7 @@
     <string name="home_btn_open_subscriptions">Alle anzeigen</string>
     <string name="home_screen_title">Übersicht</string>
     <string name="home_upcoming_subscriptions_label">Bevorstehende Zahlungen</string>
+    <string name="home_upcoming_subscriptions_today">Heute</string>
     <string name="navigation_item_home">Startseite</string>
     <string name="navigation_item_settings">Einstellungen</string>
     <string name="navigation_item_subscription">Zahlungen</string>
@@ -148,4 +149,5 @@
     <string name="tracking_consent_dialog_cta_privacy_policy">Datenschutz-Bestimmungen</string>
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">Für weitere Details besuchen Sie bitte unsere Datenschutz-Bestimmungen</string>
     <string name="add_new_category_cta">Neu</string>
+    <string name="home_upcoming_subscriptions_tomorrow">Morgen</string>
 </resources>

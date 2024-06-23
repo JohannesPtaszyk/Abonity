@@ -27,10 +27,14 @@ class GetUpcomingSubscriptionsUseCase @Inject constructor(
         ) { subscriptions, settings ->
             val today = clock.todayIn(TimeZone.currentSystemDefault())
             UpcomingSubscriptions(
-                subscriptions.filter {
-                    val lastDayOfCurrentPeriod = today.getLastDayOfCurrentPeriod(settings.period)
-                    it.nextPaymentDate in today..lastDayOfCurrentPeriod
-                },
+                subscriptions
+                    .filter {
+                        val lastDayOfCurrentPeriod =
+                            today.getLastDayOfCurrentPeriod(settings.period)
+                        it.nextPaymentDate in today..lastDayOfCurrentPeriod
+                    }
+                    .groupBy { it.nextPaymentDate }
+                    .toSortedMap(),
                 subscriptions.isNotEmpty(),
                 settings.period,
             )

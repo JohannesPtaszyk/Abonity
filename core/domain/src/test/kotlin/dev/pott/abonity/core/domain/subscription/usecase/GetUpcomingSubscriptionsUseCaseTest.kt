@@ -33,7 +33,7 @@ class GetUpcomingSubscriptionsUseCaseTest {
     lateinit var testDispatcher: CoroutineDispatcher
 
     @Test
-    fun `GIVEN upcoming subscriptions WHEN invoked THEN return filtered list`() {
+    fun `GIVEN upcoming subscriptions WHEN invoked THEN return filtered sorted map`() {
         runTest {
             val subscription1 = createTestSubscription(
                 paymentInfo = PaymentInfo(
@@ -79,16 +79,18 @@ class GetUpcomingSubscriptionsUseCaseTest {
             tested().test {
                 assertThat(awaitItem()).isEqualTo(
                     UpcomingSubscriptions(
-                        subscriptions = listOf(
-                            SubscriptionWithPeriodInfo(
-                                subscription = subscription1,
-                                periodPrice = Price(14.0, Currency.getInstance("EUR")),
-                                nextPaymentDate = LocalDate(2022, 2, 1),
-                            ),
-                            SubscriptionWithPeriodInfo(
-                                subscription = subscription2,
-                                periodPrice = Price(2.0, Currency.getInstance("USD")),
-                                nextPaymentDate = LocalDate(2022, 2, 1),
+                        subscriptions = mapOf(
+                            LocalDate(2022, 2, 1) to listOf(
+                                SubscriptionWithPeriodInfo(
+                                    subscription = subscription1,
+                                    periodPrice = Price(14.0, Currency.getInstance("EUR")),
+                                    nextPaymentDate = LocalDate(2022, 2, 1),
+                                ),
+                                SubscriptionWithPeriodInfo(
+                                    subscription = subscription2,
+                                    periodPrice = Price(2.0, Currency.getInstance("USD")),
+                                    nextPaymentDate = LocalDate(2022, 2, 1),
+                                ),
                             ),
                         ),
                         hasAnySubscriptions = true,
@@ -132,7 +134,7 @@ class GetUpcomingSubscriptionsUseCaseTest {
             tested().test {
                 assertThat(awaitItem()).isEqualTo(
                     UpcomingSubscriptions(
-                        subscriptions = emptyList(),
+                        subscriptions = emptyMap(),
                         true,
                         PaymentPeriod.MONTHS,
                     ),

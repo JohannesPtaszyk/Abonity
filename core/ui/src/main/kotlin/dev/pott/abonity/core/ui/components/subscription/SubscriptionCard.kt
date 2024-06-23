@@ -39,6 +39,7 @@ import java.util.Currency
 fun SubscriptionCard(
     subscription: Subscription,
     periodPrice: Price,
+    currentPeriod: PaymentPeriod,
     onClick: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
@@ -88,14 +89,19 @@ fun SubscriptionCard(
                 )
             }
             Spacer(Modifier.width(8.dp))
-            PaymentInfo(subscription.paymentInfo, periodPrice)
+            PaymentInfo(subscription.paymentInfo, periodPrice, currentPeriod)
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Composable
-private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifier = Modifier) {
+private fun PaymentInfo(
+    paymentInfo: PaymentInfo,
+    price: Price,
+    currentPeriod: PaymentPeriod,
+    modifier: Modifier = Modifier,
+) {
     Column(horizontalAlignment = Alignment.End, modifier = modifier) {
         FormattedPrice(
             price = price,
@@ -104,7 +110,7 @@ private fun PaymentInfo(paymentInfo: PaymentInfo, price: Price, modifier: Modifi
         )
 
         val paymentType = paymentInfo.type
-        if (paymentType is PaymentType.Periodic && paymentInfo.price != price) {
+        if (paymentType is PaymentType.Periodic && paymentType.period != currentPeriod) {
             PeriodicPriceInfo(paymentType, paymentInfo)
         }
     }
@@ -122,6 +128,7 @@ private fun SubscriptionCardPreview(
             periodPrice = item.periodPrice,
             onClick = {},
             isSelected = false,
+            currentPeriod = PaymentPeriod.MONTHS,
         )
     }
 }

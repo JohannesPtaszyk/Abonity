@@ -160,4 +160,6 @@
     <string name="tracking_consent_dialog_cta_privacy_policy">Politique de confidentialité</string>
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">Pour plus de détails, veuillez consulter notre Politique de confidentialité</string>
     <string name="add_new_category_cta">Nouveau</string>
+    <string name="home_upcoming_subscriptions_today">Aujourd\'hui</string>
+    <string name="home_upcoming_subscriptions_tomorrow">Matin</string>
 </resources>
