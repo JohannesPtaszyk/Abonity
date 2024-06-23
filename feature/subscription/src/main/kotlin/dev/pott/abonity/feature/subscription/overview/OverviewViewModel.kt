@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
@@ -14,6 +15,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
+    private val settingsRepository: SettingsRepository,
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
@@ -37,11 +40,13 @@ class OverviewViewModel @Inject constructor(
     val state = combine(
         selectedDetailIdFlow,
         getFilteredSubscriptions(selectedFilterItemsFlow),
-    ) { detailId, subscriptionsWithFilter ->
+        settingsRepository.getSettingsFlow().map { it.period },
+    ) { detailId, subscriptionsWithFilter, currentPeriod ->
         OverviewState.Loaded(
             subscriptions = subscriptionsWithFilter.filteredSubscriptions.toImmutableList(),
             detailId = detailId,
             filter = subscriptionsWithFilter.filter,
+            currentPeriod = currentPeriod,
         )
     }.stateIn(
         scope = viewModelScope,

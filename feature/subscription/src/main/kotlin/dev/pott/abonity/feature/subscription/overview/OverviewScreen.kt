@@ -173,6 +173,7 @@ fun OverviewScreen(
                                         )
                                     },
                                     isSelected = isSelected,
+                                    currentPeriod = state.currentPeriod,
                                 )
                             },
                         )
@@ -235,6 +236,7 @@ private fun OverviewScreenPreview() {
                     emptyList(),
                     emptyList(),
                 ),
+                currentPeriod = PaymentPeriod.MONTHS,
             ),
             onSubscriptionClick = {
                 // On Subscription click

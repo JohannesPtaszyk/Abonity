@@ -157,6 +157,7 @@ private fun OverviewWithDetailScreenPreview() {
                     emptyList(),
                     emptyList(),
                 ),
+                currentPeriod = PaymentPeriod.MONTHS,
             ),
             detailState = DetailState(
                 subscription = Subscription(

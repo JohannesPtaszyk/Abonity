@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,6 +56,7 @@ import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.ads.AdCard
 import dev.pott.abonity.core.ui.components.ads.AdId
+import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
@@ -64,8 +67,10 @@ import dev.pott.abonity.feature.home.components.NoSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NoUpcomingSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NotificationPermissionTeaser
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 import kotlin.contracts.ExperimentalContracts
@@ -146,7 +151,9 @@ fun DashboardScreen(
 
                 DashboardState.Loading -> {
                     Box(
-                        modifier = Modifier.fillMaxSize().padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
@@ -193,6 +200,10 @@ private fun LoadedContent(
         )
     }
 
+    val today = remember {
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    }
+
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp) + paddingValues,
         modifier = Modifier.nestedScroll(nestedScrollConnection),
@@ -232,38 +243,82 @@ private fun LoadedContent(
                 Text(text = stringResource(id = R.string.home_upcoming_subscriptions_label))
             }
         }
-        val upcoming = dashboardState.upcomingSubscriptions
-        when {
-            upcoming.subscriptions.isEmpty() && upcoming.hasAnySubscriptions -> {
-                item(
-                    key = "no_upcoming_subscription_teaser",
-                    contentType = "no_upcoming_subscription_teaser",
-                ) {
-                    NoUpcomingSubscriptionTeaser(
-                        onAddNewSubscriptionClick = onAddNewSubscriptionClick,
-                        period = dashboardState.upcomingSubscriptions.period,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
-                    )
-                }
-            }
-            upcoming.subscriptions.isEmpty() && !upcoming.hasAnySubscriptions -> {
-                item(
-                    key = "no_subscription_teaser",
-                    contentType = "no_subscription_teaser",
-                ) {
-                    NoSubscriptionTeaser(
-                        onAddNewSubscriptionClick = onAddNewSubscriptionClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItemPlacement(),
-                    )
-                }
+        Upcoming(
+            dashboardState.upcomingSubscriptions,
+            today,
+            onAddNewSubscriptionClick,
+            onSubscriptionClick,
+        )
+    }
+}
+
+@Suppress("FunctionName")
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.Upcoming(
+    upcoming: UpcomingSubscriptions,
+    today: LocalDate,
+    onAddNewSubscriptionClick: () -> Unit,
+    onSubscriptionClick: (id: SubscriptionId) -> Unit,
+) {
+    when {
+        upcoming.subscriptions.isEmpty() && upcoming.hasAnySubscriptions -> {
+            item(
+                key = "no_upcoming_subscription_teaser",
+                contentType = "no_upcoming_subscription_teaser",
+            ) {
+                NoUpcomingSubscriptionTeaser(
+                    onAddNewSubscriptionClick = onAddNewSubscriptionClick,
+                    period = upcoming.period,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateItemPlacement(),
+                )
             }
         }
+
+        upcoming.subscriptions.isEmpty() && !upcoming.hasAnySubscriptions -> {
+            item(
+                key = "no_subscription_teaser",
+                contentType = "no_subscription_teaser",
+            ) {
+                NoSubscriptionTeaser(
+                    onAddNewSubscriptionClick = onAddNewSubscriptionClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateItemPlacement(),
+                )
+            }
+        }
+    }
+    upcoming.subscriptions.forEach { localDateListEntry ->
+        val (date, upcomingSubscriptions) = localDateListEntry
+        item {
+            when (date) {
+                today -> {
+                    Text(
+                        text = stringResource(R.string.home_upcoming_subscriptions_today),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+
+                today + DatePeriod(days = 1) -> {
+                    Text(
+                        text = stringResource(R.string.home_upcoming_subscriptions_tomorrow),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+
+                else -> {
+                    FormattedDate(
+                        date = date,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         itemsIndexed(
-            dashboardState.upcomingSubscriptions.subscriptions,
+            upcomingSubscriptions,
             key = { _, item -> item.subscription.id.value },
             contentType = { _, _ -> "subscription_card" },
         ) { index, subscription ->
@@ -276,18 +331,28 @@ private fun LoadedContent(
                 onClick = {
                     onSubscriptionClick(subscription.subscription.id)
                 },
-                isSelected = subscription.subscription.id == dashboardState.selectedId,
+                isSelected = false,
+                currentPeriod = upcoming.period,
             )
-            if (index != dashboardState.upcomingSubscriptions.subscriptions.lastIndex) {
+            if (index != upcomingSubscriptions.lastIndex) {
                 Spacer(Modifier.height(16.dp))
             }
         }
-        if (dashboardState.upcomingSubscriptions.hasAnySubscriptions) {
-            item {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(Modifier.height(16.dp))
-                    AdCard(adId = AdId.DASHBOARD_BANNER)
-                }
+        if (date != upcoming.subscriptions.keys.last()) {
+            item(key = "spacer_$date", contentType = "spacer") {
+                Spacer(
+                    Modifier
+                        .height(16.dp)
+                        .animateItemPlacement(),
+                )
+            }
+        }
+    }
+    if (upcoming.hasAnySubscriptions) {
+        item {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Spacer(Modifier.height(16.dp))
+                AdCard(adId = AdId.DASHBOARD_BANNER)
             }
         }
     }
@@ -365,24 +430,32 @@ private fun DashboardScreenPreview() {
         DashboardScreen(
             state = DashboardState.Loaded(
                 UpcomingSubscriptions(
-                    subscriptions = buildList {
-                        repeat(5) { id ->
-                            SubscriptionWithPeriodInfo(
-                                subscription = Subscription(
-                                    SubscriptionId(id.toLong()),
-                                    "Name",
-                                    description,
-                                    paymentInfo = PaymentInfo(
-                                        Price(99.99, Currency.getInstance("EUR")),
-                                        Clock.System.now()
-                                            .toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                                        PaymentType.Periodic(1, PaymentPeriod.MONTHS),
-                                    ),
-                                    categories = listOf(Category(name = "Category")),
-                                ),
-                                periodPrice = Price(99.99, Currency.getInstance("EUR")),
-                                nextPaymentDate = LocalDate(2023, 12, 12),
-                            ).also { add(it) }
+                    subscriptions = buildMap {
+                        repeat(5) {
+                            val list = buildList {
+                                repeat(5) { id ->
+                                    val sub = SubscriptionWithPeriodInfo(
+                                        subscription = Subscription(
+                                            SubscriptionId(id.toLong()),
+                                            "Name",
+                                            description,
+                                            paymentInfo = PaymentInfo(
+                                                Price(99.99, Currency.getInstance("EUR")),
+                                                Clock.System.now()
+                                                    .toLocalDateTime(
+                                                        TimeZone.currentSystemDefault(),
+                                                    ).date,
+                                                PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+                                            ),
+                                            categories = listOf(Category(name = "Category")),
+                                        ),
+                                        periodPrice = Price(99.99, Currency.getInstance("EUR")),
+                                        nextPaymentDate = LocalDate(2023, 12, 12),
+                                    )
+                                    add(sub)
+                                }
+                            }
+                            put(LocalDate(2023, 12, it), list)
                         }
                     },
                     hasAnySubscriptions = true,
