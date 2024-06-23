@@ -43,6 +43,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Bundle Release AAB
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
         run: ./gradlew bundleRelease
 
       - name: Promote Internal to Release
