@@ -4,7 +4,7 @@ minSdkVersion = "21"
 targetSdkVersion = "34"
 
 accompanist = "0.34.0"
-ads = "23.1.0"
+ads = "23.2.0"
 androidDesugarJdkLibs = "2.0.4"
 androidGradlePlugin = "8.5.0"
 androidxActivity = "1.9.0"
