@@ -10,16 +10,5 @@ abstract class GitAppVersionValueSource : ValueSource<String, ValueSourceParamet
     @get:Inject
     abstract val execOperations: ExecOperations
 
-    override fun obtain(): String {
-        val commitHash = execOperations.execToString(
-            "git",
-            "rev-parse",
-            "--short",
-            "HEAD",
-        ).removeSuffix(System.lineSeparator())
-        val versionName = execOperations.getVersionNameFromBranchName()
-        val versionNameWithCommitHash = "$versionName-$commitHash"
-        println("Version Name: $versionNameWithCommitHash")
-        return versionNameWithCommitHash
-    }
+    override fun obtain(): String = execOperations.getVersionNameFromBranchName()
 }

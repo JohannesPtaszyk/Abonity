@@ -56,7 +56,6 @@
     <string name="add_validation_saving_error_invalid_fields_title">Error while saving</string>
     <string name="add_validation_saving_error_invalid_fields_description">Your payment could not be saved, because there are one or more issues with your inputs</string>
     <string name="add_validation_saving_error_invalid_fields_btn">OK</string>
-    <string name="app_name">Abonity</string>
     <string name="common_back_button_content_description">Go back to previous screen</string>
     <string name="common_close_button_content_description">Dismiss current screen</string>
     <string name="dialog_btn_confirm_default">OK</string>

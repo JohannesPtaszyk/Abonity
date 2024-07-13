@@ -56,7 +56,6 @@
     <string name="add_validation_saving_error_invalid_fields_title">Fehler beim Speichern</string>
     <string name="add_validation_saving_error_invalid_fields_description">Ihre Zahlung konnte nicht gespeichert werden, da es ein oder mehrere Probleme mit Ihren Eingaben gibt</string>
     <string name="add_validation_saving_error_invalid_fields_btn">OK</string>
-    <string name="app_name">Abonity</string>
     <string name="common_back_button_content_description">Zurück zur vorherigen Seite</string>
     <string name="common_close_button_content_description">Aktuelle Seite schließen</string>
     <string name="dialog_btn_confirm_default">OK</string>
