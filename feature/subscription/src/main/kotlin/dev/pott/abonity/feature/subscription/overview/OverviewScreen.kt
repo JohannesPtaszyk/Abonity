@@ -162,7 +162,7 @@ private fun LoadedContent(
                 onSwipeToDelete,
                 onSubscriptionClick,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
                     .fillMaxWidth()
                     .animateItemPlacement(),
             )
@@ -232,7 +232,6 @@ private fun SubscriptionCardItem(
         state = swipeToDismissState,
         backgroundContent = {
             DeleteDismissBackground(
-                modifier = Modifier.clip(CardDefaults.shape),
                 dismissState = swipeToDismissState,
                 contentDescription = stringResource(
                     id = R.string.subscription_overview_swipe_delete_label,
