@@ -33,7 +33,7 @@ fun DeleteDismissBackground(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.error)
-            .padding(12.dp, 8.dp),
+            .padding(16.dp, 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {

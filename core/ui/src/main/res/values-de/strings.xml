@@ -149,4 +149,6 @@
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">Für weitere Details besuchen Sie bitte unsere Datenschutz-Bestimmungen</string>
     <string name="add_new_category_cta">Neu</string>
     <string name="home_upcoming_subscriptions_tomorrow">Morgen</string>
+    <string name="subscription_overview_swipe_delete_dialog_text">Möchtest du %s wirklich löschen?</string>
+    <string name="subscription_overview_swipe_delete_dialog_title">Zahlung löschen</string>
 </resources>
