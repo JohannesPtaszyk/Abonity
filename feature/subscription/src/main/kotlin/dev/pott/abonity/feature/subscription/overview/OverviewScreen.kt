@@ -3,6 +3,7 @@ package dev.pott.abonity.feature.subscription.overview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,18 +21,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
@@ -54,6 +58,7 @@ import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -63,7 +68,7 @@ import java.util.Currency
 private const val SUBSCRIPTION_FILTER = "SubscriptionFilter"
 private const val SUBSCRIPTION_CARD = "SubscriptionFilter"
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OverviewScreen(
     state: OverviewState,
@@ -94,91 +99,15 @@ fun OverviewScreen(
     ) { paddingValues ->
         when (state) {
             is OverviewState.Loaded -> {
-                LazyColumn(
-                    contentPadding = paddingValues,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    state = listState,
-                ) {
-                    item(
-                        key = SUBSCRIPTION_FILTER,
-                        contentType = SUBSCRIPTION_FILTER,
-                    ) {
-                        SubscriptionFilter(
-                            state.filter,
-                            onItemSelect = onFilterItemSelect,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItemPlacement(),
-                        )
-                    }
-                    items(
-                        state.subscriptions,
-                        key = { it.subscription.id.value },
-                        contentType = { SUBSCRIPTION_CARD },
-                    ) { subscriptionWithPeriodInfo ->
-                        val isSelected = remember(
-                            subscriptionWithPeriodInfo.subscription,
-                            state.detailId,
-                        ) {
-                            subscriptionWithPeriodInfo.subscription.id == state.detailId
-                        }
-                        var swipeToDismissPositionalThreshold by remember {
-                            mutableFloatStateOf(0f)
-                        }
-                        val swipeToDismissState = rememberSwipeToDismissBoxState(
-                            confirmValueChange = {
-                                when (it) {
-                                    SwipeToDismissBoxValue.StartToEnd,
-                                    SwipeToDismissBoxValue.EndToStart,
-                                    -> {
-                                        onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id)
-                                        true
-                                    }
-
-                                    SwipeToDismissBoxValue.Settled -> {
-                                        false
-                                    }
-                                }
-                            },
-                            positionalThreshold = { swipeToDismissPositionalThreshold },
-                        )
-                        SwipeToDismissBox(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .clipToBounds()
-                                .fillMaxWidth()
-                                .animateItemPlacement()
-                                .onSizeChanged {
-                                    swipeToDismissPositionalThreshold = it.width.toFloat() / 2
-                                },
-                            state = swipeToDismissState,
-                            backgroundContent = {
-                                DeleteDismissBackground(
-                                    modifier = Modifier.clip(CardDefaults.shape),
-                                    dismissState = swipeToDismissState,
-                                    contentDescription = stringResource(
-                                        id = R.string.subscription_overview_swipe_delete_label,
-                                        subscriptionWithPeriodInfo.subscription.name,
-                                    ),
-                                )
-                            },
-                            content = {
-                                SubscriptionCard(
-                                    subscriptionWithPeriodInfo.subscription,
-                                    subscriptionWithPeriodInfo.periodPrice,
-                                    onClick = {
-                                        onSubscriptionClick(
-                                            subscriptionWithPeriodInfo.subscription.id,
-                                        )
-                                    },
-                                    isSelected = isSelected,
-                                    currentPeriod = state.currentPeriod,
-                                )
-                            },
-                        )
-                    }
-                }
+                LoadedContent(
+                    paddingValues,
+                    scrollBehavior,
+                    listState,
+                    state,
+                    onFilterItemSelect,
+                    onSwipeToDelete,
+                    onSubscriptionClick,
+                )
             }
 
             OverviewState.Loading -> {
@@ -191,6 +120,139 @@ fun OverviewScreen(
             }
         }
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+private fun LoadedContent(
+    paddingValues: PaddingValues,
+    scrollBehavior: TopAppBarScrollBehavior,
+    listState: LazyListState,
+    state: OverviewState.Loaded,
+    onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
+    onSwipeToDelete: (id: SubscriptionId) -> Unit,
+    onSubscriptionClick: (id: SubscriptionId) -> Unit,
+) {
+    LazyColumn(
+        contentPadding = paddingValues,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        state = listState,
+    ) {
+        item(
+            key = SUBSCRIPTION_FILTER,
+            contentType = SUBSCRIPTION_FILTER,
+        ) {
+            SubscriptionFilter(
+                state.filter,
+                onItemSelect = onFilterItemSelect,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItemPlacement(),
+            )
+        }
+        items(
+            state.subscriptions,
+            key = { it.subscription.id.value },
+            contentType = { SUBSCRIPTION_CARD },
+        ) { subscriptionWithPeriodInfo ->
+            SubscriptionCardItem(
+                subscriptionWithPeriodInfo,
+                state,
+                onSwipeToDelete,
+                onSubscriptionClick,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .animateItemPlacement(),
+            )
+        }
+    }
+}
+
+private const val SWIPE_TO_DELETE_THRESHOLD = 1.75f
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun SubscriptionCardItem(
+    subscriptionWithPeriodInfo: SubscriptionWithPeriodInfo,
+    state: OverviewState.Loaded,
+    onSwipeToDelete: (id: SubscriptionId) -> Unit,
+    onSubscriptionClick: (id: SubscriptionId) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val isSelected = subscriptionWithPeriodInfo.subscription.id == state.detailId
+    var swipeToDismissPositionalThreshold by remember { mutableFloatStateOf(0f) }
+    val swipeToDismissState = rememberSwipeToDismissBoxState { swipeToDismissPositionalThreshold }
+    val coroutineScope = rememberCoroutineScope()
+
+    if (swipeToDismissState.currentValue != SwipeToDismissBoxValue.Settled) {
+        AlertDialog(
+            icon = {
+                Icon(
+                    painter = rememberVectorPainter(image = AppIcons.Delete),
+                    contentDescription = null,
+                )
+            },
+            title = {
+                Text(stringResource(id = R.string.subscription_overview_swipe_delete_dialog_title))
+            },
+            text = {
+                Text(
+                    stringResource(
+                        id = R.string.subscription_overview_swipe_delete_dialog_text,
+                        subscriptionWithPeriodInfo.subscription.name,
+                    ),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id) },
+                ) {
+                    Text(stringResource(id = R.string.dialog_btn_confirm_default))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { coroutineScope.launch { swipeToDismissState.reset() } },
+                ) {
+                    Text(stringResource(id = R.string.dialog_btn_dismiss_default))
+                }
+            },
+            onDismissRequest = { coroutineScope.launch { swipeToDismissState.reset() } },
+        )
+    }
+
+    SwipeToDismissBox(
+        modifier = modifier
+            .clip(CardDefaults.shape)
+            .onSizeChanged {
+                swipeToDismissPositionalThreshold = it.width.toFloat() / SWIPE_TO_DELETE_THRESHOLD
+            },
+        state = swipeToDismissState,
+        backgroundContent = {
+            DeleteDismissBackground(
+                dismissState = swipeToDismissState,
+                contentDescription = stringResource(
+                    id = R.string.subscription_overview_swipe_delete_label,
+                    subscriptionWithPeriodInfo.subscription.name,
+                ),
+            )
+        },
+        content = {
+            SubscriptionCard(
+                subscriptionWithPeriodInfo.subscription,
+                subscriptionWithPeriodInfo.periodPrice,
+                onClick = {
+                    onSubscriptionClick(
+                        subscriptionWithPeriodInfo.subscription.id,
+                    )
+                },
+                isSelected = isSelected,
+                currentPeriod = state.currentPeriod,
+            )
+        },
+    )
 }
 
 @Suppress("MagicNumber")

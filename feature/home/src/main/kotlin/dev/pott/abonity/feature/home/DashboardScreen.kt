@@ -292,12 +292,13 @@ private fun LazyListScope.Upcoming(
     }
     upcoming.subscriptions.forEach { localDateListEntry ->
         val (date, upcomingSubscriptions) = localDateListEntry
-        item {
+        item(key = date.toString(), contentType = "date") {
             when (date) {
                 today -> {
                     Text(
                         text = stringResource(R.string.home_upcoming_subscriptions_today),
                         style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.animateItemPlacement(),
                     )
                 }
 
@@ -305,6 +306,7 @@ private fun LazyListScope.Upcoming(
                     Text(
                         text = stringResource(R.string.home_upcoming_subscriptions_tomorrow),
                         style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.animateItemPlacement(),
                     )
                 }
 
@@ -312,6 +314,7 @@ private fun LazyListScope.Upcoming(
                     FormattedDate(
                         date = date,
                         style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.animateItemPlacement(),
                     )
                 }
             }

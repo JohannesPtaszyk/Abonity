@@ -49,6 +49,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-" + providers.of(GitCommitHashValueSource::class) {}.get()
+
             configure<AppDistributionExtension> {
                 artifactType = "APK"
                 groups = "internal, friends-&-family"

@@ -1,6 +1,7 @@
 package dev.pott.abonity.app.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
@@ -11,7 +12,6 @@ import dev.pott.abonity.feature.settings.main.settingsNavGraph
 import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
 import dev.pott.abonity.feature.subscription.overview.OverviewScreenDestination
 import dev.pott.abonity.feature.subscription.subscriptionGraph
-import dev.pott.abonity.navigation.destination.setDestination
 
 private const val OSS_LICENSE_ACTIVITY_ROUTE = "ossLicenses"
 
@@ -23,13 +23,16 @@ fun NavGraphBuilder.appNavGraph(
 ) {
     homeGraph(
         openDetails = { subscriptionId ->
-            navController.createDeepLink()
-                .setDestination(
-                    OverviewScreenDestination,
+            navController.navigate(
+                OverviewScreenDestination.routeWithArgs(
                     OverviewScreenDestination.Args(subscriptionId),
-                )
-                .createPendingIntent()
-                .send()
+                ),
+            ) {
+                val startDestination = navController.graph.findStartDestination()
+                popUpTo(startDestination.id) { saveState = true }
+                launchSingleTop = true
+                restoreState = false
+            }
         },
         openSubscriptions = { navController.navigateTabItem(NavigationItem.SUBSCRIPTION) },
         openNotificationSettings = openNotificationSettings,
