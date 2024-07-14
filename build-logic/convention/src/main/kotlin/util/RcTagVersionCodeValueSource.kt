@@ -5,7 +5,7 @@ import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.process.ExecOperations
 import javax.inject.Inject
 
-private const val VERSION_CODE_OFFSET = 2
+private const val VERSION_CODE_OFFSET = 3
 
 abstract class RcTagVersionCodeValueSource : ValueSource<Int, ValueSourceParameters.None> {
 
