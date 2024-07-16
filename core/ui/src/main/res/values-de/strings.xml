@@ -114,7 +114,10 @@
     <string name="subscription_detail_empty_label">Wählen Sie einen Artikel aus, um mehr Informationen zu erhalten!</string>
     <string name="subscription_detail_name_label">Name</string>
     <string name="subscription_detail_categories_label">Kategorien</string>
-    <string name="subscription_filter_current_period">Dieses %s</string>
+    <string name="subscription_filter_current_period_year">Dieses Jahr</string>
+    <string name="subscription_filter_current_period_month">Diesen Monat</string>
+    <string name="subscription_filter_current_period_week">Diese Woche</string>
+    <string name="subscription_filter_current_period_day">Heute</string>
     <string name="subscription_first_payment_date_label">Erste Zahlung</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Nächste Zahlung</string>

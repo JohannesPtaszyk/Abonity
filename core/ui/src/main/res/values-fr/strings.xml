@@ -125,7 +125,6 @@
     <string name="subscription_detail_empty_label">Sélectionnez un élément pour obtenir plus d\'informations!</string>
     <string name="subscription_detail_name_label">Nom</string>
     <string name="subscription_detail_categories_label">Catégories</string>
-    <string name="subscription_filter_current_period">Ce %s</string>
     <string name="subscription_first_payment_date_label">Premier paiement</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Prochain paiement</string>
@@ -163,4 +162,8 @@
     <string name="home_upcoming_subscriptions_tomorrow">Matin</string>
     <string name="subscription_overview_swipe_delete_dialog_text">Voulez-vous vraiment supprimer %s ?</string>
     <string name="subscription_overview_swipe_delete_dialog_title">"Supprimer le paiement "</string>
+    <string name="subscription_filter_current_period_year">Cette année</string>
+    <string name="subscription_filter_current_period_month">Ce mois-ci</string>
+    <string name="subscription_filter_current_period_week">Cette semaine</string>
+    <string name="subscription_filter_current_period_day">Aujourd\'hui</string>
 </resources>
