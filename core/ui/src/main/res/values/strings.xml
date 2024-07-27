@@ -117,7 +117,7 @@
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
-    <string name="subscription_overview_swipe_delete_dialog_text">Do you really want to delete %s?</string>
+    <string name="subscription_delete_dialog_text">Do you really want to delete %s?</string>
     <string name="subscription_overview_swipe_delete_label">Delete Payment: %s</string>
     <string name="category_add_dialog_title">Add Category</string>
     <string name="category_add_dialog_input_placeholder">Category Name</string>
@@ -148,7 +148,7 @@
     <string name="tracking_consent_dialog_cta_privacy_policy">Privacy Policy</string>
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">For more details, please visit our Privacy Policy</string>
     <string name="add_new_category_cta">New</string>
-    <string name="subscription_overview_swipe_delete_dialog_title">Delete payment</string>
+    <string name="subscription_delete_dialog_title">Delete payment</string>
     <string name="subscription_filter_current_period_year">This year</string>
     <string name="subscription_filter_current_period_month">This month</string>
     <string name="subscription_filter_current_period_week">This week</string>

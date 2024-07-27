@@ -28,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -47,6 +51,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.ads.AdCard
 import dev.pott.abonity.core.ui.components.ads.AdId
+import dev.pott.abonity.core.ui.components.dialog.DeleteReassuranceDialog
 import dev.pott.abonity.core.ui.components.navigation.BackButton
 import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
@@ -71,6 +76,7 @@ fun DetailScreen(
 ) {
     val subscription = state.subscription
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var showDeleteDialog by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,7 +90,11 @@ fun DetailScreen(
                 },
                 navigationIcon = { BackButton(close) },
                 actions = {
-                    DetailActions(subscription, onEditClick, onDeleteClick)
+                    DetailActions(
+                        subscription = subscription,
+                        onEditClick = onEditClick,
+                        onDeleteClick = { showDeleteDialog = true },
+                    )
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -100,6 +110,13 @@ fun DetailScreen(
                 DetailLoadingContent(Modifier.fillMaxSize())
             } else {
                 subscription?.let {
+                    if (showDeleteDialog) {
+                        DeleteReassuranceDialog(
+                            subscription = subscription,
+                            onConfirm = { onDeleteClick(subscription.id) },
+                            onDismiss = { showDeleteDialog = false },
+                        )
+                    }
                     DetailLoadedContent(
                         it,
                         state,

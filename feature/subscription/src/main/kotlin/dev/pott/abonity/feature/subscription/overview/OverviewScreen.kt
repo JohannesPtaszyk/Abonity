@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -52,6 +50,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
+import dev.pott.abonity.core.ui.components.dialog.DeleteReassuranceDialog
 import dev.pott.abonity.core.ui.components.dismiss.DeleteDismissBackground
 import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
@@ -189,39 +188,10 @@ private fun SubscriptionCardItem(
     val coroutineScope = rememberCoroutineScope()
 
     if (swipeToDismissState.currentValue != SwipeToDismissBoxValue.Settled) {
-        AlertDialog(
-            icon = {
-                Icon(
-                    painter = rememberVectorPainter(image = AppIcons.Delete),
-                    contentDescription = null,
-                )
-            },
-            title = {
-                Text(stringResource(id = R.string.subscription_overview_swipe_delete_dialog_title))
-            },
-            text = {
-                Text(
-                    stringResource(
-                        id = R.string.subscription_overview_swipe_delete_dialog_text,
-                        subscriptionWithPeriodInfo.subscription.name,
-                    ),
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id) },
-                ) {
-                    Text(stringResource(id = R.string.dialog_btn_confirm_default))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { coroutineScope.launch { swipeToDismissState.reset() } },
-                ) {
-                    Text(stringResource(id = R.string.dialog_btn_dismiss_default))
-                }
-            },
-            onDismissRequest = { coroutineScope.launch { swipeToDismissState.reset() } },
+        DeleteReassuranceDialog(
+            subscription = subscriptionWithPeriodInfo.subscription,
+            onConfirm = { onSwipeToDelete(subscriptionWithPeriodInfo.subscription.id) },
+            onDismiss = { coroutineScope.launch { swipeToDismissState.reset() } },
         )
     }
 

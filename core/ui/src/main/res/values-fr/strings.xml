@@ -159,8 +159,8 @@
     <string name="add_new_category_cta">Nouveau</string>
     <string name="home_upcoming_subscriptions_today">Aujourd\'hui</string>
     <string name="home_upcoming_subscriptions_tomorrow">Matin</string>
-    <string name="subscription_overview_swipe_delete_dialog_text">Voulez-vous vraiment supprimer %s ?</string>
-    <string name="subscription_overview_swipe_delete_dialog_title">"Supprimer le paiement "</string>
+    <string name="subscription_delete_dialog_text">Voulez-vous vraiment supprimer %s ?</string>
+    <string name="subscription_delete_dialog_title">"Supprimer le paiement "</string>
     <string name="subscription_filter_current_period_year">Cette année</string>
     <string name="subscription_filter_current_period_month">Ce mois-ci</string>
     <string name="subscription_filter_current_period_week">Cette semaine</string>
