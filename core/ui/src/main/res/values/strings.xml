@@ -108,14 +108,12 @@
     <string name="subscription_add_label_period_dropdown_item_click">Period</string>
     <string name="subscription_add_label_price">Price</string>
     <string name="subscription_add_save">One Time</string>
-    <string name="subscription_card_first_payment_label">First Payment:</string>
     <string name="subscription_detail_delete_label">Delete Payment: %s</string>
     <string name="subscription_detail_description_label">Description</string>
     <string name="subscription_detail_edit_label">Edit Payment: %s</string>
     <string name="subscription_detail_empty_label">Select an item to get more information!</string>
     <string name="subscription_detail_name_label">Name</string>
     <string name="subscription_detail_categories_label">Categories</string>
-    <string name="subscription_filter_current_period">This %s</string>
     <string name="subscription_first_payment_date_label">First Payment</string>
     <string name="subscription_id_label">ID</string>
     <string name="subscription_next_payment_date_label">Next Payment</string>
@@ -151,4 +149,8 @@
     <string name="tracking_consent_dialog_second_layer_cta_privacy_policy">For more details, please visit our Privacy Policy</string>
     <string name="add_new_category_cta">New</string>
     <string name="subscription_overview_swipe_delete_dialog_title">Delete payment</string>
+    <string name="subscription_filter_current_period_year">This year</string>
+    <string name="subscription_filter_current_period_month">This month</string>
+    <string name="subscription_filter_current_period_week">This week</string>
+    <string name="subscription_filter_current_period_day">Today</string>
 </resources>

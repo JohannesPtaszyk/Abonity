@@ -17,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -52,6 +53,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.dismiss.DeleteDismissBackground
+import dev.pott.abonity.core.ui.components.subscription.FormattedDate
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
 import dev.pott.abonity.core.ui.components.subscription.SubscriptionFilter
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
@@ -244,12 +246,16 @@ private fun SubscriptionCardItem(
                 subscriptionWithPeriodInfo.subscription,
                 subscriptionWithPeriodInfo.periodPrice,
                 onClick = {
-                    onSubscriptionClick(
-                        subscriptionWithPeriodInfo.subscription.id,
-                    )
+                    onSubscriptionClick(subscriptionWithPeriodInfo.subscription.id)
                 },
                 isSelected = isSelected,
                 currentPeriod = state.currentPeriod,
+                date = {
+                    FormattedDate(
+                        date = subscriptionWithPeriodInfo.nextPaymentDate,
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                },
             )
         },
     )

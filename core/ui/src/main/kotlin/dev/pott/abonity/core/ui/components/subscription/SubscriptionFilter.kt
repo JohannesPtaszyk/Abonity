@@ -12,13 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.ui.R
-import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -48,15 +47,7 @@ fun SubscriptionFilter(
                         }
 
                         is SubscriptionFilterItem.CurrentPeriod -> {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.subscription_filter_current_period,
-                                    pluralStringResource(
-                                        id = paymentPeriodPluralRes(it = it.period),
-                                        count = 1,
-                                    ),
-                                ),
-                            )
+                            CurrentPeriodLabel(it)
                         }
                     }
                 },
@@ -64,4 +55,15 @@ fun SubscriptionFilter(
             )
         }
     }
+}
+
+@Composable
+private fun CurrentPeriodLabel(it: SubscriptionFilterItem.CurrentPeriod) {
+    val text = when (it.period) {
+        PaymentPeriod.DAYS -> R.string.subscription_filter_current_period_day
+        PaymentPeriod.WEEKS -> R.string.subscription_filter_current_period_week
+        PaymentPeriod.MONTHS -> R.string.subscription_filter_current_period_month
+        PaymentPeriod.YEARS -> R.string.subscription_filter_current_period_year
+    }
+    Text(text = stringResource(id = text))
 }

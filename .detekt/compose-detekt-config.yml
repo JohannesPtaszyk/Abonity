@@ -8,6 +8,8 @@ style:
       - 'PreviewCommonUiConfig'
       - 'PreviewCommonScreenConfig'
       - 'PreviewCommonLocaleConfig'
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 6
 
 naming:
   FunctionNaming:
