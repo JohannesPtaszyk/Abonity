@@ -1,14 +1,10 @@
 package dev.pott.abonity.core.ui.components.subscription
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +16,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
@@ -43,55 +42,87 @@ fun SubscriptionCard(
     onClick: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
+    date: @Composable () -> Unit = {},
 ) {
+    val colors = if (isSelected) {
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        )
+    } else {
+        CardDefaults.cardColors()
+    }
     Card(
         modifier = modifier,
         onClick = onClick,
-        colors = if (isSelected) {
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            )
-        } else {
-            CardDefaults.cardColors()
-        },
+        colors = colors,
         border = if (isSelected) {
             BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
         } else {
             null
         },
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
+        ConstraintLayout(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(16.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(modifier = Modifier.weight(1f, fill = false)) {
-                Text(
-                    text = subscription.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                subscription.description?.let { description ->
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Categories(
-                    subscription.categories.toImmutableList(),
-                    modifier = Modifier.fillMaxWidth(),
-                )
+            val (name, description, categories, paymentInfo, dateRef) = createRefs()
+            val barrier = createStartBarrier(paymentInfo, dateRef)
+            Text(
+                modifier = Modifier.constrainAs(name) {
+                    top.linkTo(parent.top)
+                    linkTo(parent.start, barrier, bias = 0f, endMargin = 8.dp)
+                    width = Dimension.fillToConstraints
+                },
+                text = subscription.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                modifier = Modifier.constrainAs(description) {
+                    top.linkTo(name.bottom, margin = 8.dp)
+                    linkTo(parent.start, barrier, bias = 0f, endMargin = 8.dp)
+                    visibility = if (subscription.description != null) {
+                        Visibility.Visible
+                    } else {
+                        Visibility.Gone
+                    }
+                    width = Dimension.fillToConstraints
+                },
+                text = subscription.description.orEmpty(),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Categories(
+                modifier = Modifier.constrainAs(categories) {
+                    top.linkTo(description.bottom, margin = 16.dp)
+                    linkTo(parent.start, barrier)
+                    width = Dimension.fillToConstraints
+                },
+                categories = subscription.categories.toImmutableList(),
+            )
+            PaymentInfo(
+                modifier = Modifier.constrainAs(paymentInfo) {
+                    start.linkTo(barrier)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                },
+                paymentInfo = subscription.paymentInfo,
+                price = periodPrice,
+                currentPeriod = currentPeriod,
+            )
+            Box(
+                modifier = Modifier.constrainAs(dateRef) {
+                    linkTo(paymentInfo.bottom, parent.bottom, bias = 1f)
+                    end.linkTo(parent.end)
+                },
+            ) {
+                date()
             }
-            Spacer(Modifier.width(8.dp))
-            PaymentInfo(subscription.paymentInfo, periodPrice, currentPeriod)
         }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -106,6 +137,7 @@ private fun PaymentInfo(
         FormattedPrice(
             price = price,
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
         )
 
@@ -129,7 +161,12 @@ private fun SubscriptionCardPreview(
             onClick = {},
             isSelected = false,
             currentPeriod = PaymentPeriod.MONTHS,
-        )
+        ) {
+            Text(
+                text = "Date",
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
     }
 }
 

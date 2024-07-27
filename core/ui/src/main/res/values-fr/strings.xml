@@ -118,7 +118,6 @@
     <string name="subscription_add_label_period_dropdown_item_click">Période</string>
     <string name="subscription_add_label_price">Prix</string>
     <string name="subscription_add_save">Une fois</string>
-    <string name="subscription_card_first_payment_label">Premier paiement:</string>
     <string name="subscription_detail_delete_label">Supprimer le paiement: %s</string>
     <string name="subscription_detail_description_label">Description</string>
     <string name="subscription_detail_edit_label">Modifier le paiement: %s</string>

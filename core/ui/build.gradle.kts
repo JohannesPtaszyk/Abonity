@@ -18,6 +18,7 @@ dependencies {
 
     implementation(libs.ads)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.kermit)
 
