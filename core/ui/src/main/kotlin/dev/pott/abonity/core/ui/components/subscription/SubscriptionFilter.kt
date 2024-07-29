@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +18,7 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.ui.R
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SubscriptionFilter(
     state: SubscriptionFilter,
@@ -28,7 +27,7 @@ fun SubscriptionFilter(
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(state.selectedItems) {
-        listState.scrollToItem(0)
+        listState.animateScrollToItem(0)
     }
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
@@ -48,6 +47,10 @@ fun SubscriptionFilter(
 
                         is SubscriptionFilterItem.CurrentPeriod -> {
                             CurrentPeriodLabel(it)
+                        }
+
+                        is SubscriptionFilterItem.Category -> {
+                            Text(text = it.category.name)
                         }
                     }
                 },

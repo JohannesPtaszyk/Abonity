@@ -12,6 +12,8 @@ import dev.pott.abonity.common.test.InjectTestDispatcher
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithPeriodPrice
+import dev.pott.abonity.core.entity.subscription.Category
+import dev.pott.abonity.core.entity.subscription.CategoryId
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -98,6 +100,9 @@ class OverviewViewModelTest {
                                 SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS),
                                 SubscriptionFilterItem.Currency(
                                     Price(15.0, Currency.getInstance("EUR")),
+                                ),
+                                SubscriptionFilterItem.Category(
+                                    Category(CategoryId(1), "Test Category"),
                                 ),
                             ),
                             selectedItems = emptyList(),
@@ -214,6 +219,9 @@ class OverviewViewModelTest {
                                 SubscriptionFilterItem.Currency(
                                     Price(15.0, Currency.getInstance("EUR")),
                                 ),
+                                SubscriptionFilterItem.Category(
+                                    Category(CategoryId(1), "Test Category"),
+                                ),
                             ),
                             selectedItems = emptyList(),
                         ),
@@ -284,6 +292,9 @@ class OverviewViewModelTest {
                                 SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS),
                                 SubscriptionFilterItem.Currency(
                                     Price(15.0, Currency.getInstance("EUR")),
+                                ),
+                                SubscriptionFilterItem.Category(
+                                    Category(CategoryId(1), "Test Category"),
                                 ),
                             ),
                             selectedItems = emptyList(),

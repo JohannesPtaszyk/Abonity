@@ -25,7 +25,7 @@ import javax.inject.Inject
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
-    private val settingsRepository: SettingsRepository,
+    settingsRepository: SettingsRepository,
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 

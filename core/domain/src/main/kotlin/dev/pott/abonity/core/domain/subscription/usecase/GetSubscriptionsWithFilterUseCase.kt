@@ -22,56 +22,73 @@ import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
 class GetSubscriptionsWithFilterUseCase @Inject constructor(
-    private val getSubscription: GetSubscriptionsWithPeriodPrice,
-    private val settingsRepository: SettingsRepository,
+    getSubscription: GetSubscriptionsWithPeriodPrice,
+    settingsRepository: SettingsRepository,
     private val calculator: PaymentInfoCalculator,
     private val clock: Clock,
     @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
 
+    private val subscriptionsWithCurrencyFilterItemsFlow = getSubscription().map { subscriptions ->
+        val totalPrices = calculator.getTotalPricesForPeriod(
+            subscriptions.map { it.subscription.paymentInfo },
+            PaymentPeriod.MONTHS,
+        )
+        val currencyFilterItems = totalPrices
+            .map { SubscriptionFilterItem.Currency(it) }
+            .sortedByDescending { it.price.value }
+        subscriptions to currencyFilterItems
+    }
+
+    private val paymentPeriodFlow = settingsRepository.getSettingsFlow().map { it.period }
+
     operator fun invoke(
         selectedFilterItemsFlow: Flow<List<SubscriptionFilterItem>>,
     ): Flow<SubscriptionsWithFilter> =
         combine(
-            getSubscription().map { subscriptions ->
-                val totalPrices = calculator.getTotalPricesForPeriod(
-                    subscriptions.map { it.subscription.paymentInfo },
-                    PaymentPeriod.MONTHS,
-                )
-                val currencyFilterItems = totalPrices
-                    .map { SubscriptionFilterItem.Currency(it) }
-                    .sortedByDescending { it.price.value }
-                subscriptions to currencyFilterItems
-            },
-            settingsRepository.getSettingsFlow().map { it.period },
+            subscriptionsWithCurrencyFilterItemsFlow,
+            paymentPeriodFlow,
             selectedFilterItemsFlow,
         ) { (subscriptions, currencyFilterItems), period, selectedFilterItems ->
-            val filteredSubscriptions = if (selectedFilterItems.isEmpty()) {
-                subscriptions
-            } else {
-                applySelectedFilter(period, subscriptions, selectedFilterItems)
-            }
-            SubscriptionsWithFilter(
-                filteredSubscriptions,
-                SubscriptionFilter(
-                    buildList {
-                        add(SubscriptionFilterItem.CurrentPeriod(period))
-                        addAll(currencyFilterItems)
-                    }.sortedBy { !selectedFilterItems.contains(it) },
-                    selectedFilterItems,
-                ),
+            val filtered = subscriptions.applySelectedFilter(period, selectedFilterItems)
+            val filterItems = buildFilter(
+                period,
+                currencyFilterItems,
+                subscriptions,
+                selectedFilterItems,
             )
+            SubscriptionsWithFilter(filtered, filterItems)
         }.flowOn(defaultDispatcher)
 
-    private fun applySelectedFilter(
+    private fun buildFilter(
         period: PaymentPeriod,
+        currencyFilterItems: List<SubscriptionFilterItem.Currency>,
         subscriptions: List<SubscriptionWithPeriodInfo>,
         selectedFilterItems: List<SubscriptionFilterItem>,
+    ) = SubscriptionFilter(
+        buildList {
+            add(SubscriptionFilterItem.CurrentPeriod(period))
+            addAll(currencyFilterItems)
+            addAll(
+                subscriptions
+                    .flatMap { it.subscription.categories }
+                    .distinct()
+                    .map { SubscriptionFilterItem.Category(it) }
+                    .sortedBy { it.category.name },
+            )
+        }.sortedBy { !selectedFilterItems.contains(it) },
+        selectedFilterItems,
+    )
+
+    private fun List<SubscriptionWithPeriodInfo>.applySelectedFilter(
+        period: PaymentPeriod,
+        selectedFilterItems: List<SubscriptionFilterItem>,
     ): List<SubscriptionWithPeriodInfo> {
+        if (selectedFilterItems.isEmpty()) return this
         val today = clock.todayIn(TimeZone.currentSystemDefault())
         val from = today.getFirstDayOfCurrentPeriod(period)
         val to = today.getLastDayOfCurrentPeriod(period)
-        return subscriptions.filter { subscriptionWithPeriodInfo ->
+        return filter { subscriptionWithPeriodInfo ->
             val appliedFilter = selectedFilterItems.groupBy { it::class }.map { filterGroup ->
                 filterGroup.value.map { filterItem ->
                     when (filterItem) {
@@ -82,6 +99,13 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
 
                         is SubscriptionFilterItem.CurrentPeriod -> {
                             subscriptionWithPeriodInfo.nextPaymentDate in from..to
+                        }
+
+                        is SubscriptionFilterItem.Category -> {
+                            subscriptionWithPeriodInfo
+                                .subscription
+                                .categories
+                                .contains(filterItem.category)
                         }
                     }
                 }
