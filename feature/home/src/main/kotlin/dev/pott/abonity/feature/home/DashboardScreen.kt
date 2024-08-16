@@ -4,9 +4,11 @@ import android.Manifest
 import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +41,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -51,13 +55,13 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
-import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
+import dev.pott.abonity.core.entity.subscription.UpcomingPayment
+import dev.pott.abonity.core.entity.subscription.UpcomingPayments
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.ads.AdCard
 import dev.pott.abonity.core.ui.components.ads.AdId
 import dev.pott.abonity.core.ui.components.subscription.FormattedDate
-import dev.pott.abonity.core.ui.components.subscription.SubscriptionCard
+import dev.pott.abonity.core.ui.components.subscription.FormattedPrice
 import dev.pott.abonity.core.ui.components.text.SectionHeader
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
@@ -243,8 +247,8 @@ private fun LoadedContent(
                 Text(text = stringResource(id = R.string.home_upcoming_subscriptions_label))
             }
         }
-        Upcoming(
-            dashboardState.upcomingSubscriptions,
+        UpcomingPayments(
+            dashboardState.upcomingPayments,
             today,
             onAddNewSubscriptionClick,
             onSubscriptionClick,
@@ -254,14 +258,14 @@ private fun LoadedContent(
 
 @Suppress("FunctionName")
 @OptIn(ExperimentalFoundationApi::class)
-private fun LazyListScope.Upcoming(
-    upcoming: UpcomingSubscriptions,
+private fun LazyListScope.UpcomingPayments(
+    upcoming: UpcomingPayments,
     today: LocalDate,
     onAddNewSubscriptionClick: () -> Unit,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
 ) {
     when {
-        upcoming.subscriptions.isEmpty() && upcoming.hasAnySubscriptions -> {
+        upcoming.payments.isEmpty() && upcoming.hasSubscriptions -> {
             item(
                 key = "no_upcoming_subscription_teaser",
                 contentType = "no_upcoming_subscription_teaser",
@@ -276,7 +280,7 @@ private fun LazyListScope.Upcoming(
             }
         }
 
-        upcoming.subscriptions.isEmpty() && !upcoming.hasAnySubscriptions -> {
+        upcoming.payments.isEmpty() && !upcoming.hasSubscriptions -> {
             item(
                 key = "no_subscription_teaser",
                 contentType = "no_subscription_teaser",
@@ -290,8 +294,8 @@ private fun LazyListScope.Upcoming(
             }
         }
     }
-    upcoming.subscriptions.forEach { localDateListEntry ->
-        val (date, upcomingSubscriptions) = localDateListEntry
+    upcoming.payments.forEach { localDateListEntry ->
+        val (date, upcomingPayments) = localDateListEntry
         item(key = date.toString(), contentType = "date") {
             when (date) {
                 today -> {
@@ -321,27 +325,39 @@ private fun LazyListScope.Upcoming(
             Spacer(modifier = Modifier.height(8.dp))
         }
         itemsIndexed(
-            upcomingSubscriptions,
-            key = { _, item -> item.subscription.id.value },
+            upcomingPayments,
+            key = { _, item -> item.id },
             contentType = { _, _ -> "subscription_card" },
-        ) { index, subscription ->
-            SubscriptionCard(
-                subscription.subscription,
-                subscription.periodPrice,
+        ) { index, upcomingPayment ->
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateItemPlacement(),
-                onClick = {
-                    onSubscriptionClick(subscription.subscription.id)
-                },
-                isSelected = false,
-                currentPeriod = upcoming.period,
-            )
-            if (index != upcomingSubscriptions.lastIndex) {
+                onClick = { onSubscriptionClick(upcomingPayment.subscription.id) },
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(16.dp),
+                ) {
+                    Text(
+                        text = upcomingPayment.subscription.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    FormattedPrice(
+                        price = upcomingPayment.subscription.paymentInfo.price,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+            if (index != upcomingPayments.lastIndex) {
                 Spacer(Modifier.height(16.dp))
             }
         }
-        if (date != upcoming.subscriptions.keys.last()) {
+        if (date != upcoming.payments.keys.last()) {
             item(key = "spacer_$date", contentType = "spacer") {
                 Spacer(
                     Modifier
@@ -351,7 +367,7 @@ private fun LazyListScope.Upcoming(
             }
         }
     }
-    if (upcoming.hasAnySubscriptions) {
+    if (upcoming.hasSubscriptions) {
         item {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Spacer(Modifier.height(16.dp))
@@ -432,12 +448,12 @@ private fun DashboardScreenPreview() {
     AppTheme {
         DashboardScreen(
             state = DashboardState.Loaded(
-                UpcomingSubscriptions(
-                    subscriptions = buildMap {
+                UpcomingPayments(
+                    payments = buildMap {
                         repeat(5) {
                             val list = buildList {
                                 repeat(5) { id ->
-                                    val sub = SubscriptionWithPeriodInfo(
+                                    val sub = UpcomingPayment(
                                         subscription = Subscription(
                                             SubscriptionId(id.toLong()),
                                             "Name",
@@ -452,8 +468,7 @@ private fun DashboardScreenPreview() {
                                             ),
                                             categories = listOf(Category(name = "Category")),
                                         ),
-                                        periodPrice = Price(99.99, Currency.getInstance("EUR")),
-                                        nextPaymentDate = LocalDate(2023, 12, 12),
+                                        date = LocalDate(2023, 12, id),
                                     )
                                     add(sub)
                                 }
@@ -461,7 +476,7 @@ private fun DashboardScreenPreview() {
                             put(LocalDate(2023, 12, it), list)
                         }
                     },
-                    hasAnySubscriptions = true,
+                    hasSubscriptions = true,
                     period = PaymentPeriod.MONTHS,
                 ),
                 selectedId = null,

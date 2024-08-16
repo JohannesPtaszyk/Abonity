@@ -42,6 +42,7 @@ fun SubscriptionCard(
     onClick: () -> Unit,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
+    showCategories: Boolean = true,
     date: @Composable () -> Unit = {},
 ) {
     val colors = if (isSelected) {
@@ -101,6 +102,11 @@ fun SubscriptionCard(
                     top.linkTo(description.bottom, margin = 16.dp)
                     linkTo(parent.start, barrier)
                     width = Dimension.fillToConstraints
+                    visibility = if (showCategories) {
+                        Visibility.Visible
+                    } else {
+                        Visibility.Gone
+                    }
                 },
                 categories = subscription.categories.toImmutableList(),
             )
