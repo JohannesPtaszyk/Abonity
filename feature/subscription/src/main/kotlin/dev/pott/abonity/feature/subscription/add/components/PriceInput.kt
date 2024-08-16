@@ -6,12 +6,15 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -35,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,7 +70,7 @@ fun PriceInput(
     onCurrencyChange: (currency: Currency) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showCurrencyBottomSheet by remember { mutableStateOf(false) }
+    var showCurrencyBottomSheet by rememberSaveable { mutableStateOf(false) }
     val locale = rememberDefaultLocale()
     Row(modifier = modifier) {
         TextField(
@@ -122,20 +126,31 @@ fun PriceInput(
 }
 
 private const val LOADING_INDICATOR_ITEM = "LoadingIndicator"
-private const val SPACER_ITEM = "Spacer"
 private const val CURRENCY_ITEM = "Currency"
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class,
+)
 private fun CurrencyBottomSheet(
     onCurrencyChange: (currency: Currency) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     val locale = rememberDefaultLocale()
+    val state = rememberModalBottomSheetState()
+    val isImeVisible = WindowInsets.isImeVisible
+    LaunchedEffect(isImeVisible) {
+        if (isImeVisible) {
+            state.expand()
+        } else {
+            state.partialExpand()
+        }
+    }
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
-        sheetState = rememberModalBottomSheetState(),
-        windowInsets = WindowInsets(0, 0, 0, 0),
+        sheetState = state,
     ) {
         var options by remember { mutableStateOf(emptyList<Currency>()) }
         var searchQuery by remember { mutableStateOf("") }
@@ -211,10 +226,12 @@ private fun CurrencyBottomSheet(
                             .clickable { onCurrencyChange(it) },
                     )
                 }
-                item(key = SPACER_ITEM, contentType = SPACER_ITEM) {
-                    Spacer(modifier = Modifier.navigationBarsPadding())
-                }
             }
+            Spacer(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .imePadding(),
+            )
         }
     }
 }
