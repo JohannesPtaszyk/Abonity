@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -61,7 +62,7 @@ fun DateInput(
     onPaymentDateChange: (epochMilliseconds: Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val date = paymentDateEpochMillis?.let { rememberFormattedDate(it) }
     val interactionSource = remember { MutableInteractionSource() }
     val pressedState by interactionSource.interactions.collectAsState(
@@ -194,7 +195,7 @@ private fun PeriodDropDown(
     modifier: Modifier = Modifier,
 ) {
     val locale = rememberDefaultLocale()
-    var showPeriodDropdown by remember { mutableStateOf(false) }
+    var showPeriodDropdown by rememberSaveable { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = showPeriodDropdown,

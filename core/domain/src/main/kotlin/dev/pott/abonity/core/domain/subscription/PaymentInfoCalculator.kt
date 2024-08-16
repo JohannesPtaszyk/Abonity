@@ -22,11 +22,7 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
         val price = paymentInfo.price
         return when (val paymentType = paymentInfo.type) {
             PaymentType.OneTime -> {
-                if (isFirstPaymentInCurrentPeriod(
-                        paymentInfo.firstPayment,
-                        targetPeriod,
-                    )
-                ) {
+                if (isFirstPaymentInCurrentPeriod(paymentInfo.firstPayment, targetPeriod)) {
                     paymentInfo.price
                 } else {
                     Price.free(paymentInfo.price.currency)

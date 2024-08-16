@@ -10,8 +10,8 @@ import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
-import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
-import dev.pott.abonity.core.entity.subscription.UpcomingSubscriptions
+import dev.pott.abonity.core.entity.subscription.UpcomingPayment
+import dev.pott.abonity.core.entity.subscription.UpcomingPayments
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
@@ -27,12 +27,13 @@ import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
 
 @ExtendWith(CoroutinesTestExtension::class)
-class GetUpcomingSubscriptionsUseCaseTest {
+class GetUpcomingPaymentsUseCaseTest {
 
     @InjectTestDispatcher
     lateinit var testDispatcher: CoroutineDispatcher
 
     @Test
+    @Suppress("CyclomaticComplexMethod")
     fun `GIVEN upcoming subscriptions WHEN invoked THEN return filtered sorted map`() {
         runTest {
             val subscription1 = createTestSubscription(
@@ -64,36 +65,91 @@ class GetUpcomingSubscriptionsUseCaseTest {
             val clock = FakeClock(now = Instant.parse("2022-02-01T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
 
-            val tested = GetUpcomingSubscriptionsUseCase(
+            val tested = GetUpcomingPaymentsUseCase(
                 clock,
-                GetSubscriptionsWithPeriodPrice(
-                    subscriptionRepository,
-                    settingsRepository,
-                    infoCalculator,
-                    testDispatcher,
-                ),
+                subscriptionRepository,
                 settingsRepository,
+                infoCalculator,
                 testDispatcher,
             )
 
             tested().test {
                 assertThat(awaitItem()).isEqualTo(
-                    UpcomingSubscriptions(
-                        subscriptions = mapOf(
-                            LocalDate(2022, 2, 1) to listOf(
-                                SubscriptionWithPeriodInfo(
-                                    subscription = subscription1,
-                                    periodPrice = Price(14.0, Currency.getInstance("EUR")),
-                                    nextPaymentDate = LocalDate(2022, 2, 1),
-                                ),
-                                SubscriptionWithPeriodInfo(
-                                    subscription = subscription2,
-                                    periodPrice = Price(2.0, Currency.getInstance("USD")),
-                                    nextPaymentDate = LocalDate(2022, 2, 1),
-                                ),
-                            ),
+                    UpcomingPayments(
+                        payments = mapOf(
+                            LocalDate(2022, 2, 1).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                    UpcomingPayment(subscription2, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 3).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 5).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 7).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 9).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 11).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 13).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 15).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 17).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 19).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 21).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 23).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 25).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
+                            LocalDate(2022, 2, 27).let {
+                                it to listOf(
+                                    UpcomingPayment(subscription1, it),
+                                )
+                            },
                         ),
-                        hasAnySubscriptions = true,
+                        hasSubscriptions = true,
                         period = PaymentPeriod.MONTHS,
                     ),
                 )
@@ -119,22 +175,18 @@ class GetUpcomingSubscriptionsUseCaseTest {
             val clock = FakeClock(now = Instant.parse("2022-02-02T00:00:00Z"))
             val infoCalculator = PaymentInfoCalculator(clock)
 
-            val tested = GetUpcomingSubscriptionsUseCase(
+            val tested = GetUpcomingPaymentsUseCase(
                 clock,
-                GetSubscriptionsWithPeriodPrice(
-                    subscriptionRepository,
-                    settingsRepository,
-                    infoCalculator,
-                    testDispatcher,
-                ),
+                subscriptionRepository,
                 settingsRepository,
+                infoCalculator,
                 testDispatcher,
             )
 
             tested().test {
                 assertThat(awaitItem()).isEqualTo(
-                    UpcomingSubscriptions(
-                        subscriptions = emptyMap(),
+                    UpcomingPayments(
+                        payments = emptyMap(),
                         true,
                         PaymentPeriod.MONTHS,
                     ),
