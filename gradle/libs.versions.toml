@@ -108,6 +108,7 @@ junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engi
 junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
 junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
+kermit-crashlytics = { group = "co.touchlab", name = "kermit-crashlytics", version.ref = "kermit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollections" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }

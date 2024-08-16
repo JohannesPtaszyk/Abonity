@@ -29,18 +29,21 @@ class GetSubscriptionsWithFilterUseCase @Inject constructor(
     @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
 
-    private val subscriptionsWithCurrencyFilterItemsFlow = getSubscription().map { subscriptions ->
+    private val paymentPeriodFlow = settingsRepository.getSettingsFlow().map { it.period }
+
+    private val subscriptionsWithCurrencyFilterItemsFlow = combine(
+        getSubscription(),
+        paymentPeriodFlow,
+    ) { subscriptions, period ->
         val totalPrices = calculator.getTotalPricesForPeriod(
             subscriptions.map { it.subscription.paymentInfo },
-            PaymentPeriod.MONTHS,
+            period,
         )
         val currencyFilterItems = totalPrices
             .map { SubscriptionFilterItem.Currency(it) }
             .sortedByDescending { it.price.value }
         subscriptions to currencyFilterItems
     }
-
-    private val paymentPeriodFlow = settingsRepository.getSettingsFlow().map { it.period }
 
     operator fun invoke(
         selectedFilterItemsFlow: Flow<List<SubscriptionFilterItem>>,
