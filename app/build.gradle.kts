@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)
+    implementation(libs.kermit.crashlytics)
     implementation(libs.androidx.dataStore)
 
     testImplementation(projects.core.test)
