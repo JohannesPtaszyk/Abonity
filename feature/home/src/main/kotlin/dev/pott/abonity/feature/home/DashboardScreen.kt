@@ -345,6 +345,7 @@ private fun LazyListScope.UpcomingPayments(
                         modifier = Modifier.weight(1f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                     FormattedPrice(
                         price = upcomingPayment.subscription.paymentInfo.price,
