@@ -58,7 +58,7 @@ sonar = "5.1.0.4882"
 spotless = "6.25.0"
 turbine = "1.1.0"
 versionCompare = "1.5.0"
-uiTextGoogleFonts = "1.7.1"
+uiTextGoogleFonts = "1.7.2"
 
 [libraries]
 accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
