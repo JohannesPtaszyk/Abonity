@@ -3,6 +3,7 @@ package dev.pott.abonity.feature.subscription.add
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.subscription.CategoryRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
@@ -13,6 +14,7 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import dev.pott.abonity.core.navigation.coreNavTypeMap
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +45,7 @@ class AddViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
-    private val args = AddScreenDestination.Args.parse(savedStateHandle)
+    private val args = savedStateHandle.toRoute<AddDestination>(coreNavTypeMap)
 
     private val formState = MutableStateFlow(
         if (args.subscriptionId != null) {

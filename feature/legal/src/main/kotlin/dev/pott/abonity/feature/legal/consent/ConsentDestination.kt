@@ -1,12 +1,11 @@
 package dev.pott.abonity.feature.legal.consent
 
 import androidx.navigation.NavController
-import dev.pott.abonity.navigation.destination.Destination
+import kotlinx.serialization.Serializable
 
-object ConsentDestination : Destination {
-    override val route: String = "consent"
-}
+@Serializable
+data object ConsentDestination
 
-fun NavController.navigateToConsentDialog() {
-    navigate(ConsentDestination.route)
+fun NavController.navigateToConsent() {
+    navigate(ConsentDestination)
 }

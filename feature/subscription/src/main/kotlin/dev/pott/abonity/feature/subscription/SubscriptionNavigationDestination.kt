@@ -1,7 +1,7 @@
 package dev.pott.abonity.feature.subscription
 
-import dev.pott.abonity.navigation.destination.Destination
+import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import kotlinx.serialization.Serializable
 
-object SubscriptionNavigationDestination : Destination {
-    override val route: String = "subscription"
-}
+@Serializable
+data class SubscriptionNavigationDestination(val subscriptionId: SubscriptionId? = null)

@@ -3,12 +3,14 @@ package dev.pott.abonity.feature.subscription.overview
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import dev.pott.abonity.core.navigation.coreNavTypeMap
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -29,7 +31,7 @@ class OverviewViewModel @Inject constructor(
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
-    private val args = OverviewScreenDestination.Args.parse(savedStateHandle)
+    private val args = savedStateHandle.toRoute<OverviewDestination>(coreNavTypeMap)
 
     private val selectedDetailIdFlow = MutableStateFlow(args.detailId)
 

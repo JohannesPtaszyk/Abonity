@@ -1,7 +1,6 @@
 package dev.pott.abonity.feature.home
 
-import dev.pott.abonity.navigation.destination.Destination
+import kotlinx.serialization.Serializable
 
-object HomeNavigationDestination : Destination {
-    override val route: String = "home"
-}
+@Serializable
+data object HomeNavigationDestination

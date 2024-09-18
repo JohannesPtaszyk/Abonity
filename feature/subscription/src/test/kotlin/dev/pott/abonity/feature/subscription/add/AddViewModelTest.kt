@@ -56,7 +56,7 @@ class AddViewModelTest {
                 FakeSubscriptionRepository(subscriptionFlow = flowOf(subscription))
             val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
             val savedStateHandle = SavedStateHandle(
-                mapOf(AddScreenDestination.Args.SUBSCRIPTION_ID_KEY to subscription.id.value),
+                mapOf(AddDestination.Args.SUBSCRIPTION_ID_KEY to subscription.id.value),
             )
             val tested = AddViewModel(
                 savedStateHandle,

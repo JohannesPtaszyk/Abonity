@@ -1,12 +1,11 @@
 package dev.pott.abonity.feature.subscription.category
 
 import androidx.navigation.NavController
-import dev.pott.abonity.navigation.destination.Destination
+import kotlinx.serialization.Serializable
 
-object CategoryDestination : Destination {
-    override val route: String = "category"
-}
+@Serializable
+data object CategoryDestination
 
-fun NavController.navigateToCategory() {
-    navigate(CategoryDestination.route)
+fun NavController.navigateToCategoryDestination() {
+    navigate(CategoryDestination)
 }

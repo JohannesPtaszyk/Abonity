@@ -1,6 +1,7 @@
 plugins {
     id("dev.pott.android.lib.compose")
     id("dev.pott.hilt")
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
@@ -8,7 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.navigation)
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 
@@ -18,6 +18,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.lifecycle.runtimeCompose)
+
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(projects.common.test)
     testImplementation(projects.core.test)

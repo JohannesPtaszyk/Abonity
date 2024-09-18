@@ -29,8 +29,8 @@ import dev.pott.abonity.app.navigation.components.NavigationIcon
 import dev.pott.abonity.app.navigation.navigateTabItem
 import dev.pott.abonity.app.navigation.rememberAppState
 import dev.pott.abonity.core.ui.components.navigation.AddFloatingActionButton
-import dev.pott.abonity.feature.subscription.add.AddScreenDestination
-import dev.pott.abonity.feature.subscription.add.navigateToAddScreen
+import dev.pott.abonity.feature.subscription.add.AddDestination
+import dev.pott.abonity.feature.subscription.add.navigateToAddDestination
 
 @Composable
 fun App(
@@ -41,7 +41,7 @@ fun App(
 ) {
     val navController = rememberNavController()
     val appState = rememberAppState(navController, windowSizeClass)
-    val startRoute = remember { NavigationItem.entries.first().destination.route }
+    val startRoute = remember { NavigationItem.entries.first().destination }
     Scaffold(
         modifier = modifier,
         bottomBar = {
@@ -69,7 +69,7 @@ fun App(
                 label = "FAB Scale Animation",
             )
             AddFloatingActionButton(
-                onClick = { navController.navigate(AddScreenDestination.route) },
+                onClick = { navController.navigate(AddDestination()) },
                 expanded = false,
                 modifier = Modifier.scale(scale = fabScale),
             )
@@ -80,7 +80,7 @@ fun App(
             if (appState.navigationType == NavigationType.NAVIGATION_RAIL) {
                 NavigationRail {
                     AddFloatingActionButton(
-                        onClick = { navController.navigateToAddScreen() },
+                        onClick = { navController.navigateToAddDestination() },
                         expanded = false,
                     )
                     Spacer(Modifier.height(32.dp))

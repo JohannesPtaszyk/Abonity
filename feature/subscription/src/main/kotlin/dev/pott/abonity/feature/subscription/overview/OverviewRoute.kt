@@ -27,7 +27,7 @@ fun OverviewRoute(
     showAsMultiColumn: Boolean,
     onEditClick: (SubscriptionId) -> Unit,
     onOpenCategoriesClick: () -> Unit,
-    args: OverviewScreenDestination.Args?,
+    args: OverviewDestination?,
     modifier: Modifier = Modifier,
     overviewViewModel: OverviewViewModel = hiltViewModel(),
     detailViewModel: DetailViewModel = hiltViewModel(),

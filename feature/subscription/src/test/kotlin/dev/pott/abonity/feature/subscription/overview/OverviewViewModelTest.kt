@@ -130,7 +130,7 @@ class OverviewViewModelTest {
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
             val savedStateHandle = SavedStateHandle(
-                mapOf(OverviewScreenDestination.Args.DETAIL_ID_KEY to subscription.id.value),
+                mapOf(OverviewDestination.Args.DETAIL_ID_KEY to subscription.id.value),
             )
             val useCase = GetSubscriptionsWithFilterUseCase(
                 GetSubscriptionsWithPeriodPrice(
