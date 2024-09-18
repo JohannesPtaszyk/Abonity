@@ -1,8 +1,9 @@
 package dev.pott.abonity.feature.legal.consent
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,7 +23,8 @@ fun ConsentBottomSheet(
     }
     ModalBottomSheet(
         onDismissRequest = close,
-        properties = ModalBottomSheetDefaults.properties(shouldDismissOnBackPress = false),
+        properties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         ConsentContent(
             onBackClick = viewModel::toggleSecondLayer,

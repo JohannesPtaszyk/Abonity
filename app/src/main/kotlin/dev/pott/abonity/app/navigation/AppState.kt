@@ -68,15 +68,14 @@ private fun calculateFromAdaptiveInfo(adaptiveInfo: WindowSizeClass): Navigation
     }
 
 private fun WindowSizeClass.showNavigationBar(): Boolean =
-    heightSizeClass == WindowHeightSizeClass.Medium
+    heightSizeClass != WindowHeightSizeClass.Compact &&
+        widthSizeClass == WindowWidthSizeClass.Compact
 
 private fun calculateSubscriptionGraphState(
     windowSizeClass: WindowSizeClass,
-    // navigationSuiteType: NavigationType,
 ): SubscriptionGraphState {
     val twoPane = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
     return SubscriptionGraphState(
         showOverviewAsMultiColumn = twoPane,
-        // showAddFloatingActionButton = navigationSuiteType == NavigationType.NAVIGATION_BAR,
     )
 }

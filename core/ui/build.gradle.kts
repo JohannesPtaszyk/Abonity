@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.kermit)
+    implementation(libs.androidx.ui.text.google.fonts)
 
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)
