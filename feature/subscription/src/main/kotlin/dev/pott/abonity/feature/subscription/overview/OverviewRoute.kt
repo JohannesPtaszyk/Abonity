@@ -35,7 +35,7 @@ fun OverviewRoute(
     val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
-    var skipFirstDetailAnimation by rememberSaveable {
+    var skipFirstDetailAnimation by rememberSaveable(args) {
         mutableStateOf(args?.detailId != null)
     }
 

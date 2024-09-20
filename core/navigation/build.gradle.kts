@@ -1,5 +1,6 @@
 plugins {
     id("dev.pott.android.lib.compose")
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
@@ -9,6 +10,7 @@ android {
 dependencies {
     implementation(projects.core.domain)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.assertk)
     testImplementation(platform(libs.junit.bom))

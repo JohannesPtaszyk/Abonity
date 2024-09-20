@@ -19,6 +19,7 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 apply("com.android.library")
                 apply("dev.pott.android.lint")
                 apply("org.jetbrains.kotlin.android")
+                apply("tech.apter.junit5.jupiter.robolectric-extension-gradle-plugin")
             }
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)

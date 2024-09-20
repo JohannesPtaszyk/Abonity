@@ -1,5 +1,6 @@
 package dev.pott.abonity.feature.subscription
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -22,7 +23,7 @@ fun NavGraphBuilder.subscriptionGraph(
     navController: NavController,
 ) {
     navigation<SubscriptionNavigationDestination>(
-        startDestination = OverviewDestination::class,
+        startDestination = OverviewDestination(),
         typeMap = coreNavTypeMap,
     ) {
         composable<OverviewDestination>(typeMap = coreNavTypeMap) { backStackEntry ->
@@ -30,7 +31,7 @@ fun NavGraphBuilder.subscriptionGraph(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
                 onEditClick = { navController.navigateToAddDestination(it) },
                 onOpenCategoriesClick = { navController.navigateToCategoryDestination() },
-                args = backStackEntry.toRoute(),
+                args = remember { backStackEntry.toRoute<OverviewDestination>() },
             )
         }
 
