@@ -14,6 +14,9 @@ object SubscriptionIdNavType : NavType<SubscriptionId?>(isNullableAllowed = true
 
     override fun parseValue(value: String): SubscriptionId = SubscriptionId(value.toLong())
 
+    override fun serializeAsValue(value: SubscriptionId?): String =
+        (value?.value ?: DEFAULT_VALUE).toString()
+
     override fun put(bundle: Bundle, key: String, value: SubscriptionId?) {
         value?.let { bundle.putLong(key, it.value) }
     }
