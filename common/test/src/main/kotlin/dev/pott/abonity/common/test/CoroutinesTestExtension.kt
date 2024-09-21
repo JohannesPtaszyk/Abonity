@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 class CoroutinesTestExtension :
     BeforeEachCallback,
     AfterEachCallback {
-    private val dispatcher = StandardTestDispatcher()
+    private val dispatcher by lazy { StandardTestDispatcher() }
 
     override fun beforeEach(context: ExtensionContext?) {
         Dispatchers.setMain(dispatcher)

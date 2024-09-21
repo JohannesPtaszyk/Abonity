@@ -29,7 +29,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,14 +89,9 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state, openDetails) {
-        val selectedId = (state as? DashboardState.Loaded)?.selectedId ?: return@LaunchedEffect
-        openDetails(selectedId)
-        viewModel.consumeSelectedId()
-    }
     DashboardScreen(
         state,
-        viewModel::select,
+        openDetails,
         openSubscriptions,
         openNotificationSettings,
         viewModel::closeNotificationTeaser,
@@ -345,6 +339,7 @@ private fun LazyListScope.UpcomingPayments(
                         modifier = Modifier.weight(1f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                     FormattedPrice(
                         price = upcomingPayment.subscription.paymentInfo.price,
@@ -479,7 +474,6 @@ private fun DashboardScreenPreview() {
                     hasSubscriptions = true,
                     period = PaymentPeriod.MONTHS,
                 ),
-                selectedId = null,
                 shouldShowNotificationTeaser = true,
             ),
             onSubscriptionClick = {

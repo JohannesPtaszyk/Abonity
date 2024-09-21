@@ -40,8 +40,7 @@ fun createTestSubscriptionList(size: Int = 5): List<Subscription> {
                 createTestSubscription(
                     name = faker.company.name(),
                     description = faker.subscription.statuses(),
-                    paymentInfo =
-                    createTestPaymentInfo(
+                    paymentInfo = createTestPaymentInfo(
                         price = price,
                         firstPayment = createRandomLocalDate(random),
                     ),

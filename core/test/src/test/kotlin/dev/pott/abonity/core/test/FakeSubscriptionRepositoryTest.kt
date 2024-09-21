@@ -1,5 +1,6 @@
 package dev.pott.abonity.core.test
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isSameInstanceAs
 import dev.pott.abonity.core.entity.subscription.Subscription
@@ -22,14 +23,18 @@ class FakeSubscriptionRepositoryTest {
     }
 
     @Test
-    fun `getSubscriptionFlow returns constructor parameter`() {
-        val subscription = createTestSubscription()
-        val flow = flowOf(subscription)
+    fun `getSubscriptionFlow returns flow values from constructor parameter`() =
+        runTest {
+            val subscription = createTestSubscription()
+            val flow = flowOf(subscription)
 
-        val tested = FakeSubscriptionRepository(subscriptionFlow = flow)
+            val tested = FakeSubscriptionRepository(subscriptionFlow = flow)
 
-        assertThat(tested.getSubscriptionFlow(subscription.id)).isSameInstanceAs(flow)
-    }
+            tested.getSubscriptionFlow(subscription.id).test {
+                assertThat(awaitItem()).isSameInstanceAs(subscription)
+                awaitComplete()
+            }
+        }
 
     @Test
     fun `addOrUpdateSubscription returns subscription and adds it to addedSubscriptions`() {

@@ -27,7 +27,7 @@ fun OverviewRoute(
     showAsMultiColumn: Boolean,
     onEditClick: (SubscriptionId) -> Unit,
     onOpenCategoriesClick: () -> Unit,
-    args: OverviewScreenDestination.Args?,
+    args: OverviewDestination?,
     modifier: Modifier = Modifier,
     overviewViewModel: OverviewViewModel = hiltViewModel(),
     detailViewModel: DetailViewModel = hiltViewModel(),
@@ -35,7 +35,7 @@ fun OverviewRoute(
     val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
     val detailState by detailViewModel.state.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
-    var skipFirstDetailAnimation by rememberSaveable {
+    var skipFirstDetailAnimation by rememberSaveable(args) {
         mutableStateOf(args?.detailId != null)
     }
 

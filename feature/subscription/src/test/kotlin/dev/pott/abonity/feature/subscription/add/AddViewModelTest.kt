@@ -1,6 +1,7 @@
 package dev.pott.abonity.feature.subscription.add
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.testing.invoke
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.contains
@@ -11,6 +12,7 @@ import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
+import dev.pott.abonity.core.navigation.coreNavTypeMap
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
@@ -35,12 +37,13 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
+import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.util.Currency
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(CoroutinesTestExtension::class)
+@ExtendWith(RobolectricExtension::class, CoroutinesTestExtension::class)
 class AddViewModelTest {
 
     @BeforeEach
@@ -56,7 +59,8 @@ class AddViewModelTest {
                 FakeSubscriptionRepository(subscriptionFlow = flowOf(subscription))
             val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
             val savedStateHandle = SavedStateHandle(
-                mapOf(AddScreenDestination.Args.SUBSCRIPTION_ID_KEY to subscription.id.value),
+                route = AddDestination(subscription.id),
+                typeMap = coreNavTypeMap,
             )
             val tested = AddViewModel(
                 savedStateHandle,

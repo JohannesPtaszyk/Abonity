@@ -1,10 +1,10 @@
 package dev.pott.abonity.feature.legal.consent
 
 import androidx.navigation.NavGraphBuilder
-import dev.pott.abonity.navigation.destination.composable
+import androidx.navigation.compose.composable
 
 fun NavGraphBuilder.consentGraph(close: () -> Unit, openUrl: (String) -> Unit) {
-    composable(ConsentDestination) {
+    composable<ConsentDestination> {
         ConsentScreen(close = close, openUrl = openUrl)
     }
 }

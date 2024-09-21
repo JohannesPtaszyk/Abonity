@@ -1,6 +1,7 @@
 package dev.pott.abonity.feature.subscription.overview
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.testing.invoke
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEmpty
@@ -21,6 +22,7 @@ import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
+import dev.pott.abonity.core.navigation.coreNavTypeMap
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
@@ -36,10 +38,11 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.util.Currency
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(CoroutinesTestExtension::class)
+@ExtendWith(RobolectricExtension::class, CoroutinesTestExtension::class)
 class OverviewViewModelTest {
 
     @InjectTestDispatcher
@@ -130,7 +133,8 @@ class OverviewViewModelTest {
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
             val savedStateHandle = SavedStateHandle(
-                mapOf(OverviewScreenDestination.Args.DETAIL_ID_KEY to subscription.id.value),
+                route = OverviewDestination(subscription.id),
+                typeMap = coreNavTypeMap,
             )
             val useCase = GetSubscriptionsWithFilterUseCase(
                 GetSubscriptionsWithPeriodPrice(

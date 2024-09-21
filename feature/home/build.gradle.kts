@@ -1,6 +1,7 @@
 plugins {
     id("dev.pott.android.lib.compose")
     id("dev.pott.hilt")
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
@@ -8,12 +9,12 @@ android {
 }
 
 dependencies {
-    implementation(projects.navigation)
     implementation(projects.core.domain)
     implementation(projects.core.ui)
 
     implementation(libs.accompanist.permission)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.compose.material3)

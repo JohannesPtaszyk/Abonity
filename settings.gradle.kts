@@ -30,6 +30,7 @@ include(
     ":core:domain",
     ":core:entity",
     ":core:ui",
+    ":core:navigation",
     ":core:test",
 )
 
@@ -39,8 +40,6 @@ include(
     ":common:compose",
     ":common:injection",
 )
-
-include(":navigation")
 
 include(
     ":feature:subscription",

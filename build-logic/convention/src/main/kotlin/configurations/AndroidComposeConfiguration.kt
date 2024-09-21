@@ -18,7 +18,6 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
         }
 
         with(extensions.getByType<ComposeCompilerGradlePluginExtension>()) {
-            enableStrongSkippingMode = true
             includeSourceInformation = true
         }
 
@@ -40,8 +39,6 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
 
             add("debugImplementation", libs.findLibrary("androidx.compose.ui.testManifest").get())
             add("debugImplementation", libs.findLibrary("androidx.compose.ui.tooling").get())
-
-            add("testImplementation", libs.findLibrary("robolectric").get())
 
             add("androidTestImplementation", platform(bom))
         }

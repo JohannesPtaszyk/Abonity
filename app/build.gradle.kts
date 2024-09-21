@@ -11,6 +11,7 @@ plugins {
     id(libs.plugins.secrets.get().pluginId)
     id(libs.plugins.play.publisher.get().pluginId)
     id(libs.plugins.appsweep.get().pluginId)
+    id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
 android {
@@ -89,7 +90,6 @@ dependencies {
     implementation(projects.feature.subscription)
     implementation(projects.feature.settings)
     implementation(projects.feature.legal)
-    implementation(projects.navigation)
 
     implementation(libs.ads)
     implementation(libs.androidx.activity.compose)
@@ -113,6 +113,7 @@ dependencies {
     implementation(libs.kermit)
     implementation(libs.kermit.crashlytics)
     implementation(libs.androidx.dataStore)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)
