@@ -225,7 +225,7 @@ private fun CategoryInput(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
             )
         }
         items(categories, key = { it.id.value }) {
@@ -233,7 +233,7 @@ private fun CategoryInput(
                 selected = selectedCategories.contains(it),
                 onClick = { onCategorySelecte(it) },
                 label = { Text(text = it.name) },
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
             )
         }
     }

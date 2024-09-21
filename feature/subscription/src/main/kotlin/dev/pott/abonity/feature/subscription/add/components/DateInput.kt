@@ -18,6 +18,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -221,15 +222,7 @@ private fun PeriodDropDown(
             label = { Text(text = stringResource(id = R.string.subscription_add_label_period)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor()
-                .clickable(
-                    role = Role.Button,
-                    onClickLabel = stringResource(
-                        id = R.string.subscription_add_label_period_click,
-                    ),
-                ) {
-                    showPeriodDropdown = !showPeriodDropdown
-                },
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
         )
         ExposedDropdownMenu(
             expanded = showPeriodDropdown,

@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -158,7 +160,7 @@ private fun LazyListScope.SubscriptionSettings(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
             )
             ExposedDropdownMenu(
                 expanded = showPaymentPeriods,
@@ -167,8 +169,8 @@ private fun LazyListScope.SubscriptionSettings(
                 val items = remember { PaymentPeriod.entries }
                 items.forEach {
                     val labelRes = paymentPeriodPluralRes(it)
-                    ListItem(
-                        headlineContent = {
+                    DropdownMenuItem(
+                        text = {
                             Text(
                                 text = pluralStringResource(
                                     id = labelRes,
@@ -182,7 +184,7 @@ private fun LazyListScope.SubscriptionSettings(
                                 },
                             )
                         },
-                        modifier = Modifier.clickable {
+                        onClick = {
                             onPaymentPeriodChanged(it)
                             showPaymentPeriods = false
                         },
@@ -229,7 +231,7 @@ private fun LazyListScope.AppearanceSection(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
             )
             ExposedDropdownMenu(
                 expanded = showThemeOptions,
@@ -238,11 +240,11 @@ private fun LazyListScope.AppearanceSection(
                 val items = remember { Theme.entries }
                 items.forEach {
                     val labelRes = themeStringRes(it)
-                    ListItem(
-                        headlineContent = {
+                    DropdownMenuItem(
+                        text = {
                             Text(text = stringResource(id = labelRes))
                         },
-                        modifier = Modifier.clickable {
+                        onClick = {
                             onThemeChanged(it)
                             showThemeOptions = false
                         },

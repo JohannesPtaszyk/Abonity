@@ -54,6 +54,7 @@ fun SubscriptionFilter(
             ExposedDropdownMenuBox(
                 expanded = showPeriodDropdown,
                 onExpandedChange = { showPeriodDropdown = !showPeriodDropdown },
+                modifier = Modifier.animateItem(),
             ) {
                 val chipLabelRes = paymentPeriodPluralRes(period)
                 val locale = rememberDefaultLocale()
@@ -119,7 +120,7 @@ fun SubscriptionFilter(
                         }
                     }
                 },
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
             )
         }
     }

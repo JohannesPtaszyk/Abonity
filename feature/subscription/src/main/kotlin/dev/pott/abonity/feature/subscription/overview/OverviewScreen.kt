@@ -154,7 +154,7 @@ private fun LoadedContent(
                 onPeriodChange = onPeriodChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
             )
         }
         items(
@@ -170,7 +170,7 @@ private fun LoadedContent(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
             )
         }
     }
