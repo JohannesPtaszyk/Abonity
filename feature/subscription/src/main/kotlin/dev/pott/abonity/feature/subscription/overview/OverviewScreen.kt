@@ -77,6 +77,7 @@ fun OverviewScreen(
     onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
     onSwipeToDelete: (id: SubscriptionId) -> Unit,
     onOpenCategoriesClick: () -> Unit,
+    onPeriodChange: (PaymentPeriod) -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
 ) {
@@ -108,6 +109,7 @@ fun OverviewScreen(
                     onFilterItemSelect,
                     onSwipeToDelete,
                     onSubscriptionClick,
+                    onPeriodChange,
                 )
             }
 
@@ -133,6 +135,7 @@ private fun LoadedContent(
     onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
     onSwipeToDelete: (id: SubscriptionId) -> Unit,
     onSubscriptionClick: (id: SubscriptionId) -> Unit,
+    onPeriodChange: (PaymentPeriod) -> Unit,
 ) {
     LazyColumn(
         contentPadding = paddingValues,
@@ -146,7 +149,9 @@ private fun LoadedContent(
         ) {
             SubscriptionFilter(
                 state.filter,
+                state.currentPeriod,
                 onItemSelect = onFilterItemSelect,
+                onPeriodChange = onPeriodChange,
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateItemPlacement(),
@@ -174,7 +179,6 @@ private fun LoadedContent(
 private const val SWIPE_TO_DELETE_THRESHOLD = 1.75f
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SubscriptionCardItem(
     subscriptionWithPeriodInfo: SubscriptionWithPeriodInfo,
     state: OverviewState.Loaded,
@@ -287,6 +291,9 @@ private fun OverviewScreenPreview() {
             },
             onOpenCategoriesClick = {
                 // On Open Categories Click
+            },
+            onPeriodChange = {
+                // On Period Changed
             },
         )
     }

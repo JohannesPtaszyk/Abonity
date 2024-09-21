@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.navigation.coreNavTypeMap
@@ -27,7 +28,7 @@ import javax.inject.Inject
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
-    settingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
@@ -80,6 +81,12 @@ class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             subscriptionRepository.deleteSubscription(id)
             selectedDetailIdFlow.value = null
+        }
+    }
+
+    fun setPeriod(period: PaymentPeriod) {
+        viewModelScope.launch {
+            settingsRepository.updateSettings { it.copy(period = period) }
         }
     }
 }

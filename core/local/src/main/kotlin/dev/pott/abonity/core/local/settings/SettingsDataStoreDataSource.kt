@@ -17,28 +17,38 @@ class SettingsDataStoreDataSource @Inject constructor(
 ) : SettingsLocalDataSource {
     override fun getSettingsFlow(): Flow<Settings> =
         dataStore.data.map { settingsEntity ->
-            Settings(
-                period = settingsEntity.period.toDomain(),
-                theme = when (settingsEntity.theme) {
-                    LocalTheme.FOLLOW_SYSTEM -> Theme.FOLLOW_SYSTEM
-                    LocalTheme.LIGHT -> Theme.LIGHT
-                    LocalTheme.DARK -> Theme.DARK
-                },
-                enableAdaptiveColors = settingsEntity.enableAdaptiveColors,
-            )
+            toDomain(settingsEntity)
         }
+
+    private fun toDomain(settingsEntity: SettingsEntity) =
+        Settings(
+            period = settingsEntity.period.toDomain(),
+            theme = when (settingsEntity.theme) {
+                LocalTheme.FOLLOW_SYSTEM -> Theme.FOLLOW_SYSTEM
+                LocalTheme.LIGHT -> Theme.LIGHT
+                LocalTheme.DARK -> Theme.DARK
+            },
+            enableAdaptiveColors = settingsEntity.enableAdaptiveColors,
+        )
 
     override suspend fun updateSettings(settings: Settings) {
         dataStore.updateData {
-            SettingsEntity(
-                period = settings.period.toEntity(),
-                theme = when (settings.theme) {
-                    Theme.FOLLOW_SYSTEM -> LocalTheme.FOLLOW_SYSTEM
-                    Theme.LIGHT -> LocalTheme.LIGHT
-                    Theme.DARK -> LocalTheme.DARK
-                },
-                enableAdaptiveColors = settings.enableAdaptiveColors,
-            )
+            toEntity(settings)
         }
+    }
+
+    private fun toEntity(settings: Settings) =
+        SettingsEntity(
+            period = settings.period.toEntity(),
+            theme = when (settings.theme) {
+                Theme.FOLLOW_SYSTEM -> LocalTheme.FOLLOW_SYSTEM
+                Theme.LIGHT -> LocalTheme.LIGHT
+                Theme.DARK -> LocalTheme.DARK
+            },
+            enableAdaptiveColors = settings.enableAdaptiveColors,
+        )
+
+    override suspend fun updateSettings(block: (Settings) -> Settings) {
+        dataStore.updateData { toEntity(block(toDomain(it))) }
     }
 }

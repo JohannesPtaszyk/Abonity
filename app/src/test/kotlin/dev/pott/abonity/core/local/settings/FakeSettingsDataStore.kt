@@ -11,6 +11,7 @@ class FakeSettingsDataStore(initialSettings: SettingsEntity = SettingsEntity()) 
     val settingsFlow = MutableStateFlow(initialSettings)
 
     override val data: Flow<SettingsEntity> = settingsFlow
+
     override suspend fun updateData(
         transform: suspend (t: SettingsEntity) -> SettingsEntity,
     ): SettingsEntity = transform(settingsFlow.value).also { settingsFlow.value = it }

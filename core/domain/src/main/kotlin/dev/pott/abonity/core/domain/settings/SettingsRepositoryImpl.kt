@@ -12,4 +12,8 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun updateSettings(settings: Settings) {
         settingsLocalDataSource.updateSettings(settings)
     }
+
+    override suspend fun updateSettings(block: (Settings) -> Settings) {
+        settingsLocalDataSource.updateSettings(block)
+    }
 }
