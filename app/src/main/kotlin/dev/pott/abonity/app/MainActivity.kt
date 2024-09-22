@@ -42,14 +42,10 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalMaterial3WindowSizeClassApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         var mainState: MainState by mutableStateOf(MainState.Loading)
-
-        splashScreen.setKeepOnScreenCondition {
-            mainState is MainState.Loading
-        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
