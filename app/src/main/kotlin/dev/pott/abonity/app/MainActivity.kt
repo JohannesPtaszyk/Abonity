@@ -26,6 +26,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import co.touchlab.kermit.Logger
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import dev.pott.abonity.core.entity.settings.Theme
 import dev.pott.abonity.core.ui.theme.AppTheme
@@ -47,10 +48,7 @@ class MainActivity : ComponentActivity() {
         var mainState: MainState by mutableStateOf(MainState.Loading)
 
         splashScreen.setKeepOnScreenCondition {
-            when (mainState) {
-                MainState.Loading -> true
-                is MainState.Success -> false
-            }
+            mainState is MainState.Loading
         }
 
         lifecycleScope.launch {
@@ -97,10 +95,18 @@ class MainActivity : ComponentActivity() {
                         startActivity(intent)
                     },
                     openUrl = ::openUrl,
+                    promptAppStoreReview = {
+                        lifecycleScope.launch {
+                            val manager = ReviewManagerFactory.create(this@MainActivity)
+                            manager.requestReviewFlow().addOnSuccessListener {
+                                manager.launchReviewFlow(this@MainActivity, it)
+                            }
+                        }
+                    },
                 )
 
                 val state = mainState
-                if (state is MainState.Success && state.showConsent) {
+                if (state is MainState.Loaded && state.showConsent) {
                     ConsentBottomSheet(
                         close = { mainViewModel.closeConsent() },
                         openUrl = { url -> openUrl(url) },
@@ -128,7 +134,7 @@ class MainActivity : ComponentActivity() {
 private fun shouldUseDarkTheme(state: MainState): Boolean =
     when (state) {
         MainState.Loading -> isSystemInDarkTheme()
-        is MainState.Success -> when (state.theme) {
+        is MainState.Loaded -> when (state.theme) {
             Theme.FOLLOW_SYSTEM -> isSystemInDarkTheme()
             Theme.LIGHT -> false
             Theme.DARK -> true
@@ -139,7 +145,7 @@ private fun shouldUseDarkTheme(state: MainState): Boolean =
 private fun shouldUseSystemTheme(state: MainState): Boolean =
     when (state) {
         MainState.Loading -> true
-        is MainState.Success -> state.adaptiveColorsEnabled
+        is MainState.Loaded -> state.adaptiveColorsEnabled
     }
 
 /**

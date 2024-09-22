@@ -20,6 +20,7 @@ fun NavGraphBuilder.appNavGraph(
     navController: NavController,
     openNotificationSettings: () -> Unit,
     openUrl: (String) -> Unit,
+    promptAppStoreReview: () -> Unit,
 ) {
     homeGraph(
         openDetails = { subscriptionId ->
@@ -36,7 +37,7 @@ fun NavGraphBuilder.appNavGraph(
         openNotificationSettings = openNotificationSettings,
         openAddScreen = { navController.navigateToAddDestination() },
     )
-    subscriptionGraph(state.subscriptionGraphState, navController)
+    subscriptionGraph(state.subscriptionGraphState, navController, promptAppStoreReview)
     settingsNavGraph(
         openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) },
         openNotificationSettings = openNotificationSettings,
