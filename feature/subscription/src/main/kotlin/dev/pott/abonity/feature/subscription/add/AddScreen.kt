@@ -58,12 +58,16 @@ import java.util.Currency
 @Composable
 fun AddScreen(
     close: () -> Unit,
+    promptAppStoreReview: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(state.formState.saving, close) {
-        if (state.formState.saving == AddState.SavingState.SAVED) close()
+    LaunchedEffect(state.formState.saving, close, promptAppStoreReview) {
+        if (state.formState.saving == AddState.SavingState.SAVED) {
+            close()
+            promptAppStoreReview()
+        }
     }
     AddScreen(
         state = state,
