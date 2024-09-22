@@ -3,9 +3,11 @@ package dev.pott.abonity.feature.subscription.overview
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.testing.invoke
 import app.cash.turbine.test
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
@@ -423,7 +425,7 @@ class OverviewViewModelTest {
     }
 
     @Test
-    fun `GIVEN initialized vm WHEN setPeriod THEN state contains updated period`() {
+    fun `GIVEN initialized vm WHEN setPeriod THEN state contains updated period AND selected filter items are reset`() {
         runTest {
             val subscription = createTestSubscription(
                 paymentInfo = PaymentInfo(
@@ -460,10 +462,26 @@ class OverviewViewModelTest {
 
             tested.state.test {
                 skipItems(2) // Skip initial state and first subscription emit)
+                tested.toggleFilter(SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS))
+                runCurrent()
+
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .transform { it.filter.selectedItems }.isNotEmpty()
+
                 tested.setPeriod(PaymentPeriod.YEARS)
-                assertThat(awaitItem() as OverviewState.Loaded)
-                    .transform { it.currentPeriod }
-                    .isEqualTo(PaymentPeriod.YEARS)
+                runCurrent()
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .all {
+                        transform { it.currentPeriod }.isEqualTo(PaymentPeriod.YEARS)
+                    }
+
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .transform { it.filter.selectedItems }
+                    .isEmpty()
+                cancelAndIgnoreRemainingEvents()
             }
         }
     }

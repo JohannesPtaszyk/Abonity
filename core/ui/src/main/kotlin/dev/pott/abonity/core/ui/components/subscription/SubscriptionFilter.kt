@@ -1,8 +1,8 @@
 package dev.pott.abonity.core.ui.components.subscription
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,7 +30,6 @@ import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.string.paymentPeriodPluralRes
 import dev.pott.abonity.core.ui.util.rememberDefaultLocale
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionFilter(
     filter: SubscriptionFilter,
@@ -43,64 +42,13 @@ fun SubscriptionFilter(
     LaunchedEffect(filter.selectedItems) {
         listState.animateScrollToItem(0)
     }
-    var showPeriodDropdown by remember { mutableStateOf(false) }
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier,
         state = listState,
     ) {
-        item {
-            ExposedDropdownMenuBox(
-                expanded = showPeriodDropdown,
-                onExpandedChange = { showPeriodDropdown = !showPeriodDropdown },
-                modifier = Modifier.animateItem(),
-            ) {
-                val chipLabelRes = paymentPeriodPluralRes(period)
-                val locale = rememberDefaultLocale()
-                FilterChip(
-                    onClick = { /* Click will be handled by menuAnchor */ },
-                    selected = true,
-                    label = {
-                        Text(
-                            text = pluralStringResource(
-                                id = chipLabelRes,
-                                count = 1,
-                            ).replaceFirstChar { it.titlecase(locale) },
-                        )
-                    },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = showPeriodDropdown)
-                    },
-                    modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
-                )
-                ExposedDropdownMenu(
-                    expanded = showPeriodDropdown,
-                    onDismissRequest = { showPeriodDropdown = false },
-                    matchTextFieldWidth = false,
-                ) {
-                    val items = remember { PaymentPeriod.entries }
-                    items.forEach { item ->
-                        val labelRes = paymentPeriodPluralRes(item)
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = pluralStringResource(
-                                        id = labelRes,
-                                        count = 1,
-                                    ).replaceFirstChar { it.titlecase(locale) },
-                                )
-                            },
-                            onClick = {
-                                onPeriodChange(item)
-                                showPeriodDropdown = false
-                            },
-                            enabled = item != period,
-                        )
-                    }
-                }
-            }
-        }
+        periodFilterItem(period, onPeriodChange)
         items(filter.items, key = { it.hashCode() }) {
             FilterChip(
                 onClick = { onItemSelect(it) },
@@ -122,6 +70,65 @@ fun SubscriptionFilter(
                 },
                 modifier = Modifier.animateItem(),
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LazyListScope.periodFilterItem(
+    period: PaymentPeriod,
+    onPeriodChange: (PaymentPeriod) -> Unit,
+) {
+    item {
+        var showPeriodDropdown by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            expanded = showPeriodDropdown,
+            onExpandedChange = { showPeriodDropdown = !showPeriodDropdown },
+            modifier = Modifier.animateItem(),
+        ) {
+            val chipLabelRes = paymentPeriodPluralRes(period)
+            val locale = rememberDefaultLocale()
+            FilterChip(
+                onClick = { /* Click will be handled by menuAnchor */ },
+                selected = true,
+                label = {
+                    Text(
+                        text = pluralStringResource(
+                            id = chipLabelRes,
+                            count = 1,
+                        ).replaceFirstChar { it.titlecase(locale) },
+                    )
+                },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = showPeriodDropdown)
+                },
+                modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
+            )
+            ExposedDropdownMenu(
+                expanded = showPeriodDropdown,
+                onDismissRequest = { showPeriodDropdown = false },
+                matchTextFieldWidth = false,
+            ) {
+                val items = remember { PaymentPeriod.entries }
+                items.forEach { item ->
+                    val labelRes = paymentPeriodPluralRes(item)
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = pluralStringResource(
+                                    id = labelRes,
+                                    count = 1,
+                                ).replaceFirstChar { it.titlecase(locale) },
+                            )
+                        },
+                        onClick = {
+                            onPeriodChange(item)
+                            showPeriodDropdown = false
+                        },
+                        enabled = item != period,
+                    )
+                }
+            }
         }
     }
 }
