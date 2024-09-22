@@ -94,7 +94,6 @@ class MainActivity : ComponentActivity() {
                         }
                         startActivity(intent)
                     },
-                    openUrl = ::openUrl,
                     promptAppStoreReview = {
                         lifecycleScope.launch {
                             val manager = ReviewManagerFactory.create(this@MainActivity)
@@ -109,7 +108,6 @@ class MainActivity : ComponentActivity() {
                 if (state is MainState.Loaded && state.showConsent) {
                     ConsentBottomSheet(
                         close = { mainViewModel.closeConsent() },
-                        openUrl = { url -> openUrl(url) },
                     )
                 }
             }
@@ -121,10 +119,6 @@ class MainActivity : ComponentActivity() {
                 .setTestDeviceIds(getMobileAdsTestDeviceIds())
                 .build(),
         )
-    }
-
-    private fun openUrl(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     private fun getMobileAdsTestDeviceIds() = BuildConfig.TEST_DEVICE_IDS.split(",")

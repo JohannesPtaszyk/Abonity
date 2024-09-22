@@ -19,7 +19,6 @@ fun NavGraphBuilder.appNavGraph(
     state: AppState,
     navController: NavController,
     openNotificationSettings: () -> Unit,
-    openUrl: (String) -> Unit,
     promptAppStoreReview: () -> Unit,
 ) {
     homeGraph(
@@ -42,11 +41,9 @@ fun NavGraphBuilder.appNavGraph(
         openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) },
         openNotificationSettings = openNotificationSettings,
         openConsentDialog = { navController.navigateToConsent() },
-        openUrl = openUrl,
         nestedGraphs = {
             consentGraph(
                 close = { navController.popBackStack() },
-                openUrl = openUrl,
             )
         },
     )

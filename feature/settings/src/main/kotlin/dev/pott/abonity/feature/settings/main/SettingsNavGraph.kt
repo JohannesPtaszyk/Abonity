@@ -9,7 +9,6 @@ fun NavGraphBuilder.settingsNavGraph(
     openOssLicenses: () -> Unit,
     openNotificationSettings: () -> Unit,
     openConsentDialog: () -> Unit,
-    openUrl: (String) -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit = {},
 ) {
     navigation<SettingsNavigationDestination>(SettingsDestination) {
@@ -17,7 +16,6 @@ fun NavGraphBuilder.settingsNavGraph(
             SettingsScreen(
                 openOssLicenses = openOssLicenses,
                 openNotificationSettings = openNotificationSettings,
-                openUrl = openUrl,
                 openConsentDialog = openConsentDialog,
             )
         }

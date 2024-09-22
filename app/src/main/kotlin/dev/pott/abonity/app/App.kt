@@ -36,7 +36,6 @@ import dev.pott.abonity.feature.subscription.add.navigateToAddDestination
 fun App(
     windowSizeClass: WindowSizeClass,
     openNotificationSettings: () -> Unit,
-    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
     promptAppStoreReview: () -> Unit,
 ) {
@@ -108,7 +107,6 @@ fun App(
                     appState,
                     navController,
                     openNotificationSettings,
-                    openUrl = openUrl,
                     promptAppStoreReview = promptAppStoreReview,
                 )
             }

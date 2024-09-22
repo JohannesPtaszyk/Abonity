@@ -10,7 +10,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun ConsentScreen(
     close: () -> Unit,
-    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ConsentViewModel = hiltViewModel(),
 ) {
@@ -25,7 +24,6 @@ fun ConsentScreen(
         onAcceptAllConsents = viewModel::acceptAll,
         onDenyAllConsents = viewModel::denyAll,
         save = viewModel::save,
-        onOpenPrivacyPolicy = { openUrl(state.privacyPolicyUrl) },
         state = state,
         showSecondLayer = true,
         modifier = modifier,
