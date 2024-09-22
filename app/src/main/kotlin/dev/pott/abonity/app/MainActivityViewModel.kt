@@ -24,7 +24,7 @@ class MainActivityViewModel @Inject constructor(
         shouldShowTrackingConsent(),
         consentConsumed,
     ) { settings, shouldShowConsent, consentConsumed ->
-        MainState.Success(
+        MainState.Loaded(
             theme = settings.theme,
             adaptiveColorsEnabled = settings.enableAdaptiveColors,
             showConsent = shouldShowConsent && !consentConsumed,
