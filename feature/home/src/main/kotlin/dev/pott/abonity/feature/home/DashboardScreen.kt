@@ -219,7 +219,7 @@ private fun LoadedContent(
                 NotificationPermissionTeaser(
                     notificationPermissionState,
                     onCloseClick = onCloseNotificationTeaserClick,
-                    modifier = Modifier.animateItemPlacement(),
+                    modifier = Modifier.animateItem(),
                 )
             }
         }
@@ -231,7 +231,7 @@ private fun LoadedContent(
             SectionHeader(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
                 action = {
                     TextButton(onClick = onOpenSubscriptionsClick) {
                         Text(stringResource(R.string.home_btn_open_subscriptions))
@@ -269,7 +269,7 @@ private fun LazyListScope.UpcomingPayments(
                     period = upcoming.period,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .animateItemPlacement(),
+                        .animateItem(),
                 )
             }
         }
@@ -283,7 +283,7 @@ private fun LazyListScope.UpcomingPayments(
                     onAddNewSubscriptionClick = onAddNewSubscriptionClick,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .animateItemPlacement(),
+                        .animateItem(),
                 )
             }
         }
@@ -296,7 +296,7 @@ private fun LazyListScope.UpcomingPayments(
                     Text(
                         text = stringResource(R.string.home_upcoming_subscriptions_today),
                         style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItem(),
                     )
                 }
 
@@ -304,7 +304,7 @@ private fun LazyListScope.UpcomingPayments(
                     Text(
                         text = stringResource(R.string.home_upcoming_subscriptions_tomorrow),
                         style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItem(),
                     )
                 }
 
@@ -312,7 +312,7 @@ private fun LazyListScope.UpcomingPayments(
                     FormattedDate(
                         date = date,
                         style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItem(),
                     )
                 }
             }
@@ -326,7 +326,7 @@ private fun LazyListScope.UpcomingPayments(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateItemPlacement(),
+                    .animateItem(),
                 onClick = { onSubscriptionClick(upcomingPayment.subscription.id) },
             ) {
                 Row(
@@ -357,7 +357,7 @@ private fun LazyListScope.UpcomingPayments(
                 Spacer(
                     Modifier
                         .height(16.dp)
-                        .animateItemPlacement(),
+                        .animateItem(),
                 )
             }
         }

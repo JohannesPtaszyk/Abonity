@@ -60,4 +60,28 @@ class SettingsDataStoreDataSourceTest {
                 ),
             )
         }
+
+    @Test
+    fun `GIVEN some settings to be updated WHEN updating settings with block THEN the updated settings should be stored in local data source`() {
+        runTest {
+            val dataStore = FakeSettingsDataStore(SettingsEntity())
+
+            val tested = SettingsDataStoreDataSource(dataStore)
+
+            val newSettings = Settings(
+                period = PaymentPeriod.DAYS,
+                theme = Theme.LIGHT,
+                enableAdaptiveColors = true,
+            )
+            tested.updateSettings { newSettings }
+
+            assertThat(dataStore.settingsFlow.value).isEqualTo(
+                SettingsEntity(
+                    period = LocalPaymentPeriod.DAYS,
+                    theme = LocalTheme.LIGHT,
+                    enableAdaptiveColors = true,
+                ),
+            )
+        }
+    }
 }

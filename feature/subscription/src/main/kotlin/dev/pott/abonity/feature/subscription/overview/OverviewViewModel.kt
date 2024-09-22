@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.settings.SettingsRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFilterUseCase
+import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import dev.pott.abonity.core.navigation.coreNavTypeMap
@@ -17,7 +18,9 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +30,7 @@ import javax.inject.Inject
 class OverviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getFilteredSubscriptions: GetSubscriptionsWithFilterUseCase,
-    settingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
@@ -42,7 +45,10 @@ class OverviewViewModel @Inject constructor(
     val state = combine(
         selectedDetailIdFlow,
         getFilteredSubscriptions(selectedFilterItemsFlow),
-        settingsRepository.getSettingsFlow().map { it.period },
+        settingsRepository.getSettingsFlow()
+            .map { it.period }
+            .distinctUntilChanged()
+            .onEach { selectedFilterItemsFlow.value = persistentListOf() },
     ) { detailId, subscriptionsWithFilter, currentPeriod ->
         OverviewState.Loaded(
             subscriptions = subscriptionsWithFilter.filteredSubscriptions.toImmutableList(),
@@ -80,6 +86,12 @@ class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             subscriptionRepository.deleteSubscription(id)
             selectedDetailIdFlow.value = null
+        }
+    }
+
+    fun setPeriod(period: PaymentPeriod) {
+        viewModelScope.launch {
+            settingsRepository.updateSettings { it.copy(period = period) }
         }
     }
 }

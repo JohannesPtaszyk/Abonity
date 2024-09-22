@@ -55,6 +55,7 @@ fun OverviewRoute(
             onDeleteClick = overviewViewModel::delete,
             closeDetails = overviewViewModel::consumeDetails,
             onOpenCategoriesClick = onOpenCategoriesClick,
+            onPeriodChange = overviewViewModel::setPeriod,
             listState = listState,
         )
     } else {
@@ -64,6 +65,7 @@ fun OverviewRoute(
             onFilterItemSelect = overviewViewModel::toggleFilter,
             onSwipeToDelete = overviewViewModel::delete,
             onOpenCategoriesClick = onOpenCategoriesClick,
+            onPeriodChange = overviewViewModel::setPeriod,
             listState = listState,
         )
         val showDetail = (overviewState as? OverviewState.Loaded)?.detailId != null

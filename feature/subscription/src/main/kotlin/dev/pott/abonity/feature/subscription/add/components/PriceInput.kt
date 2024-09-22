@@ -207,7 +207,7 @@ private fun CurrencyBottomSheet(
                                 .fillMaxWidth()
                                 .defaultMinSize(minHeight = 200.dp),
                         ) {
-                            CircularProgressIndicator(modifier = Modifier.animateItemPlacement())
+                            CircularProgressIndicator(modifier = Modifier.animateItem())
                         }
                     }
                 }
@@ -221,7 +221,7 @@ private fun CurrencyBottomSheet(
                         },
                         headlineContent = { Text(text = it.getDisplayName(locale)) },
                         modifier = Modifier
-                            .animateItemPlacement()
+                            .animateItem()
                             .fillMaxWidth()
                             .clickable { onCurrencyChange(it) },
                     )

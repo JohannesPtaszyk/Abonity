@@ -21,6 +21,7 @@ import dev.pott.abonity.feature.subscription.overview.OverviewRoute
 fun NavGraphBuilder.subscriptionGraph(
     state: SubscriptionGraphState,
     navController: NavController,
+    promptAppStoreReview: () -> Unit,
 ) {
     navigation<SubscriptionNavigationDestination>(
         startDestination = OverviewDestination(),
@@ -43,6 +44,11 @@ fun NavGraphBuilder.subscriptionGraph(
         typeMap = coreNavTypeMap,
         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        AddScreen(close = { navController.popBackStack() })
+        AddScreen(
+            close = {
+                navController.popBackStack()
+            },
+            promptAppStoreReview = promptAppStoreReview,
+        )
     }
 }

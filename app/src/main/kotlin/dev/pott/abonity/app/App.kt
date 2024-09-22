@@ -38,6 +38,7 @@ fun App(
     openNotificationSettings: () -> Unit,
     openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
+    promptAppStoreReview: () -> Unit,
 ) {
     val navController = rememberNavController()
     val appState = rememberAppState(navController, windowSizeClass)
@@ -108,6 +109,7 @@ fun App(
                     navController,
                     openNotificationSettings,
                     openUrl = openUrl,
+                    promptAppStoreReview = promptAppStoreReview,
                 )
             }
         }

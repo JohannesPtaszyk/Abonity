@@ -3,9 +3,11 @@ package dev.pott.abonity.feature.subscription.overview
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.testing.invoke
 import app.cash.turbine.test
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
@@ -51,7 +53,6 @@ class OverviewViewModelTest {
     @Test
     fun `GIVEN local subscriptions WHEN initializing THEN return list of overview items AND period prices`() {
         runTest {
-            runCurrent()
             val subscription = createTestSubscription(
                 paymentInfo = PaymentInfo(
                     price = Price(1.0, Currency.getInstance("EUR")),
@@ -419,6 +420,68 @@ class OverviewViewModelTest {
                 val updatedSubscriptions = (awaitItem() as OverviewState.Loaded).subscriptions
                 assertThat(updatedSubscriptions).isNotEqualTo(initialSubscriptions)
                 assertThat(cancelAndConsumeRemainingEvents()).isEmpty()
+            }
+        }
+    }
+
+    @Test
+    fun `GIVEN initialized vm WHEN setPeriod THEN state contains updated period AND selected filter items are reset`() {
+        runTest {
+            val subscription = createTestSubscription(
+                paymentInfo = PaymentInfo(
+                    price = Price(1.0, Currency.getInstance("EUR")),
+                    firstPayment = LocalDate(2021, 1, 1),
+                    type = PaymentType.Periodic(2, PaymentPeriod.DAYS),
+                ),
+            )
+            val localSubscriptionFlow = flowOf(listOf(subscription))
+            val subscriptionRepository = FakeSubscriptionRepository(localSubscriptionFlow)
+            val settings = createTestSettings()
+            val settingsRepository = FakeSettingsRepository(settings)
+            val clock = FakeClock()
+            val infoCalculator = PaymentInfoCalculator(clock)
+            val useCase = GetSubscriptionsWithFilterUseCase(
+                GetSubscriptionsWithPeriodPrice(
+                    subscriptionRepository,
+                    settingsRepository,
+                    infoCalculator,
+                    dispatcher,
+                ),
+                settingsRepository,
+                infoCalculator,
+                clock,
+                dispatcher,
+            )
+
+            val tested = OverviewViewModel(
+                SavedStateHandle(),
+                useCase,
+                settingsRepository,
+                subscriptionRepository,
+            )
+
+            tested.state.test {
+                skipItems(2) // Skip initial state and first subscription emit)
+                tested.toggleFilter(SubscriptionFilterItem.CurrentPeriod(PaymentPeriod.MONTHS))
+                runCurrent()
+
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .transform { it.filter.selectedItems }.isNotEmpty()
+
+                tested.setPeriod(PaymentPeriod.YEARS)
+                runCurrent()
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .all {
+                        transform { it.currentPeriod }.isEqualTo(PaymentPeriod.YEARS)
+                    }
+
+                assertThat(awaitItem())
+                    .isInstanceOf<OverviewState.Loaded>()
+                    .transform { it.filter.selectedItems }
+                    .isEmpty()
+                cancelAndIgnoreRemainingEvents()
             }
         }
     }

@@ -35,7 +35,7 @@ class MainActivityViewModelTest {
                 runCurrent()
                 assertThat(awaitItem()).isEqualTo(MainState.Loading)
                 assertThat(awaitItem()).isEqualTo(
-                    MainState.Success(
+                    MainState.Loaded(
                         theme = settings.theme,
                         adaptiveColorsEnabled = settings.enableAdaptiveColors,
                         showConsent = true,
@@ -65,7 +65,7 @@ class MainActivityViewModelTest {
                 tested.closeConsent()
 
                 assertThat(awaitItem()).isEqualTo(
-                    MainState.Success(
+                    MainState.Loaded(
                         theme = settings.theme,
                         adaptiveColorsEnabled = settings.enableAdaptiveColors,
                         showConsent = false,

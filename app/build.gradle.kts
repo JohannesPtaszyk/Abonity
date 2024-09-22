@@ -114,6 +114,7 @@ dependencies {
     implementation(libs.kermit.crashlytics)
     implementation(libs.androidx.dataStore)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.google.review)
 
     testImplementation(projects.core.test)
     testImplementation(projects.common.test)
