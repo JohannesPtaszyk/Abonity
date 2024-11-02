@@ -14,7 +14,6 @@ import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import dev.pott.abonity.core.navigation.coreNavTypeMap
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,10 +44,11 @@ class AddViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
-    private val args = savedStateHandle.toRoute<AddDestination>(coreNavTypeMap)
+    private val args = savedStateHandle.toRoute<AddDestination>()
+    private val argSubscriptionId = SubscriptionId.parse(args.subscriptionId)
 
     private val formState = MutableStateFlow(
-        if (args.subscriptionId != null) {
+        if (argSubscriptionId != null) {
             AddFormState()
         } else {
             AddFormState(paymentDateEpochMillis = clock.now().toEpochMilliseconds())
@@ -81,8 +81,8 @@ class AddViewModel @Inject constructor(
         }
 
     val state: StateFlow<AddState> = combine(
-        if (args.subscriptionId != null) {
-            getPrefilledFormState(args.subscriptionId)
+        if (argSubscriptionId != null) {
+            getPrefilledFormState(argSubscriptionId)
         } else {
             formState
         },
@@ -233,7 +233,7 @@ class AddViewModel @Inject constructor(
             type = paymentType,
         )
         return Subscription(
-            id = args.subscriptionId ?: SubscriptionId.none(),
+            id = argSubscriptionId ?: SubscriptionId.none(),
             name = input.name.value,
             description = input.description,
             paymentInfo = paymentInfo,

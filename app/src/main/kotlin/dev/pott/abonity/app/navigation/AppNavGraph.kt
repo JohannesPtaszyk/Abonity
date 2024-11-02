@@ -24,7 +24,7 @@ fun NavGraphBuilder.appNavGraph(
     homeGraph(
         openDetails = { subscriptionId ->
             navController.navigate(
-                SubscriptionNavigationDestination(subscriptionId),
+                SubscriptionNavigationDestination(subscriptionId.value),
             ) {
                 val startDestination = navController.graph.findStartDestination()
                 popUpTo(startDestination.id) { saveState = true }

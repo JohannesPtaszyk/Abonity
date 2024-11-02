@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="#EDE7F6"
+    android:background="@drawable/glance_rounded_corner_16"
+    android:padding="16dp">
+
+    <TextView
+        android:text="@string/payments_widget_preview_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#37474F"/>
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/glance_rounded_corner_16"
+        android:backgroundTint="#FFCDD2">
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment1_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#37474F"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment1_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#880E4F"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/glance_rounded_corner_16"
+        android:backgroundTint="#FFCDD2">
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment2_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#37474F"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment2_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#880E4F"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:text="@string/payments_widget_preview_date2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#37474F"/>
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/glance_rounded_corner_16"
+        android:backgroundTint="#FFCDD2">
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment3_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#37474F"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment3_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#880E4F"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/glance_rounded_corner_16"
+        android:backgroundTint="#FFCDD2">
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment4_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="#37474F"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:text="@string/payments_widget_preview_payment4_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#880E4F"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+</LinearLayout>

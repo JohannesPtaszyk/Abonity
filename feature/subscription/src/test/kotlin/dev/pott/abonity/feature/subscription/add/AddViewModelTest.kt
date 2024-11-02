@@ -12,7 +12,6 @@ import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
-import dev.pott.abonity.core.navigation.coreNavTypeMap
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
@@ -58,10 +57,7 @@ class AddViewModelTest {
             val subscriptionRepository =
                 FakeSubscriptionRepository(subscriptionFlow = flowOf(subscription))
             val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
-            val savedStateHandle = SavedStateHandle(
-                route = AddDestination(subscription.id),
-                typeMap = coreNavTypeMap,
-            )
+            val savedStateHandle = SavedStateHandle(route = AddDestination(subscription.id.value))
             val tested = AddViewModel(
                 savedStateHandle,
                 FakeClock(),

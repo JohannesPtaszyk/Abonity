@@ -24,7 +24,6 @@ import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilter
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionWithPeriodInfo
-import dev.pott.abonity.core.navigation.coreNavTypeMap
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.settings.FakeSettingsRepository
 import dev.pott.abonity.core.test.settings.entities.createTestSettings
@@ -133,10 +132,8 @@ class OverviewViewModelTest {
             val clock = FakeClock()
             val infoCalculator = PaymentInfoCalculator(clock)
             val settingsRepository = FakeSettingsRepository(createTestSettings())
-            val savedStateHandle = SavedStateHandle(
-                route = OverviewDestination(subscription.id),
-                typeMap = coreNavTypeMap,
-            )
+            val savedStateHandle =
+                SavedStateHandle(route = OverviewDestination(subscription.id.value))
             val useCase = GetSubscriptionsWithFilterUseCase(
                 GetSubscriptionsWithPeriodPrice(
                     subscriptionRepository,

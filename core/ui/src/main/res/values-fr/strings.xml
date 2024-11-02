@@ -165,4 +165,16 @@
     <string name="subscription_filter_current_period_month">Ce mois-ci</string>
     <string name="subscription_filter_current_period_week">Cette semaine</string>
     <string name="subscription_filter_current_period_day">Aujourd\'hui</string>
+    <string name="payments_widget_description">Paiements à venir</string>
+    <string name="payments_widget_no_upcoming_text">Aucun paiement en attente ! ❤️</string>
+    <string name="payments_widget_preview_date">1.1.2022</string>
+    <string name="payments_widget_preview_payment1_name">Streaming musical</string>
+    <string name="payments_widget_preview_payment1_price">19,99€</string>
+    <string name="payments_widget_preview_payment2_name">Salle de sport</string>
+    <string name="payments_widget_preview_payment2_price">29,99€</string>
+    <string name="payments_widget_preview_date2">4.1.2022</string>
+    <string name="payments_widget_preview_payment3_name">Assurance</string>
+    <string name="payments_widget_preview_payment3_price">79,99€</string>
+    <string name="payments_widget_preview_payment4_name">Internet</string>
+    <string name="payments_widget_preview_payment4_price">39,99€</string>
 </resources>

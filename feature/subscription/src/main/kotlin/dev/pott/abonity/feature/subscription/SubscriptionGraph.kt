@@ -1,14 +1,17 @@
 package dev.pott.abonity.feature.subscription
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import dev.pott.abonity.core.navigation.coreNavTypeMap
+import co.touchlab.kermit.Logger
+import dev.pott.abonity.core.navigation.Deeplinks
 import dev.pott.abonity.feature.subscription.add.AddDestination
 import dev.pott.abonity.feature.subscription.add.AddScreen
 import dev.pott.abonity.feature.subscription.add.navigateToAddDestination
@@ -25,9 +28,15 @@ fun NavGraphBuilder.subscriptionGraph(
 ) {
     navigation<SubscriptionNavigationDestination>(
         startDestination = OverviewDestination(),
-        typeMap = coreNavTypeMap,
     ) {
-        composable<OverviewDestination>(typeMap = coreNavTypeMap) { backStackEntry ->
+        composable<OverviewDestination>(
+            deepLinks = listOf(
+                navDeepLink<OverviewDestination>(basePath = Deeplinks.SUBSCRIPTION),
+            ),
+        ) { backStackEntry ->
+            LaunchedEffect(Unit) {
+                Logger.withTag("Navigation").d("OverviewDestination: ${backStackEntry.arguments}")
+            }
             OverviewRoute(
                 showAsMultiColumn = state.showOverviewAsMultiColumn,
                 onEditClick = { navController.navigateToAddDestination(it) },
@@ -41,8 +50,10 @@ fun NavGraphBuilder.subscriptionGraph(
         }
     }
     dialog<AddDestination>(
-        typeMap = coreNavTypeMap,
         dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+        deepLinks = listOf(
+            navDeepLink { uriPattern = Deeplinks.ADD_SUBSCRIPTION },
+        ),
     ) {
         AddScreen(
             close = {
