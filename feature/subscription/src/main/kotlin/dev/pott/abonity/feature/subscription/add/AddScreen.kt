@@ -108,8 +108,8 @@ fun AddScreen(
     onAddNewCategory: (name: String) -> Unit,
     onCloseAddNewCategory: () -> Unit,
     onOpenAddNewCategory: () -> Unit,
-    modifier: Modifier = Modifier,
     onCategorySelect: (category: Category) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     if (state.formState.saving == AddState.SavingState.ERROR) {
         SavingErrorDialog(resetSavingState)

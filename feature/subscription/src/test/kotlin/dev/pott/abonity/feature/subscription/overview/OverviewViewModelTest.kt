@@ -39,11 +39,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.robolectric.annotation.Config
 import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.util.Currency
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(RobolectricExtension::class, CoroutinesTestExtension::class)
+@Config(maxSdk = 34)
 class OverviewViewModelTest {
 
     @InjectTestDispatcher
