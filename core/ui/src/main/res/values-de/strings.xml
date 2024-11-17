@@ -153,4 +153,16 @@
     <string name="home_upcoming_subscriptions_tomorrow">Morgen</string>
     <string name="subscription_delete_dialog_text">Möchtest du %s wirklich löschen?</string>
     <string name="subscription_delete_dialog_title">Zahlung löschen</string>
+    <string name="payments_widget_description">Bevorstehende Zahlungen</string>
+    <string name="payments_widget_no_upcoming_text">Kein ausstehenden Zahlungen! ❤️</string>
+    <string name="payments_widget_preview_date">1.1.2022</string>
+    <string name="payments_widget_preview_payment1_name">Musik Streaming</string>
+    <string name="payments_widget_preview_payment1_price">19.99€</string>
+    <string name="payments_widget_preview_payment2_name">Fitnessstudio</string>
+    <string name="payments_widget_preview_payment2_price">29.99€</string>
+    <string name="payments_widget_preview_date2">4.1.2022"</string>
+    <string name="payments_widget_preview_payment3_name">Versicherung</string>
+    <string name="payments_widget_preview_payment3_price">79.99€</string>
+    <string name="payments_widget_preview_payment4_name">Internet</string>
+    <string name="payments_widget_preview_payment4_price">39.99€</string>
 </resources>

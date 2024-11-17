@@ -153,4 +153,18 @@
     <string name="subscription_filter_current_period_month">This month</string>
     <string name="subscription_filter_current_period_week">This week</string>
     <string name="subscription_filter_current_period_day">Today</string>
+    <string name="payments_widget_description">Upcoming payments</string>
+    <string name="payments_widget_no_upcoming_text">No upcoming payments! ❤️</string>
+    <string name="payments_widget_preview_date">1.1.2022</string>
+    <string name="payments_widget_preview_payment1_name">Music Streaming</string>
+    <string name="payments_widget_preview_payment1_price">19.99$</string>
+    <string name="payments_widget_preview_payment2_name">Gym Membership</string>
+    <string name="payments_widget_preview_payment2_price">29.99$</string>
+    <string name="payments_widget_preview_date2">4.1.2022"</string>
+    <string name="payments_widget_preview_payment3_name">Insurance</string>
+    <string name="payments_widget_preview_payment3_price">79.99$</string>
+    <string name="payments_widget_preview_payment4_name">Internet Provider</string>
+    <string name="payments_widget_preview_payment4_price">39.99$</string>
+
+
 </resources>

@@ -42,14 +42,10 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalMaterial3WindowSizeClassApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         var mainState: MainState by mutableStateOf(MainState.Loading)
-
-        splashScreen.setKeepOnScreenCondition {
-            mainState is MainState.Loading
-        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -94,7 +90,6 @@ class MainActivity : ComponentActivity() {
                         }
                         startActivity(intent)
                     },
-                    openUrl = ::openUrl,
                     promptAppStoreReview = {
                         lifecycleScope.launch {
                             val manager = ReviewManagerFactory.create(this@MainActivity)
@@ -109,7 +104,6 @@ class MainActivity : ComponentActivity() {
                 if (state is MainState.Loaded && state.showConsent) {
                     ConsentBottomSheet(
                         close = { mainViewModel.closeConsent() },
-                        openUrl = { url -> openUrl(url) },
                     )
                 }
             }
@@ -121,10 +115,6 @@ class MainActivity : ComponentActivity() {
                 .setTestDeviceIds(getMobileAdsTestDeviceIds())
                 .build(),
         )
-    }
-
-    private fun openUrl(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     private fun getMobileAdsTestDeviceIds() = BuildConfig.TEST_DEVICE_IDS.split(",")

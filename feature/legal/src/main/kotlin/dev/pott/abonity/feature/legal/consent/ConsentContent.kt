@@ -29,6 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.legal.ConsentGrant
@@ -48,7 +49,6 @@ fun ConsentContent(
     onAcceptAllConsents: () -> Unit,
     onDenyAllConsents: () -> Unit,
     save: () -> Unit,
-    onOpenPrivacyPolicy: () -> Unit,
     state: ConsentState,
     modifier: Modifier = Modifier,
     showSecondLayer: Boolean = state.showSecondLayer,
@@ -100,9 +100,9 @@ fun ConsentContent(
                     paddingValues = paddingValues,
                     state = state,
                     onToggleConsent = onToggleConsent,
-                    onOpenPrivacyPolicy = onOpenPrivacyPolicy,
                 )
             } else {
+                val uriHandler = LocalUriHandler.current
                 FirstLayer(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -111,7 +111,7 @@ fun ConsentContent(
                     onAcceptAllConsents = onAcceptAllConsents,
                     onDenyAllConsents = onDenyAllConsents,
                     onShowSecondLayer = onShowSecondLayer,
-                    onOpenPrivacyPolicy = onOpenPrivacyPolicy,
+                    onOpenPrivacyPolicy = { uriHandler.openUri(state.privacyPolicyUrl) },
                 )
             }
         }
@@ -163,7 +163,6 @@ private fun SecondLayer(
     paddingValues: PaddingValues,
     state: ConsentState,
     onToggleConsent: (ConsentServiceId) -> Unit,
-    onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -172,7 +171,8 @@ private fun SecondLayer(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            TextButton(onClick = onOpenPrivacyPolicy) {
+            val uriHandler = LocalUriHandler.current
+            TextButton(onClick = { uriHandler.openUri(state.privacyPolicyUrl) }) {
                 Text(
                     text = stringResource(
                         id = R.string.tracking_consent_dialog_second_layer_cta_privacy_policy,

@@ -12,7 +12,6 @@ import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
-import dev.pott.abonity.core.navigation.coreNavTypeMap
 import dev.pott.abonity.core.test.FakeClock
 import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
 import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
@@ -37,6 +36,7 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
+import org.robolectric.annotation.Config
 import tech.apter.junit.jupiter.robolectric.RobolectricExtension
 import java.util.Currency
 import java.util.Locale
@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(RobolectricExtension::class, CoroutinesTestExtension::class)
+@Config(maxSdk = 34)
 class AddViewModelTest {
 
     @BeforeEach
@@ -58,10 +59,7 @@ class AddViewModelTest {
             val subscriptionRepository =
                 FakeSubscriptionRepository(subscriptionFlow = flowOf(subscription))
             val categoryRepository = FakeCategoryRepository(flowOf(listOf(createTestCategory())))
-            val savedStateHandle = SavedStateHandle(
-                route = AddDestination(subscription.id),
-                typeMap = coreNavTypeMap,
-            )
+            val savedStateHandle = SavedStateHandle(route = AddDestination(subscription.id.value))
             val tested = AddViewModel(
                 savedStateHandle,
                 FakeClock(),

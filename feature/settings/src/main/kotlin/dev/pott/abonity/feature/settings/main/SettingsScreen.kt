@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,6 @@ fun SettingsScreen(
     openOssLicenses: () -> Unit,
     openNotificationSettings: () -> Unit,
     openConsentDialog: () -> Unit,
-    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -61,7 +61,6 @@ fun SettingsScreen(
         onPaymentPeriodChange = viewModel::setPeriod,
         onOpenNotificationSettingsClick = openNotificationSettings,
         openConsentDialog = openConsentDialog,
-        openUrl = openUrl,
         modifier = modifier,
     )
 }
@@ -76,7 +75,6 @@ fun SettingsScreen(
     onPaymentPeriodChange: (PaymentPeriod) -> Unit,
     onOpenNotificationSettingsClick: () -> Unit,
     openConsentDialog: () -> Unit,
-    openUrl: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -104,7 +102,6 @@ fun SettingsScreen(
                     onOpenNotificationSettingsClick,
                     onOpenOssLicensesClick,
                     openConsentDialog,
-                    openUrl,
                 )
                 item { AdCard(adId = AdId.SETTINGS_BANNER) }
             }
@@ -286,7 +283,6 @@ private fun LazyListScope.MoreSection(
     onOpenNotificationSettingsClick: () -> Unit,
     onOpenOssLicensesClick: () -> Unit,
     openConsentDialog: () -> Unit,
-    openUrl: (String) -> Unit,
 ) {
     item {
         SectionHeader(
@@ -338,6 +334,7 @@ private fun LazyListScope.MoreSection(
         )
     }
     item {
+        val uriHandler = LocalUriHandler.current
         ListItem(
             headlineContent = {
                 Text(text = stringResource(id = R.string.settings_privacy_policy_item_label))
@@ -348,10 +345,11 @@ private fun LazyListScope.MoreSection(
                     contentDescription = null,
                 )
             },
-            modifier = Modifier.clickable { openUrl(state.privacyPolicyUrl) },
+            modifier = Modifier.clickable { uriHandler.openUri(state.privacyPolicyUrl) },
         )
     }
     item {
+        val uriHandler = LocalUriHandler.current
         ListItem(
             headlineContent = {
                 Text(text = stringResource(id = R.string.settings_imprint_item_label))
@@ -362,7 +360,7 @@ private fun LazyListScope.MoreSection(
                     contentDescription = null,
                 )
             },
-            modifier = Modifier.clickable { openUrl(state.imprintUrl) },
+            modifier = Modifier.clickable { uriHandler.openUri(state.imprintUrl) },
         )
     }
 }

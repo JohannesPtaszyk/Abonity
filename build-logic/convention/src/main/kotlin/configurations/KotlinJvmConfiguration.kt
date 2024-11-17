@@ -25,7 +25,7 @@ internal fun Project.configureKotlinTest() {
                 TestLogEvent.SKIPPED,
                 TestLogEvent.FAILED,
             )
-            exceptionFormat = TestExceptionFormat.SHORT
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }

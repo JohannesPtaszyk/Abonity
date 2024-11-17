@@ -11,7 +11,6 @@ import dev.pott.abonity.core.domain.subscription.usecase.GetSubscriptionsWithFil
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.SubscriptionFilterItem
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import dev.pott.abonity.core.navigation.coreNavTypeMap
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -34,9 +33,9 @@ class OverviewViewModel @Inject constructor(
     private val subscriptionRepository: SubscriptionRepository,
 ) : ViewModel() {
 
-    private val args = savedStateHandle.toRoute<OverviewDestination>(coreNavTypeMap)
+    private val args = savedStateHandle.toRoute<OverviewDestination>()
 
-    private val selectedDetailIdFlow = MutableStateFlow(args.detailId)
+    private val selectedDetailIdFlow = MutableStateFlow(SubscriptionId.parse(args.detailId))
 
     private val selectedFilterItemsFlow = MutableStateFlow<ImmutableList<SubscriptionFilterItem>>(
         persistentListOf(),

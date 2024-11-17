@@ -19,13 +19,12 @@ fun NavGraphBuilder.appNavGraph(
     state: AppState,
     navController: NavController,
     openNotificationSettings: () -> Unit,
-    openUrl: (String) -> Unit,
     promptAppStoreReview: () -> Unit,
 ) {
     homeGraph(
         openDetails = { subscriptionId ->
             navController.navigate(
-                SubscriptionNavigationDestination(subscriptionId),
+                SubscriptionNavigationDestination(subscriptionId.value),
             ) {
                 val startDestination = navController.graph.findStartDestination()
                 popUpTo(startDestination.id) { saveState = true }
@@ -42,11 +41,9 @@ fun NavGraphBuilder.appNavGraph(
         openOssLicenses = { navController.navigate(OSS_LICENSE_ACTIVITY_ROUTE) },
         openNotificationSettings = openNotificationSettings,
         openConsentDialog = { navController.navigateToConsent() },
-        openUrl = openUrl,
         nestedGraphs = {
             consentGraph(
                 close = { navController.popBackStack() },
-                openUrl = openUrl,
             )
         },
     )

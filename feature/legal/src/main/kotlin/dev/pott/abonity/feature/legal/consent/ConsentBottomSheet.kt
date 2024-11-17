@@ -12,11 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConsentBottomSheet(
-    close: () -> Unit,
-    openUrl: (String) -> Unit,
-    viewModel: ConsentViewModel = hiltViewModel(),
-) {
+fun ConsentBottomSheet(close: () -> Unit, viewModel: ConsentViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(state.shouldClose, close) {
         if (state.shouldClose) close()
@@ -33,7 +29,6 @@ fun ConsentBottomSheet(
             onAcceptAllConsents = viewModel::acceptAll,
             onDenyAllConsents = viewModel::denyAll,
             save = viewModel::save,
-            onOpenPrivacyPolicy = { openUrl(state.privacyPolicyUrl) },
             state = state,
         )
     }

@@ -5,8 +5,8 @@ import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddDestination(val subscriptionId: SubscriptionId? = null)
+data class AddDestination(val subscriptionId: Long? = null)
 
 fun NavController.navigateToAddDestination(subscriptionId: SubscriptionId? = null) {
-    navigate(AddDestination(subscriptionId))
+    navigate(AddDestination(subscriptionId?.value))
 }

@@ -7,10 +7,13 @@ import javax.inject.Inject
 
 class SubscriptionRepositoryImpl @Inject constructor(
     private val localDataSource: SubscriptionLocalDataSource,
+    private val widgetUpdater: SubscriptionWidgetUpdater,
 ) : SubscriptionRepository {
 
     override suspend fun addOrUpdateSubscription(subscription: Subscription): Subscription =
-        localDataSource.addOrUpdateSubscription(subscription)
+        localDataSource.addOrUpdateSubscription(subscription).also {
+            widgetUpdater.update()
+        }
 
     override fun getSubscriptionsFlow(): Flow<List<Subscription>> =
         localDataSource.getSubscriptionsFlow()
@@ -20,9 +23,11 @@ class SubscriptionRepositoryImpl @Inject constructor(
 
     override suspend fun deleteSubscription(subscriptionId: SubscriptionId) {
         localDataSource.deleteSubscription(subscriptionId)
+        widgetUpdater.update()
     }
 
     override suspend fun deleteSubscriptions(subscriptionIds: List<SubscriptionId>) {
         localDataSource.deleteSubscriptions(subscriptionIds)
+        widgetUpdater.update()
     }
 }
