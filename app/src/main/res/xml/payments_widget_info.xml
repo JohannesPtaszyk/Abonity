@@ -7,7 +7,7 @@
     android:minWidth="200dp"
     android:widgetCategory="home_screen"
     android:description="@string/payments_widget_description"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
     android:previewLayout="@layout/payments_widget_preview"
     android:targetCellHeight="2"
     android:targetCellWidth="3"
