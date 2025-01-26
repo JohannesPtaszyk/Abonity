@@ -29,7 +29,7 @@ private fun Project.configureSpotless() {
             targetExclude("**/build/**", "**/tmp/**", "**/.gradle/**")
 
             val ktlintVersion = libs.findVersion("ktlint").get().toString()
-            ktlint(ktlintVersion).editorConfigOverride(mapOf("android" to "true"))
+            ktlint(ktlintVersion)
         }
 
         format("xml") {
