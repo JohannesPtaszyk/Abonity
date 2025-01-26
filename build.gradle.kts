@@ -8,6 +8,8 @@ buildscript {
         classpath(libs.google.oss.licenses.plugin) {
             exclude(group = "com.google.protobuf")
         }
+        // Workaround https://issuetracker.google.com/issues/380600747
+        classpath("org.bouncycastle:bcutil-jdk18on:1.79")
     }
 }
 
