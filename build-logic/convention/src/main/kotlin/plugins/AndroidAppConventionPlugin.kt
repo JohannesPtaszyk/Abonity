@@ -22,7 +22,7 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("dev.pott.android.lint")
                 apply("org.jetbrains.kotlin.android")
                 apply("com.google.gms.google-services")
-                apply("com.google.android.gms.oss-licenses-plugin")
+                apply("com.mikepenz.aboutlibraries.plugin")
                 apply("dev.shreyaspatil.compose-compiler-report-generator")
                 apply("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
             }

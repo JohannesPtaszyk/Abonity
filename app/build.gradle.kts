@@ -95,6 +95,8 @@ dependencies {
     implementation(projects.feature.settings)
     implementation(projects.feature.legal)
 
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.aboutlibraries.compose.m3)
     implementation(libs.ads)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
@@ -114,7 +116,6 @@ dependencies {
     implementation(libs.firebase.cloud.messaging)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.inapp.messaging)
-    implementation(libs.google.oss.licenses)
     implementation(libs.hilt.android)
     implementation(libs.kermit)
     implementation(libs.kermit.crashlytics)
