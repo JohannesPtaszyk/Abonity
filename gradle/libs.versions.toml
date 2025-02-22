@@ -117,6 +117,7 @@ junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junitBom" 
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }
 junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
 junit-robolectric-plugin = { group = "tech.apter.junit5.jupiter", name = "robolectric-extension-gradle-plugin", version.ref = "junit5RobolectricPlugin" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 kermit-crashlytics = { group = "co.touchlab", name = "kermit-crashlytics", version.ref = "kermit" }
