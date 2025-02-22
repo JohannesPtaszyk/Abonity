@@ -22,4 +22,9 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(projects.core.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher) {
+        because(
+            "Only needed to run tests in a version of IntelliJ IDEA that bundles older versions",
+        )
+    }
 }

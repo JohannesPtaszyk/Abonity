@@ -13,8 +13,14 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.assertk)
+    testImplementation(libs.mockk)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter.api)
+
     testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.mockk)
+    testRuntimeOnly(libs.junit.platform.launcher) {
+        because(
+            "Only needed to run tests in a version of IntelliJ IDEA that bundles older versions",
+        )
+    }
 }
