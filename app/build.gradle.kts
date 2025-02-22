@@ -29,9 +29,12 @@ android {
             useSupportLibrary = true
         }
 
-        resourceConfigurations.addAll(listOf("en", "de", "fr"))
+        base.archivesName = "$applicationId($versionName)-$versionCode"
+    }
 
-        setProperty("archivesBaseName", "$applicationId($versionName)-$versionCode")
+    androidResources {
+        @Suppress("UnstableApiUsage")
+        localeFilters.addAll(listOf("en", "de", "fr"))
     }
 
     buildFeatures {
