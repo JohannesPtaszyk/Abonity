@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -25,12 +27,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.legal.ConsentGrant
 import dev.pott.abonity.core.entity.legal.ConsentServiceId
@@ -52,10 +57,14 @@ fun ConsentContent(
     state: ConsentState,
     modifier: Modifier = Modifier,
     showSecondLayer: Boolean = state.showSecondLayer,
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    topBarInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+    topBarColor: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier,
+        containerColor = containerColor,
         topBar = {
             TopAppBar(
                 title = {
@@ -86,6 +95,8 @@ fun ConsentContent(
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior,
+                windowInsets = topBarInsets,
+                colors = topBarColor,
             )
         },
     ) { paddingValues ->
@@ -130,7 +141,10 @@ private fun FirstLayer(
         Text(text = stringResource(id = R.string.tracking_consent_dialog_description))
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = onOpenPrivacyPolicy) {
-            Text(text = stringResource(id = R.string.tracking_consent_dialog_cta_privacy_policy))
+            Text(
+                text = stringResource(id = R.string.tracking_consent_dialog_cta_privacy_policy),
+                style = LocalTextStyle.current.copy(textDecoration = TextDecoration.Underline),
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -177,6 +191,7 @@ private fun SecondLayer(
                     text = stringResource(
                         id = R.string.tracking_consent_dialog_second_layer_cta_privacy_policy,
                     ),
+                    style = LocalTextStyle.current.copy(textDecoration = TextDecoration.Underline),
                 )
             }
         }
@@ -210,10 +225,16 @@ fun ConsentItem(
             Text(
                 text = stringResource(id = categoryRes),
                 style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
             )
+            Spacer(modifier = Modifier.height(4.dp))
             val nameRes = getNameRes(service)
-            Text(text = stringResource(id = nameRes), style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = stringResource(id = nameRes),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             val descriptionRes = getDescriptionRes(service)
             Text(text = stringResource(id = descriptionRes))
         }

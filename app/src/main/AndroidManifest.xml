@@ -37,14 +37,6 @@
 
         </activity>
 
-        <activity
-            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
-            android:theme="@style/Theme.App.OssLicenses" />
-
-        <activity
-            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
-            android:theme="@style/Theme.App.OssLicenses" />
-
         <service
             android:name=".firebase.MessagingService"
             android:exported="false">
@@ -67,6 +59,18 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/payments_widget_info" />
         </receiver>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+
+        </provider>
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

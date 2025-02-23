@@ -5,13 +5,13 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath(libs.google.oss.licenses.plugin) {
-            exclude(group = "com.google.protobuf")
-        }
+        // Workaround https://issuetracker.google.com/issues/380600747
+        classpath(libs.bcutil.jdk18on)
     }
 }
 
 plugins {
+    alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.compose.compiler.report) apply false
     alias(libs.plugins.detekt) apply false
