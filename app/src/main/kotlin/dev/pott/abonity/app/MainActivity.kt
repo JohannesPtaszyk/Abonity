@@ -95,6 +95,8 @@ class MainActivity : ComponentActivity() {
                             val manager = ReviewManagerFactory.create(this@MainActivity)
                             manager.requestReviewFlow().addOnSuccessListener {
                                 manager.launchReviewFlow(this@MainActivity, it)
+                            }.addOnFailureListener {
+                                logger.e(it) { "Error requesting review" }
                             }
                         }
                     },
