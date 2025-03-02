@@ -10,19 +10,16 @@ import co.touchlab.kermit.ExperimentalKermitApi
 import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
-import dagger.hilt.EntryPoint
-import dagger.hilt.EntryPoints
-import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
-import dagger.hilt.components.SingletonComponent
 import dev.pott.abonity.app.widget.work.SubscriptionWidgetUpdateWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -35,11 +32,8 @@ class AbonityApplication :
     Application(),
     Configuration.Provider {
 
-    @EntryPoint
-    @InstallIn(SingletonComponent::class)
-    interface HiltWorkerFactoryEntryPoint {
-        fun workerFactory(): HiltWorkerFactory
-    }
+    @Inject
+    lateinit var hiltWorkerFactory: HiltWorkerFactory
 
     @Inject
     lateinit var trackingServiceManager: TrackingServiceManager
@@ -55,19 +49,28 @@ class AbonityApplication :
         super.onCreate()
         trackingServiceManager.init()
         scope.launch {
-            val beginningOfNextDayMillis = clock.now()
+            val now = clock.now()
+            val timeZone = TimeZone.currentSystemDefault()
+            val startOfNextDay = now
                 .plus(1.days)
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date
-                .atStartOfDayIn(TimeZone.currentSystemDefault())
-                .toEpochMilliseconds()
+                .toLocalDateTime(timeZone)
+                .let {
+                    LocalDateTime(
+                        it.year,
+                        it.monthNumber,
+                        it.dayOfMonth,
+                        0,
+                        0,
+                        0,
+                    ).toInstant(timeZone)
+                }.toEpochMilliseconds()
 
             val workRequestBuilder = PeriodicWorkRequestBuilder<SubscriptionWidgetUpdateWorker>(
                 1L,
                 TimeUnit.DAYS,
             )
             val workRequest = workRequestBuilder
-                .setNextScheduleTimeOverride(beginningOfNextDayMillis)
+                .setNextScheduleTimeOverride(startOfNextDay)
                 .build()
 
             WorkManager
@@ -80,8 +83,8 @@ class AbonityApplication :
         }
     }
 
-    override val workManagerConfiguration: Configuration =
-        Configuration.Builder().setWorkerFactory(
-            EntryPoints.get(this, HiltWorkerFactoryEntryPoint::class.java).workerFactory(),
-        ).build()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(hiltWorkerFactory)
+            .build()
 }
