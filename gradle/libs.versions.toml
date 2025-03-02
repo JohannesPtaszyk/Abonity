@@ -5,7 +5,7 @@ targetSdkVersion = "35"
 
 aboutLibraries = "11.6.3"
 accompanist = "0.37.2"
-ads = "23.6.0"
+ads = "24.0.0"
 androidDesugarJdkLibs = "2.1.5"
 androidGradlePlugin = "8.8.2"
 androidLintSecurity = "1.0.3"
