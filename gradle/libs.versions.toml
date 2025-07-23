@@ -28,7 +28,6 @@ androidxWindowManager = "1.4.0"
 androidxWork = "2.10.2"
 appsweepGradlePlugin = "1.5.9"
 assertk = "0.28.1"
-bcutilJdk18on = "1.80"
 composeCompilerReport = "1.4.2"
 detekt = "1.23.8"
 detektComposeRules = "0.4.22"
@@ -102,7 +101,6 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 androidx-window-manager = { group = "androidx.window", name = "window", version.ref = "androidxWindowManager" }
 androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
-bcutil-jdk18on = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bcutilJdk18on" }
 detekt-composeRules = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektComposeRules" }
 detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "faker" }
