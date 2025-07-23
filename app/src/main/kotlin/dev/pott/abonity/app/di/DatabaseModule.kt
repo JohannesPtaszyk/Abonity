@@ -24,6 +24,6 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             APP_DATABASE,
-        ).fallbackToDestructiveMigration()
+        ).fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 }

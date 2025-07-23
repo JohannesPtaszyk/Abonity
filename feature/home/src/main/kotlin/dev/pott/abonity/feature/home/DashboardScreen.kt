@@ -126,7 +126,7 @@ fun DashboardScreen(
         AnimatedContent(
             targetState = state,
             contentKey = {
-                when (state) {
+                when (it) {
                     is DashboardState.Loaded -> "Loaded"
                     DashboardState.Loading -> "Loading"
                 }
