@@ -6,12 +6,12 @@ import dev.pott.abonity.core.entity.notification.NotificationTeaser
 import dev.pott.abonity.core.local.notification.datastore.entities.NotificationTeaserEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import kotlin.time.Clock
 
 class NotificationTeaserDataStoreDataSource @Inject constructor(
     private val clock: Clock,

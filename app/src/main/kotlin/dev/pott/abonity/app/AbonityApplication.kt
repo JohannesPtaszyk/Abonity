@@ -16,13 +16,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
 private const val SUBSCRIPTION_WIDGET_WORK_ID = "SUBSCRIPTION_WIDGET_UPDATE"

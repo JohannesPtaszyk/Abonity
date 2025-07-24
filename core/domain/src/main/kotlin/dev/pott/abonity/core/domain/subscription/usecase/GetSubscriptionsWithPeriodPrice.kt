@@ -19,7 +19,7 @@ class GetSubscriptionsWithPeriodPrice @Inject constructor(
     private val subscriptionRepository: SubscriptionRepository,
     private val settingsRepository: SettingsRepository,
     private val infoCalculator: PaymentInfoCalculator,
-    @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
     operator fun invoke(): Flow<List<SubscriptionWithPeriodInfo>> =
         combine(

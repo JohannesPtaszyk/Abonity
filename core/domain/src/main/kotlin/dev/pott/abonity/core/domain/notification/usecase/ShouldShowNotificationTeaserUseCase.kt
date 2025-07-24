@@ -3,11 +3,11 @@ package dev.pott.abonity.core.domain.notification.usecase
 import dev.pott.abonity.core.domain.notification.NotificationTeaserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import org.jetbrains.annotations.VisibleForTesting
 import javax.inject.Inject
+import kotlin.time.Clock
 
 @VisibleForTesting
 const val TIME_UNTIL_SHOWN = 14

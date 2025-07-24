@@ -60,11 +60,11 @@ import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
+import kotlin.time.Clock
 
 private const val SUBSCRIPTION_FILTER = "SubscriptionFilter"
 private const val SUBSCRIPTION_CARD = "SubscriptionFilter"

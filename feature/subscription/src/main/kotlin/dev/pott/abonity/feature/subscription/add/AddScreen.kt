@@ -52,8 +52,8 @@ import dev.pott.abonity.feature.subscription.add.components.DescriptionInput
 import dev.pott.abonity.feature.subscription.add.components.NameInput
 import dev.pott.abonity.feature.subscription.add.components.PriceInput
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.datetime.Clock
 import java.util.Currency
+import kotlin.time.Clock
 
 @Composable
 fun AddScreen(

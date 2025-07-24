@@ -17,13 +17,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import dev.pott.abonity.core.ui.preview.PreviewCommonLocaleConfig
 import dev.pott.abonity.core.ui.util.rememberDefaultLocale
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.time.Instant
 
 @Composable
 fun FormattedDate(

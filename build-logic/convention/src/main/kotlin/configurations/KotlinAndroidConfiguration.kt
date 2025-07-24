@@ -6,8 +6,10 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 /**
  * Configure base Kotlin with Android options
@@ -48,6 +50,12 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
     }
 
     configureKotlinTest()
+
+    tasks.withType<KotlinCompilationTask<*>>().configureEach {
+        compilerOptions.optIn.apply {
+            add("kotlin.time.ExperimentalTime")
+        }
+    }
 
     dependencies {
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
