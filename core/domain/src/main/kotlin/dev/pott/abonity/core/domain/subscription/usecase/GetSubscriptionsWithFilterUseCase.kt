@@ -16,17 +16,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import javax.inject.Inject
+import kotlin.time.Clock
 
 class GetSubscriptionsWithFilterUseCase @Inject constructor(
     getSubscription: GetSubscriptionsWithPeriodPrice,
     settingsRepository: SettingsRepository,
     private val calculator: PaymentInfoCalculator,
     private val clock: Clock,
-    @Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(DEFAULT) private val defaultDispatcher: CoroutineDispatcher,
 ) {
 
     private val paymentPeriodFlow = settingsRepository.getSettingsFlow().map { it.period }

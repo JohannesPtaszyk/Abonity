@@ -69,7 +69,6 @@ import dev.pott.abonity.core.ui.util.plus
 import dev.pott.abonity.feature.home.components.NoSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NoUpcomingSubscriptionTeaser
 import dev.pott.abonity.feature.home.components.NotificationPermissionTeaser
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -78,6 +77,7 @@ import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+import kotlin.time.Clock
 
 @Composable
 fun DashboardScreen(
@@ -126,7 +126,7 @@ fun DashboardScreen(
         AnimatedContent(
             targetState = state,
             contentKey = {
-                when (state) {
+                when (it) {
                     is DashboardState.Loaded -> "Loaded"
                     DashboardState.Loading -> "Loading"
                 }

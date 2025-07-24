@@ -1,68 +1,67 @@
 [versions]
-compileSdkVersion = "35"
-minSdkVersion = "21"
-targetSdkVersion = "35"
+compileSdkVersion = "36"
+minSdkVersion = "23"
+targetSdkVersion = "36"
 
-aboutLibraries = "11.6.3"
-accompanist = "0.37.2"
-ads = "23.6.0"
+aboutLibraries = "12.2.4"
+accompanist = "0.37.3"
+ads = "24.4.0"
 androidDesugarJdkLibs = "2.1.5"
-androidGradlePlugin = "8.8.2"
+androidGradlePlugin = "8.11.1"
 androidLintSecurity = "1.0.3"
-androidxActivity = "1.10.0"
-androidxAppCompat = "1.7.0"
-androidxComposeBom = "2025.02.00"
-androidxConstraint = "1.0.1"
-androidxCore = "1.15.0"
+androidxActivity = "1.10.1"
+androidxAppCompat = "1.7.1"
+androidxComposeBom = "2025.07.00"
+androidxConstraint = "1.1.1"
+androidxCore = "1.16.0"
 androidxCoreSplashscreen = "1.0.1"
-androidxDataStore = "1.1.3"
+androidxDataStore = "1.1.7"
 androidxEspresso = "3.6.1"
 androidxHiltNavigationCompose = "1.2.0"
 androidxHiltWork = "1.2.0"
-androidxLifecycle = "2.8.7"
-androidxNavigation = "2.8.8"
-androidxMaterial = "1.3.1"
+androidxLifecycle = "2.9.2"
+androidxNavigation = "2.9.2"
+androidxMaterial = "1.3.2"
 androidxTestCore = "1.5.0"
 androidxTestExt = "1.2.1"
-androidxWindowManager = "1.3.0"
-androidxWork = "2.10.0"
-appsweepGradlePlugin = "1.5.9"
+androidxWindowManager = "1.4.0"
+androidxWork = "2.10.2"
+appsweepGradlePlugin = "1.5.10"
 assertk = "0.28.1"
-bcutilJdk18on = "1.80"
-composeCompilerReport = "1.4.1"
+composeCompilerReport = "1.4.2"
 detekt = "1.23.8"
-detektComposeRules = "0.4.22"
+detektComposeRules = "0.4.26"
 faker = "1.16.0"
 firebaseDistributionPlugin = "5.1.1"
-firebaseBom = "33.10.0"
-firebaseCrashlyticsPlugin = "3.0.3"
-firebasePerfPlugin = "1.4.2"
-gmsPlugin = "4.4.2"
+firebaseBom = "34.0.0"
+firebaseCrashlyticsPlugin = "3.0.5"
+firebasePerfPlugin = "2.0.0"
+gmsPlugin = "4.4.3"
 glance = "1.1.1"
-hilt = "2.55"
+hilt = "2.57"
 hiltExt = "1.2.0"
 javaxInject = "1"
-junitBom = "5.12.0"
+junitBom = "5.13.4"
 junit5RobolectricPlugin = "0.9.0"
-kermit = "2.0.5"
-kotlin = "2.1.10"
-kotlinCollections = "0.3.8"
-kotlinxCoroutines = "1.10.1"
-kotlinxDatetime = "0.6.2"
-kotlinxSerialization = "1.8.0"
+kermit = "2.0.6"
+kotlin = "2.2.0"
+kotlinCollections = "0.4.0"
+kotlinxCoroutines = "1.10.2"
+kotlinxDatetime = "0.7.1"
+kotlinxSerialization = "1.9.0"
 kover = "0.9.1"
-ksp = "2.1.10-1.0.31"
-ktlint = "1.5.0"
-mockk = "1.13.17"
-room = "2.6.1"
+ksp = "2.2.0-2.0.2"
+ktlint = "1.7.1"
+mockk = "1.14.5"
+room = "2.7.2"
 playPublisher = "3.12.1"
 playReview = "2.0.2"
 secrets = "2.0.1"
-sonar = "6.0.1.5171"
-spotless = "7.0.2"
-turbine = "1.2.0"
+sonar = "6.2.0.5505"
+spotless = "7.2.1"
+turbine = "1.2.1"
 versionCompare = "1.5.0"
-uiTextGoogleFonts = "1.7.8"
+uiTextGoogleFonts = "1.8.3"
 
 [libraries]
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
@@ -102,17 +101,16 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 androidx-window-manager = { group = "androidx.window", name = "window", version.ref = "androidxWindowManager" }
 androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
-bcutil-jdk18on = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bcutilJdk18on" }
 detekt-composeRules = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "detektComposeRules" }
 detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 faker = { group = "io.github.serpro69", name = "kotlin-faker", version.ref = "faker" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
-firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display-ktx" }
-firebase-performance = { group = "com.google.firebase", name = "firebase-perf-ktx" }
+firebase-inapp-messaging = { group = "com.google.firebase", name = "firebase-inappmessaging-display" }
+firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 google-review = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }

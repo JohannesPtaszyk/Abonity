@@ -1,5 +1,6 @@
 package dev.pott.abonity.app.widget.components
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ fun GlanceFormattedPrice(
     GlanceText(formatted, modifier, style, color, maxLines)
 }
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 private fun rememberFormattedPrice(value: Double, currency: Currency): String {
     val locale = LocalContext.current.resources.configuration.let {

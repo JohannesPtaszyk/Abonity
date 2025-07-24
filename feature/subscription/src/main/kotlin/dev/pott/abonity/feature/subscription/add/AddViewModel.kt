@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -34,6 +33,7 @@ import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.time.Clock
 
 @Suppress("TooManyFunctions")
 @HiltViewModel

@@ -4,10 +4,6 @@ buildscript {
         google()
         gradlePluginPortal()
     }
-    dependencies {
-        // Workaround https://issuetracker.google.com/issues/380600747
-        classpath(libs.bcutil.jdk18on)
-    }
 }
 
 plugins {

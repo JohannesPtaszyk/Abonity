@@ -38,11 +38,11 @@ import dev.pott.abonity.core.ui.theme.AppTheme
 import dev.pott.abonity.feature.subscription.detail.DetailScreen
 import dev.pott.abonity.feature.subscription.detail.DetailState
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Currency
+import kotlin.time.Clock
 
 @Composable
 fun OverviewScreenWithDetails(

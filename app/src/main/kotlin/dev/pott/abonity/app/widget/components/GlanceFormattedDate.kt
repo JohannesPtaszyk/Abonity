@@ -1,5 +1,6 @@
 package dev.pott.abonity.app.widget.components
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ fun GlanceFormattedDate(
     GlanceText(formattedDate, modifier, style, color, maxLines)
 }
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun rememberFormattedDate(date: LocalDate): String {
     val locale = LocalContext.current.resources.configuration.let {
