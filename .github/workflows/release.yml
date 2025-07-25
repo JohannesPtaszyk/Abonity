@@ -63,8 +63,10 @@ jobs:
         run: |
           ./gradlew createRcTag --push
 
-#      - name: AppSweep Scan
-#        env:
-#          APPSWEEP_API_KEY: ${{ secrets.APPSWEEP_API_KEY }}
-#        run: ./gradlew uploadToAppSweepReleaseBundle
-          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          generate_release_notes: true
+          files: app/build/outputs/bundle/release/*-release.aab
