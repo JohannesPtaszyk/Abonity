@@ -3,6 +3,7 @@
 # Abonity - Your Ultimate Subscription Management Companion
 
 [![stability-mature](https://img.shields.io/badge/stability-mature-008000.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#mature)
+
 Android application for managing your subscriptions. 
 
 ## About
