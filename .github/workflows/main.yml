@@ -52,6 +52,26 @@ jobs:
       - name: Promote Internal to Release
         run: ./gradlew promoteArtifact --from-track internal --promote-track production
 
+      # ... (other parts of your workflow) ...
+
       - name: Create Version Tag
+        id: create_tag
         run: |
           ./gradlew createReleaseTagFromLatestRc --push
+          git fetch origin --tags --force
+          LATEST_TAG=$(git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short)' --count=1)
+          if [ -z "${LATEST_TAG}" ]; then
+            echo "Error: Could not determine the latest tag."
+            exit 1
+          fi
+          echo "Using tag: ${LATEST_TAG} for the release."
+          echo "tag_name=${LATEST_TAG}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag_name }}
+          generate_release_notes: true
+          files: app/build/outputs/bundle/release/*-release.aab
