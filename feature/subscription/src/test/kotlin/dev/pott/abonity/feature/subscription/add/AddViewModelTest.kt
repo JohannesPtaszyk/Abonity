@@ -49,7 +49,7 @@ class AddViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        Locale.setDefault(Locale("de", "DE"))
+        Locale.setDefault(Locale.GERMANY)
     }
 
     @Test

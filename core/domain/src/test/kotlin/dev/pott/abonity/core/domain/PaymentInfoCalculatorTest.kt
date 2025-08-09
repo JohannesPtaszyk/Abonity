@@ -7,11 +7,11 @@ import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import java.util.Currency
+import kotlin.time.Instant
 
 class PaymentInfoCalculatorTest {
     @TestFactory

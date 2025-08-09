@@ -12,11 +12,11 @@ import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.time.Instant
 
 @ExtendWith(CoroutinesTestExtension::class)
 class DetailViewModelTest {

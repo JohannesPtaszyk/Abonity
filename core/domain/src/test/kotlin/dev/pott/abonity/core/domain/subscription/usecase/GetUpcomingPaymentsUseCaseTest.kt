@@ -20,11 +20,11 @@ import dev.pott.abonity.core.entity.subscription.UpcomingPayments
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
+import kotlin.time.Instant
 
 @ExtendWith(CoroutinesTestExtension::class)
 class GetUpcomingPaymentsUseCaseTest {
