@@ -33,5 +33,6 @@ internal fun Project.configureKotlinTest() {
             )
             exceptionFormat = TestExceptionFormat.FULL
         }
+        failOnNoDiscoveredTests.set(false)
     }
 }
