@@ -55,6 +55,9 @@ jobs:
           echo "Using tag: ${LATEST_TAG} for the release."
           echo "tag_name=${LATEST_TAG}" >> "${GITHUB_OUTPUT}"
 
+      - name: Promote Internal to Release
+        run: ./gradlew promoteArtifact --from-track internal --promote-track production
+
       - name: Bundle Release AAB
         env:
           ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
@@ -62,8 +65,12 @@ jobs:
           ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
         run: ./gradlew bundleRelease
 
-      - name: Promote Internal to Release
-        run: ./gradlew promoteArtifact --from-track internal --promote-track production
+      - name: Build APK
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -72,4 +79,6 @@ jobs:
         with:
           tag_name: ${{ steps.create_tag.outputs.tag_name }}
           generate_release_notes: true
-          files: app/build/outputs/bundle/release/*-release.aab
+          files: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk
