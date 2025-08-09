@@ -5,6 +5,7 @@ import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverReportFiltersConfig
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.dependencies
 
 fun KoverReportFiltersConfig.coverageExclusions() {
     excludes {
@@ -64,6 +65,14 @@ fun Project.applyKoverProject() {
         reports {
             filters {
                 coverageExclusions()
+            }
+        }
+    }
+
+    dependencies {
+        subprojects.forEach {
+            it.pluginManager.withPlugin("org.jetbrains.kotlinx.kover") {
+                add("kover", it)
             }
         }
     }
