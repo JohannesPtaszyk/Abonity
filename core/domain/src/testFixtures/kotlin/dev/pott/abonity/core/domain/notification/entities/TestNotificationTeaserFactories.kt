@@ -6,8 +6,8 @@ import kotlinx.datetime.LocalDateTime
 fun createTestNotificationTeaser(
     lastClosed: LocalDateTime = LocalDateTime(
         year = 1,
-        monthNumber = 1,
-        dayOfMonth = 1,
+        month = 1,
+        day = 1,
         hour = 1,
         minute = 1,
         second = 1,

@@ -12,13 +12,13 @@ import org.gradle.kotlin.dsl.invoke
 internal fun configureGradleManagedDevices(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     val pixel6 = GradleManagedDeviceConfig("Pixel 6", 34, "google")
 
-    val allDevices = listOf(pixel6)
+    val devices = listOf(pixel6)
     val ciDevices = listOf(pixel6)
 
     commonExtension.testOptions {
         managedDevices {
-            devices {
-                allDevices.forEach { deviceConfig ->
+            allDevices {
+                devices.forEach { deviceConfig ->
                     maybeCreate(deviceConfig.taskName, ManagedVirtualDevice::class.java).apply {
                         device = deviceConfig.device
                         apiLevel = deviceConfig.apiLevel
@@ -29,7 +29,7 @@ internal fun configureGradleManagedDevices(commonExtension: CommonExtension<*, *
             groups {
                 maybeCreate("ci").apply {
                     ciDevices.forEach { deviceConfig ->
-                        targetDevices.add(devices[deviceConfig.taskName])
+                        targetDevices.add(allDevices[deviceConfig.taskName])
                     }
                 }
             }

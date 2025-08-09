@@ -57,8 +57,8 @@ class AbonityApplication :
                 .let {
                     LocalDateTime(
                         it.year,
-                        it.monthNumber,
-                        it.dayOfMonth,
+                        it.month,
+                        it.day,
                         0,
                         0,
                         0,

@@ -10,7 +10,7 @@ import dev.pott.abonity.feature.subscription.SubscriptionNavigationDestination
 import kotlin.reflect.KClass
 
 enum class NavigationItem(
-    @StringRes val titleRes: Int,
+    @param:StringRes val titleRes: Int,
     val icon: ImageVector,
     val destination: KClass<*>,
 ) {

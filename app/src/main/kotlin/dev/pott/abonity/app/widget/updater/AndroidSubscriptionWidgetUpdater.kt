@@ -8,7 +8,7 @@ import dev.pott.abonity.core.domain.subscription.SubscriptionWidgetUpdater
 import javax.inject.Inject
 
 class AndroidSubscriptionWidgetUpdater @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : SubscriptionWidgetUpdater {
     override suspend fun update() {
         PaymentsWidget().updateAll(context)

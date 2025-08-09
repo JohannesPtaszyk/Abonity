@@ -6,9 +6,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.components.navigation.BackButton
@@ -30,10 +32,12 @@ fun OssLicensesScreen(navigateUp: () -> Unit, modifier: Modifier = Modifier) {
             )
         },
     ) {
+        val libs by rememberLibraries()
         LibrariesContainer(
             modifier = Modifier.fillMaxSize(),
             contentPadding = it,
             showDescription = true,
+            libraries = libs,
         )
     }
 }
