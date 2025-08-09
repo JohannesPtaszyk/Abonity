@@ -42,18 +42,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Bundle Release AAB
-        env:
-          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
-          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
-          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
-        run: ./gradlew bundleRelease
-
-      - name: Promote Internal to Release
-        run: ./gradlew promoteArtifact --from-track internal --promote-track production
-
-      # ... (other parts of your workflow) ...
-
       - name: Create Version Tag
         id: create_tag
         run: |
@@ -66,6 +54,16 @@ jobs:
           fi
           echo "Using tag: ${LATEST_TAG} for the release."
           echo "tag_name=${LATEST_TAG}" >> "${GITHUB_OUTPUT}"
+
+      - name: Bundle Release AAB
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Promote Internal to Release
+        run: ./gradlew promoteArtifact --from-track internal --promote-track production
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
