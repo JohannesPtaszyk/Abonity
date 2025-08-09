@@ -29,11 +29,3 @@ plugins {
     alias(libs.plugins.junit5.robolectric) apply false
     id("dev.pott.project")
 }
-
-dependencies {
-    subprojects.forEach {
-        it.pluginManager.withPlugin("org.jetbrains.kotlinx.kover") {
-            add("kover", it)
-        }
-    }
-}
