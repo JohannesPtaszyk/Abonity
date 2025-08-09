@@ -10,7 +10,9 @@ dependencies {
     implementation(libs.javax.inject)
     implementation(libs.kermit)
 
-    testImplementation(projects.core.test)
+    testFixturesImplementation(libs.kotlinx.coroutines.core)
+    testFixturesImplementation(libs.faker)
+
     testImplementation(projects.common.test)
     testImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)

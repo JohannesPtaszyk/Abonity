@@ -4,10 +4,10 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.core.domain.legal.FakeLegalRepository
 import dev.pott.abonity.core.domain.legal.usecase.ShouldShowTrackingConsentUseCase
-import dev.pott.abonity.core.test.legal.FakeLegalRepository
-import dev.pott.abonity.core.test.settings.FakeSettingsRepository
-import dev.pott.abonity.core.test.settings.entities.createTestSettings
+import dev.pott.abonity.core.domain.settings.FakeSettingsRepository
+import dev.pott.abonity.core.domain.settings.entities.createTestSettings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest

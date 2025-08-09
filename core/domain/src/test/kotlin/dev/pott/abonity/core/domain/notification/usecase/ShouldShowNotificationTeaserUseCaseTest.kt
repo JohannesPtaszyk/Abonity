@@ -3,9 +3,9 @@ package dev.pott.abonity.core.domain.notification.usecase
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.core.domain.FakeClock
+import dev.pott.abonity.core.domain.notification.FakeNotificationTeaserRepository
 import dev.pott.abonity.core.entity.notification.NotificationTeaser
-import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.notification.FakeNotificationTeaserRepository
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone

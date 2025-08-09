@@ -2,8 +2,7 @@ package dev.pott.abonity.core.domain.notification
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import dev.pott.abonity.core.test.notification.FakeNotificationTeaserLocalDataSource
-import dev.pott.abonity.core.test.notification.entities.createTestNotificationTeaser
+import dev.pott.abonity.core.domain.notification.entities.createTestNotificationTeaser
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

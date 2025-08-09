@@ -5,11 +5,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.core.domain.config.FakeConfigRepository
+import dev.pott.abonity.core.domain.legal.FakeLegalRepository
+import dev.pott.abonity.core.domain.legal.entities.createTestLegal
 import dev.pott.abonity.core.domain.legal.usecase.GetTrackingServicesWithGrantUseCase
 import dev.pott.abonity.core.entity.legal.ConsentGrant
-import dev.pott.abonity.core.test.config.FakeConfigRepository
-import dev.pott.abonity.core.test.legal.FakeLegalRepository
-import dev.pott.abonity.core.test.legal.entities.createTestLegal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest

@@ -22,7 +22,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(projects.common.test)
-    testImplementation(projects.core.test)
+    testImplementation(testFixtures(projects.core.domain))
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
