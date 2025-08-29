@@ -125,7 +125,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.google.review)
 
-    testImplementation(projects.core.test)
+    testImplementation(testFixtures(projects.core.domain))
     testImplementation(projects.common.test)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

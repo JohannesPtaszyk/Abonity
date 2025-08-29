@@ -31,7 +31,6 @@ include(
     ":core:entity",
     ":core:ui",
     ":core:navigation",
-    ":core:test",
 )
 
 include(

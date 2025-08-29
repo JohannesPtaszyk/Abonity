@@ -5,26 +5,26 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.common.test.InjectTestDispatcher
+import dev.pott.abonity.core.domain.FakeClock
+import dev.pott.abonity.core.domain.settings.FakeSettingsRepository
+import dev.pott.abonity.core.domain.settings.entities.createTestSettings
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
 import dev.pott.abonity.core.entity.subscription.UpcomingPayment
 import dev.pott.abonity.core.entity.subscription.UpcomingPayments
-import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.settings.FakeSettingsRepository
-import dev.pott.abonity.core.test.settings.entities.createTestSettings
-import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.util.Currency
+import kotlin.time.Instant
 
 @ExtendWith(CoroutinesTestExtension::class)
 class GetUpcomingPaymentsUseCaseTest {

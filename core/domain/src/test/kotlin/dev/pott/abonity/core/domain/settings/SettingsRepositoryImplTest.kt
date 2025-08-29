@@ -2,9 +2,8 @@ package dev.pott.abonity.core.domain.settings
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.core.domain.settings.entities.createTestSettings
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
-import dev.pott.abonity.core.test.settings.FakeSettingsLocalDataSource
-import dev.pott.abonity.core.test.settings.entities.createTestSettings
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

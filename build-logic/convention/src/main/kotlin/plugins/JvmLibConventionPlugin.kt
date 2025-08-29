@@ -12,6 +12,7 @@ class JvmLibConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("org.jetbrains.kotlin.jvm")
                 apply("dev.pott.android.lint")
+                apply("java-test-fixtures")
             }
             configureKotlinJvm()
             applyKover()

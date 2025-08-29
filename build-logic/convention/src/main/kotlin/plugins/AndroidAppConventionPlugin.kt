@@ -33,6 +33,8 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 configureAndroidCompose(this)
                 configureGradleManagedDevices(this)
+                @Suppress("UnstableApiUsage")
+                testFixtures.enable = true
             }
 
             applyKoverAndroid()

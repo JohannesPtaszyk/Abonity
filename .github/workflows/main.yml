@@ -4,11 +4,15 @@ on:
   push:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -34,25 +38,13 @@ jobs:
           echo "$ABONITY_SECRETS_FILE" > ./secrets.properties
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 21
           distribution: zulu
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Bundle Release AAB
-        env:
-          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
-          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
-          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
-        run: ./gradlew bundleRelease
-
-      - name: Promote Internal to Release
-        run: ./gradlew promoteArtifact --from-track internal --promote-track production
-
-      # ... (other parts of your workflow) ...
 
       - name: Create Version Tag
         id: create_tag
@@ -67,6 +59,23 @@ jobs:
           echo "Using tag: ${LATEST_TAG} for the release."
           echo "tag_name=${LATEST_TAG}" >> "${GITHUB_OUTPUT}"
 
+      - name: Promote Internal to Release
+        run: ./gradlew promoteArtifact --from-track internal --promote-track production
+
+      - name: Bundle Release AAB
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Build APK
+        env:
+          ABONITY_KEY_STORE_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_PASSWORD }}
+          ABONITY_KEY_STORE_KEY_ALIAS: ${{ secrets.ABONITY_KEY_STORE_KEY_ALIAS }}
+          ABONITY_KEY_STORE_KEY_PASSWORD: ${{ secrets.ABONITY_KEY_STORE_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         env:
@@ -74,4 +83,6 @@ jobs:
         with:
           tag_name: ${{ steps.create_tag.outputs.tag_name }}
           generate_release_notes: true
-          files: app/build/outputs/bundle/release/*-release.aab
+          files: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk

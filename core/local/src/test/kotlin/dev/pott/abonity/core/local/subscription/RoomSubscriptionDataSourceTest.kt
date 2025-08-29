@@ -3,13 +3,13 @@ package dev.pott.abonity.core.local.subscription
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.core.domain.subscription.entities.createTestPaymentInfo
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.local.fakes.FakeSubscriptionDao
 import dev.pott.abonity.core.local.testdata.createTestSubscriptionCategoryEntityWithOneTimePayment
 import dev.pott.abonity.core.local.testdata.createTestSubscriptionCategoryEntityWithPeriodicPayment
-import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 

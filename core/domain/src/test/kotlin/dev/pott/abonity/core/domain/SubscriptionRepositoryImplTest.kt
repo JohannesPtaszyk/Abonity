@@ -2,11 +2,11 @@ package dev.pott.abonity.core.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionLocalDataSource
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionWidgetUpdater
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
-import dev.pott.abonity.core.test.subscription.FakeSubscriptionLocalDataSource
-import dev.pott.abonity.core.test.subscription.FakeSubscriptionWidgetUpdater
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscriptionList
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscriptionList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

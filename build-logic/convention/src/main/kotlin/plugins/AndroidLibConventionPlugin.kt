@@ -26,6 +26,8 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk =
                     libs.findVersion("targetSdkVersion").get().toString().toInt()
                 configureGradleManagedDevices(this)
+                @Suppress("UnstableApiUsage")
+                testFixtures.enable = true
             }
             applyKoverAndroid()
             dependencies {

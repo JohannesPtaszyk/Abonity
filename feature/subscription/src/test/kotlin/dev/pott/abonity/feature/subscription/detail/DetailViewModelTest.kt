@@ -5,18 +5,18 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.core.domain.FakeClock
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscriptionList
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
-import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscriptionList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import kotlin.time.Instant
 
 @ExtendWith(CoroutinesTestExtension::class)
 class DetailViewModelTest {

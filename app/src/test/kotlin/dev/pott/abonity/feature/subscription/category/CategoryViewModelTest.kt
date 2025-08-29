@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import dev.pott.abonity.common.test.CoroutinesTestExtension
-import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
-import dev.pott.abonity.core.test.subscription.entities.createTestCategories
+import dev.pott.abonity.core.domain.subscription.FakeCategoryRepository
+import dev.pott.abonity.core.domain.subscription.entities.createTestCategories
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi

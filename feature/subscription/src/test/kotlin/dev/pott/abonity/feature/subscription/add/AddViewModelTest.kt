@@ -9,16 +9,16 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import dev.pott.abonity.common.test.CoroutinesTestExtension
+import dev.pott.abonity.core.domain.FakeClock
+import dev.pott.abonity.core.domain.subscription.FakeCategoryRepository
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionRepository
+import dev.pott.abonity.core.domain.subscription.entities.createTestCategories
+import dev.pott.abonity.core.domain.subscription.entities.createTestCategory
+import dev.pott.abonity.core.domain.subscription.entities.createTestPaymentInfo
+import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
-import dev.pott.abonity.core.test.FakeClock
-import dev.pott.abonity.core.test.subscription.FakeCategoryRepository
-import dev.pott.abonity.core.test.subscription.FakeSubscriptionRepository
-import dev.pott.abonity.core.test.subscription.entities.createTestCategories
-import dev.pott.abonity.core.test.subscription.entities.createTestCategory
-import dev.pott.abonity.core.test.subscription.entities.createTestPaymentInfo
-import dev.pott.abonity.core.test.subscription.entities.createTestSubscription
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +49,7 @@ class AddViewModelTest {
 
     @BeforeEach
     fun setUp() {
-        Locale.setDefault(Locale("de", "DE"))
+        Locale.setDefault(Locale.GERMANY)
     }
 
     @Test
