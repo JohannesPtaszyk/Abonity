@@ -61,7 +61,7 @@ sonar = "6.3.1.5724"
 spotless = "7.2.1"
 turbine = "1.2.1"
 versionCompare = "1.5.0"
-uiTextGoogleFonts = "1.9.0"
+uiTextGoogleFonts = "1.9.1"
 
 [libraries]
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
