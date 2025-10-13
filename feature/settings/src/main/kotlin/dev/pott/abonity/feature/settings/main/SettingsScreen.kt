@@ -8,11 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.pott.abonity.core.entity.settings.Settings
 import dev.pott.abonity.core.entity.settings.Theme
@@ -157,11 +157,12 @@ private fun LazyListScope.SubscriptionSettings(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
             )
             ExposedDropdownMenu(
                 expanded = showPaymentPeriods,
                 onDismissRequest = { showPaymentPeriods = false },
+                matchAnchorWidth = false,
             ) {
                 val items = remember { PaymentPeriod.entries }
                 items.forEach {
@@ -228,11 +229,12 @@ private fun LazyListScope.AppearanceSection(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
             )
             ExposedDropdownMenu(
                 expanded = showThemeOptions,
                 onDismissRequest = { showThemeOptions = false },
+                matchAnchorWidth = false,
             ) {
                 val items = remember { Theme.entries }
                 items.forEach {

@@ -15,12 +15,12 @@ class CoroutinesTestExtension :
     AfterEachCallback {
     private val dispatcher by lazy { StandardTestDispatcher() }
 
-    override fun beforeEach(context: ExtensionContext?) {
+    override fun beforeEach(context: ExtensionContext) {
         Dispatchers.setMain(dispatcher)
         injectTestDispatcher(context)
     }
 
-    private fun injectTestDispatcher(context: ExtensionContext?) {
+    private fun injectTestDispatcher(context: ExtensionContext) {
         val testInstance = context?.testInstance?.get() ?: return
         val fields = testInstance.javaClass.declaredFields
 
@@ -32,7 +32,7 @@ class CoroutinesTestExtension :
         }
     }
 
-    override fun afterEach(context: ExtensionContext?) {
+    override fun afterEach(context: ExtensionContext) {
         Dispatchers.resetMain()
     }
 }

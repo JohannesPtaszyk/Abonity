@@ -16,7 +16,6 @@ val LocalDate.startOfWeek: LocalDate
 
 val LocalDate.endOfWeek: LocalDate
     get() {
-        val daysUntilEndOfWeek =
-            DayOfWeek.SUNDAY.ordinal - dayOfWeek.ordinal
+        val daysUntilEndOfWeek = DayOfWeek.SUNDAY.ordinal - dayOfWeek.ordinal
         return this + DatePeriod(days = daysUntilEndOfWeek)
     }

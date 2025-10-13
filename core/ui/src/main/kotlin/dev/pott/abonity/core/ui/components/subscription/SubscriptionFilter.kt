@@ -8,10 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,12 +102,14 @@ private fun LazyListScope.periodFilterItem(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = showPeriodDropdown)
                 },
-                modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
+                modifier = Modifier.menuAnchor(
+                    type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                ),
             )
             ExposedDropdownMenu(
                 expanded = showPeriodDropdown,
                 onDismissRequest = { showPeriodDropdown = false },
-                matchTextFieldWidth = false,
+                matchAnchorWidth = false,
             ) {
                 val items = remember { PaymentPeriod.entries }
                 items.forEach { item ->
