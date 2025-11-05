@@ -3,7 +3,7 @@ compileSdkVersion = "36"
 minSdkVersion = "23"
 targetSdkVersion = "36"
 
-aboutLibraries = "13.0.0"
+aboutLibraries = "13.1.0"
 accompanist = "0.37.3"
 ads = "24.7.0"
 androidDesugarJdkLibs = "2.1.5"
