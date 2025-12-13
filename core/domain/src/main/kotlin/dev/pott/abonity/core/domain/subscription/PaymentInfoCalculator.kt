@@ -184,6 +184,7 @@ class PaymentInfoCalculator @Inject constructor(private val clock: Clock) {
         val today = clock.todayIn(TimeZone.currentSystemDefault())
         return when (period) {
             PaymentPeriod.DAYS -> firstPayment == today
+
             PaymentPeriod.WEEKS -> {
                 val startOfWeek = today.startOfWeek
                 val endOfWeek = today.endOfWeek

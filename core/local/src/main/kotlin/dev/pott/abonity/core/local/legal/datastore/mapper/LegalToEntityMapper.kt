@@ -22,21 +22,27 @@ private fun ConsentServiceId.toEntity(): ConsentServiceIdEntity =
         ConsentServiceId.FIREBASE_ANALYTICS -> {
             ConsentServiceIdEntity.FIREBASE_ANALYTICS
         }
+
         ConsentServiceId.FIREBASE_CRASHLYTICS -> {
             ConsentServiceIdEntity.FIREBASE_CRASHLYTICS
         }
+
         ConsentServiceId.FIREBASE_PERFORMANCE -> {
             ConsentServiceIdEntity.FIREBASE_PERFORMANCE
         }
+
         ConsentServiceId.FIREBASE_CLOUD_MESSAGING -> {
             ConsentServiceIdEntity.FIREBASE_CLOUD_MESSAGING
         }
+
         ConsentServiceId.FIREBASE_IN_APP_MESSAGING -> {
             ConsentServiceIdEntity.FIREBASE_IN_APP_MESSAGING
         }
+
         ConsentServiceId.FIREBASE_INSTALLATIONS -> {
             ConsentServiceIdEntity.FIREBASE_INSTALLATIONS
         }
+
         ConsentServiceId.FIREBASE_REMOTE_CONFIG -> {
             ConsentServiceIdEntity.FIREBASE_REMOTE_CONFIG
         }

@@ -32,6 +32,7 @@ class GetSubscriptionsWithPeriodPrice @Inject constructor(
     private fun map(subscription: Subscription, period: PaymentPeriod): SubscriptionWithPeriodInfo {
         val nextPaymentDate = when (val type = subscription.paymentInfo.type) {
             PaymentType.OneTime -> subscription.paymentInfo.firstPayment
+
             is PaymentType.Periodic -> {
                 infoCalculator.getPaymentDatesForCurrentPeriod(
                     subscription.paymentInfo.firstPayment,

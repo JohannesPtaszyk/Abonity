@@ -11,6 +11,7 @@ import co.touchlab.kermit.LogcatWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import dagger.hilt.android.HiltAndroidApp
+import dev.pott.abonity.app.firebase.setFirebaseDefaultCustomKeys
 import dev.pott.abonity.app.widget.work.SubscriptionWidgetUpdateWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,7 @@ class AbonityApplication :
 
     @OptIn(ExperimentalKermitApi::class)
     override fun onCreate() {
+        setFirebaseDefaultCustomKeys()
         Logger.setLogWriters(LogcatWriter(), CrashlyticsLogWriter())
         super.onCreate()
         trackingServiceManager.init()

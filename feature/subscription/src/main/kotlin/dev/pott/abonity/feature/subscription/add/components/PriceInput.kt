@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -141,7 +143,9 @@ private fun CurrencyBottomSheet(
     val locale = rememberDefaultLocale()
     val state = rememberModalBottomSheetState()
     val isImeVisible = WindowInsets.isImeVisible
-    LaunchedEffect(isImeVisible) {
+    val scrollState = rememberLazyListState()
+    LaunchedEffect(isImeVisible, scrollState.canScrollBackward) {
+        if (!scrollState.canScrollBackward) return@LaunchedEffect
         if (isImeVisible) {
             state.expand()
         } else {
@@ -198,7 +202,7 @@ private fun CurrencyBottomSheet(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn {
+            LazyColumn(modifier = Modifier.fillMaxSize(), state = scrollState) {
                 if (options.isEmpty() && searchQuery.isBlank()) {
                     item(key = LOADING_INDICATOR_ITEM, contentType = LOADING_INDICATOR_ITEM) {
                         Box(

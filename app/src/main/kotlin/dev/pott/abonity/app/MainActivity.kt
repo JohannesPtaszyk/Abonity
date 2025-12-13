@@ -126,6 +126,7 @@ class MainActivity : ComponentActivity() {
 private fun shouldUseDarkTheme(state: MainState): Boolean =
     when (state) {
         MainState.Loading -> isSystemInDarkTheme()
+
         is MainState.Loaded -> when (state.theme) {
             Theme.FOLLOW_SYSTEM -> isSystemInDarkTheme()
             Theme.LIGHT -> false

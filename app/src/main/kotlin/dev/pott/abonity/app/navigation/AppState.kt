@@ -4,6 +4,7 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
@@ -11,6 +12,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.firebase.Firebase
+import dev.pott.abonity.app.firebase.setAsFirebaseCustomKey
 import dev.pott.abonity.feature.home.DashboardDestination
 import dev.pott.abonity.feature.subscription.SubscriptionGraphState
 import dev.pott.abonity.feature.subscription.overview.OverviewDestination
@@ -29,6 +32,7 @@ data class AppState(
 @Composable
 fun rememberAppState(navController: NavController, windowSizeClass: WindowSizeClass): AppState {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    SideEffect { navBackStackEntry.setAsFirebaseCustomKey() }
     val navigationItems = remember { NavigationItem.entries.toPersistentList() }
     val selectedNavigationItem = remember(navBackStackEntry) {
         navigationItems.find { navigationItem ->
