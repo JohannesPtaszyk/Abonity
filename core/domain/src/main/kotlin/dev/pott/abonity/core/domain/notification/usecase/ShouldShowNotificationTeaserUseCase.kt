@@ -22,7 +22,9 @@ class ShouldShowNotificationTeaserUseCase @Inject constructor(
             val lastClosed = it.lastClosed
             when {
                 it.shouldNotShowAgain -> false
+
                 lastClosed == null -> true
+
                 else -> {
                     val lastClosedInstant = lastClosed.toInstant(TimeZone.currentSystemDefault())
                     val now = clock.now()

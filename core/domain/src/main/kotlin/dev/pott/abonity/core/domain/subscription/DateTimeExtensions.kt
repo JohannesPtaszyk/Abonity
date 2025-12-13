@@ -10,6 +10,7 @@ import kotlinx.datetime.plus
 fun LocalDate.getFirstDayOfCurrentPeriod(targetPeriod: PaymentPeriod): LocalDate =
     when (targetPeriod) {
         PaymentPeriod.DAYS -> this
+
         PaymentPeriod.WEEKS -> {
             this - DatePeriod(days = this.dayOfWeek.ordinal)
         }

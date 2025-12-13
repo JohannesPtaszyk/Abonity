@@ -7,6 +7,7 @@ import dev.pott.abonity.core.local.subscription.db.entities.LocalPaymentType
 fun LocalPaymentType.toDomain(periodCount: Int?, period: LocalPaymentPeriod?): PaymentType =
     when (this) {
         LocalPaymentType.ONE_TIME -> PaymentType.OneTime
+
         LocalPaymentType.PERIODICALLY -> {
             val nonNullPeriodCount = checkNotNull(periodCount) {
                 "Period count must never be null for periodic payments"
