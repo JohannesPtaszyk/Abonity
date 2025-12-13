@@ -10,12 +10,14 @@ import kotlinx.collections.immutable.persistentListOf
 import java.util.Currency
 import java.util.Locale
 
+private val fallbackCurrency = Currency.getInstance("EUR")
+
 data class AddFormState(
     val paymentDateEpochMillis: Long? = null,
     val name: ValidatedInput = ValidatedInput(""),
     val description: String? = null,
     val priceValue: ValidatedInput = ValidatedInput(""),
-    val currency: Currency = Currency.getInstance(Locale.getDefault()),
+    val currency: Currency = getDefaultCurrency(),
     val isOneTimePayment: Boolean = false,
     val paymentPeriod: PaymentPeriod = PaymentPeriod.MONTHS,
     val paymentPeriodCount: ValidatedInput = ValidatedInput("1"),
@@ -29,6 +31,12 @@ data class AddFormState(
         !priceValue.isError &&
         !paymentPeriodCount.isError
 }
+
+private fun getDefaultCurrency(): Currency =
+    runCatching {
+        Currency.getInstance(Locale.getDefault())
+    }
+        .getOrDefault(fallbackCurrency)
 
 data class ValidatedInput(
     val value: String,
