@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.subscription.NotificationConfig
@@ -51,8 +52,9 @@ fun NotificationConfigDialog(
                         0 -> stringResource(id = R.string.subscription_notification_dialog_same_day)
                         1 -> stringResource(id = R.string.subscription_notification_dialog_one_day_before)
                         7 -> stringResource(id = R.string.subscription_notification_dialog_one_week_before)
-                        else -> stringResource(
-                            id = R.string.subscription_notification_dialog_days_before,
+                        else -> pluralStringResource(
+                            id = R.plurals.subscription_notification_dialog_days_before,
+                            count = days,
                             days,
                         )
                     }
