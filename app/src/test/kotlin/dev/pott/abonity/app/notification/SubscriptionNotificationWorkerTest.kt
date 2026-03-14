@@ -12,6 +12,7 @@ import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import org.junit.jupiter.api.Test
@@ -81,13 +82,32 @@ class SubscriptionNotificationWorkerTest {
     }
 
     @Test
-    fun `GIVEN periodic subscription WHEN daysUntilNextPayment THEN uses next occurrence from today`() {
-        // calculator uses FakeClock internally; next payment = today + 1 month
-        val expectedNextPayment = today.plus(DatePeriod(months = 1))
-        val expectedDays = (expectedNextPayment.toEpochDays() - todayEpochDays).toInt()
+    fun `GIVEN periodic subscription with firstPayment today WHEN daysUntilNextPayment THEN returns 0`() {
+        // firstPayment == today, so the next upcoming occurrence is today itself
         val subscription = createTestSubscription(
             paymentInfo = createTestPaymentInfo(
                 firstPayment = today,
+                type = PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+            ),
+            notificationConfig = NotificationConfig(daysBeforePayment = 0),
+        )
+
+        val result = daysUntilNextPayment(subscription, todayEpochDays, calculator)
+
+        assertThat(result).isEqualTo(0)
+    }
+
+    @Test
+    fun `GIVEN periodic subscription with firstPayment 5 days before today WHEN daysUntilNextPayment THEN returns days to next occurrence on subscription payment day`() {
+        // today = 2021-03-01, firstPayment = 2021-02-24 (5 days ago)
+        // iteration: Feb 24 < Mar 1 → advance to Mar 24
+        // next payment = Mar 24 = 23 days from today
+        val firstPayment = today.minus(DatePeriod(days = 5))
+        val expectedNextPayment = firstPayment.plus(DatePeriod(months = 1))
+        val expectedDays = (expectedNextPayment.toEpochDays() - todayEpochDays).toInt()
+        val subscription = createTestSubscription(
+            paymentInfo = createTestPaymentInfo(
+                firstPayment = firstPayment,
                 type = PaymentType.Periodic(1, PaymentPeriod.MONTHS),
             ),
             notificationConfig = NotificationConfig(daysBeforePayment = expectedDays),
@@ -96,5 +116,22 @@ class SubscriptionNotificationWorkerTest {
         val result = daysUntilNextPayment(subscription, todayEpochDays, calculator)
 
         assertThat(result).isEqualTo(expectedDays)
+    }
+
+    @Test
+    fun `GIVEN periodic subscription with firstPayment 5 days from now WHEN daysUntilNextPayment THEN returns 5`() {
+        // subscription hasn't started yet; next payment is the first payment itself
+        val firstPayment = today.plus(DatePeriod(days = 5))
+        val subscription = createTestSubscription(
+            paymentInfo = createTestPaymentInfo(
+                firstPayment = firstPayment,
+                type = PaymentType.Periodic(1, PaymentPeriod.MONTHS),
+            ),
+            notificationConfig = NotificationConfig(daysBeforePayment = 5),
+        )
+
+        val result = daysUntilNextPayment(subscription, todayEpochDays, calculator)
+
+        assertThat(result).isEqualTo(5)
     }
 }
