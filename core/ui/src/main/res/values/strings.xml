@@ -163,7 +163,10 @@
     <string name="subscription_notification_channel_name">Payment Reminders</string>
     <string name="subscription_notification_title">Upcoming payment: %s</string>
     <string name="subscription_notification_text_today">%s is due today</string>
-    <string name="subscription_notification_text_days">%s is due in %d day(s)</string>
+    <plurals name="subscription_notification_text_days">
+        <item quantity="one">%s is due in %d day</item>
+        <item quantity="other">%s is due in %d days</item>
+    </plurals>
     <string name="payments_widget_description">Upcoming payments</string>
     <string name="payments_widget_no_upcoming_text">No upcoming payments! ❤️</string>
     <string name="payments_widget_preview_date">1.1.2022</string>

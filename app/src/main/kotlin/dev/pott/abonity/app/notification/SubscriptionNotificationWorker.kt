@@ -79,8 +79,9 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         val text = if (daysUntilPayment == 0) {
             appContext.getString(UiR.string.subscription_notification_text_today, subscriptionName)
         } else {
-            appContext.getString(
-                UiR.string.subscription_notification_text_days,
+            appContext.resources.getQuantityString(
+                UiR.plurals.subscription_notification_text_days,
+                daysUntilPayment,
                 subscriptionName,
                 daysUntilPayment,
             )
