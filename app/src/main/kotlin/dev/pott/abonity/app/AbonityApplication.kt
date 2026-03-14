@@ -1,6 +1,8 @@
 package dev.pott.abonity.app
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -12,7 +14,10 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.crashlytics.CrashlyticsLogWriter
 import dagger.hilt.android.HiltAndroidApp
 import dev.pott.abonity.app.firebase.setFirebaseDefaultCustomKeys
+import dev.pott.abonity.app.notification.SUBSCRIPTION_NOTIFICATION_CHANNEL_ID
+import dev.pott.abonity.app.notification.SubscriptionNotificationWorker
 import dev.pott.abonity.app.widget.work.SubscriptionWidgetUpdateWorker
+import dev.pott.abonity.core.ui.R as UiR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +32,8 @@ import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
 private const val SUBSCRIPTION_WIDGET_WORK_ID = "SUBSCRIPTION_WIDGET_UPDATE"
+private const val SUBSCRIPTION_NOTIFICATION_WORK_ID = "SUBSCRIPTION_NOTIFICATION"
+private const val NOTIFICATION_WORK_HOUR = 8
 
 @HiltAndroidApp
 class AbonityApplication :
@@ -50,6 +57,7 @@ class AbonityApplication :
         Logger.setLogWriters(LogcatWriter(), CrashlyticsLogWriter())
         super.onCreate()
         trackingServiceManager.init()
+        createNotificationChannel()
         scope.launch {
             val now = clock.now()
             val timeZone = TimeZone.currentSystemDefault()
@@ -82,6 +90,47 @@ class AbonityApplication :
                     ExistingPeriodicWorkPolicy.UPDATE,
                     workRequest,
                 )
+
+            val nowMillis = now.toEpochMilliseconds()
+            val notificationStartTime = now
+                .toLocalDateTime(timeZone)
+                .let { currentDateTime ->
+                    val todayAt8 = LocalDateTime(
+                        currentDateTime.year,
+                        currentDateTime.month,
+                        currentDateTime.day,
+                        NOTIFICATION_WORK_HOUR,
+                        0,
+                        0,
+                    ).toInstant(timeZone)
+                    val todayAt8Millis = todayAt8.toEpochMilliseconds()
+                    if (todayAt8Millis > nowMillis) todayAt8Millis else todayAt8.plus(1.days).toEpochMilliseconds()
+                }
+
+            val notificationWorkRequest =
+                PeriodicWorkRequestBuilder<SubscriptionNotificationWorker>(1L, TimeUnit.DAYS)
+                    .setNextScheduleTimeOverride(notificationStartTime)
+                    .build()
+
+            WorkManager
+                .getInstance(this@AbonityApplication)
+                .enqueueUniquePeriodicWork(
+                    SUBSCRIPTION_NOTIFICATION_WORK_ID,
+                    ExistingPeriodicWorkPolicy.UPDATE,
+                    notificationWorkRequest,
+                )
+        }
+    }
+
+    private fun createNotificationChannel() {
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (manager.getNotificationChannel(SUBSCRIPTION_NOTIFICATION_CHANNEL_ID) == null) {
+            val channel = NotificationChannel(
+                SUBSCRIPTION_NOTIFICATION_CHANNEL_ID,
+                getString(UiR.string.subscription_notification_channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            )
+            manager.createNotificationChannel(channel)
         }
     }
 

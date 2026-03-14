@@ -34,6 +34,11 @@ data class SubscriptionEntity(
      */
     @ColumnInfo("period")
     val period: LocalPaymentPeriod?,
+    /**
+     * Days before payment to send a notification. Null means notifications are disabled.
+     */
+    @ColumnInfo("notification_days_before", defaultValue = "NULL")
+    val notificationDaysBefore: Int? = null,
 ) {
     init {
         if (paymentType == LocalPaymentType.PERIODICALLY) {
