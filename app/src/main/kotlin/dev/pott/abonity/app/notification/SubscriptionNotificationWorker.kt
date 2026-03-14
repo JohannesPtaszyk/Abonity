@@ -35,7 +35,11 @@ internal fun daysUntilNextPayment(
     subscription.notificationConfig ?: return null
     val paymentType = subscription.paymentInfo.type
     val nextPayment = if (paymentType is PaymentType.Periodic) {
-        calculator.getNextDateByType(paymentType)
+        var candidate = subscription.paymentInfo.firstPayment
+        while (candidate.toEpochDays() < todayEpochDays) {
+            candidate = calculator.getNextDateByType(paymentType, candidate)
+        }
+        candidate
     } else {
         subscription.paymentInfo.firstPayment
     }
