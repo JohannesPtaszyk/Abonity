@@ -64,7 +64,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
             val days = daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
             if (days == config.daysBeforePayment) {
                 sendNotification(
-                    subscriptionId = subscription.id.value.toInt(),
+                    subscriptionId = subscription.id.value.hashCode(),
                     subscriptionName = subscription.name,
                     daysUntilPayment = days,
                 )
