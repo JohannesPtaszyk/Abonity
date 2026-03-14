@@ -1,7 +1,5 @@
 package dev.pott.abonity.app.notification
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -56,7 +54,6 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        ensureNotificationChannel()
         val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays()
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
         subscriptions.forEach { subscription ->
@@ -71,18 +68,6 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
             }
         }
         return Result.success()
-    }
-
-    private fun ensureNotificationChannel() {
-        val manager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (manager.getNotificationChannel(SUBSCRIPTION_NOTIFICATION_CHANNEL_ID) == null) {
-            val channel = NotificationChannel(
-                SUBSCRIPTION_NOTIFICATION_CHANNEL_ID,
-                appContext.getString(UiR.string.subscription_notification_channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT,
-            )
-            manager.createNotificationChannel(channel)
-        }
     }
 
     private fun sendNotification(
