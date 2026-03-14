@@ -16,6 +16,7 @@ fun createTestSubscriptionCategoryEntityWithPeriodicPayment(
     periodCount: Int = 1,
     period: LocalPaymentPeriod = LocalPaymentPeriod.MONTHS,
     categories: List<CategoryEntity> = listOf(CategoryEntity(1, "Test Category")),
+    notificationDaysBefore: Int? = null,
 ) = SubscriptionCategoryEntity(
     subscription = createSubscriptionEntityWithPeriodicPayment(
         id = id,
@@ -26,6 +27,7 @@ fun createTestSubscriptionCategoryEntityWithPeriodicPayment(
         firstPaymentLocalDate = firstPaymentLocalDate,
         periodCount = periodCount,
         period = period,
+        notificationDaysBefore = notificationDaysBefore,
     ),
     categories = categories,
 )
@@ -38,6 +40,7 @@ fun createTestSubscriptionCategoryEntityWithOneTimePayment(
     currency: String = "EUR",
     firstPaymentLocalDate: String = "2020-02-02",
     categories: List<CategoryEntity> = listOf(CategoryEntity(1, "Test Category")),
+    notificationDaysBefore: Int? = null,
 ) = SubscriptionCategoryEntity(
     subscription = createSubscriptionEntityWithOneTimePayment(
         id = id,
@@ -46,6 +49,7 @@ fun createTestSubscriptionCategoryEntityWithOneTimePayment(
         price = price,
         currency = currency,
         firstPaymentLocalDate = firstPaymentLocalDate,
+        notificationDaysBefore = notificationDaysBefore,
     ),
     categories = categories,
 )
@@ -59,6 +63,7 @@ fun createSubscriptionEntityWithPeriodicPayment(
     firstPaymentLocalDate: String = "2020-02-02",
     periodCount: Int = 1,
     period: LocalPaymentPeriod = LocalPaymentPeriod.MONTHS,
+    notificationDaysBefore: Int? = null,
 ) = SubscriptionEntity(
     id = id,
     name = name,
@@ -69,6 +74,7 @@ fun createSubscriptionEntityWithPeriodicPayment(
     paymentType = LocalPaymentType.PERIODICALLY,
     periodCount = periodCount,
     period = period,
+    notificationDaysBefore = notificationDaysBefore,
 )
 
 fun createSubscriptionEntityWithOneTimePayment(
@@ -78,6 +84,7 @@ fun createSubscriptionEntityWithOneTimePayment(
     price: Double = 9.99,
     currency: String = "EUR",
     firstPaymentLocalDate: String = "2020-02-02",
+    notificationDaysBefore: Int? = null,
 ) = SubscriptionEntity(
     id = id,
     name = name,
@@ -88,4 +95,5 @@ fun createSubscriptionEntityWithOneTimePayment(
     paymentType = LocalPaymentType.ONE_TIME,
     periodCount = null,
     period = null,
+    notificationDaysBefore = notificationDaysBefore,
 )
