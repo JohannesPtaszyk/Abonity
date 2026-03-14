@@ -86,6 +86,8 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
                 daysUntilPayment,
             )
         }
+        val notificationManager = NotificationManagerCompat.from(appContext)
+        if (!notificationManager.areNotificationsEnabled()) return
         val notification = NotificationCompat.Builder(appContext, SUBSCRIPTION_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
@@ -93,6 +95,6 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(appContext).notify(subscriptionId, notification)
+        notificationManager.notify(subscriptionId, notification)
     }
 }

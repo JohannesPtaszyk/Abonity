@@ -1,5 +1,7 @@
 package dev.pott.abonity.feature.subscription.detail.components
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,18 +23,39 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
 
 private val NOTIFICATION_OPTIONS = listOf(null, 0, 1, 2, 3, 7)
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun NotificationConfigDialog(
     currentConfig: NotificationConfig?,
     onConfirm: (NotificationConfig?) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val notificationPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    } else {
+        null
+    }
+
+    val onOptionSelected = { days: Int? ->
+        val config = days?.let { NotificationConfig(it) }
+        if (config != null &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            notificationPermissionState?.status?.isGranted == false
+        ) {
+            notificationPermissionState.launchPermissionRequest()
+        }
+        onConfirm(config)
+    }
+
     AlertDialog(
         icon = {
             Icon(
@@ -63,12 +86,12 @@ fun NotificationConfigDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onConfirm(days?.let { NotificationConfig(it) }) }
+                            .clickable { onOptionSelected(days) }
                             .padding(vertical = 4.dp),
                     ) {
                         RadioButton(
                             selected = isSelected,
-                            onClick = { onConfirm(days?.let { NotificationConfig(it) }) },
+                            onClick = { onOptionSelected(days) },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(

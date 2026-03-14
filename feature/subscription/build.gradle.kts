@@ -24,6 +24,7 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.accompanist.permission)
     implementation(libs.kermit)
 
     testImplementation(testFixtures(projects.core.domain))
