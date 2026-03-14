@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.pott.abonity.core.local.subscription.db.AppDatabase
+import dev.pott.abonity.core.local.subscription.db.MIGRATION_1_2
 import javax.inject.Singleton
 
 private const val APP_DATABASE = "app-database"
@@ -24,6 +25,7 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             APP_DATABASE,
-        ).fallbackToDestructiveMigration(dropAllTables = true)
+        ).addMigrations(MIGRATION_1_2)
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 }

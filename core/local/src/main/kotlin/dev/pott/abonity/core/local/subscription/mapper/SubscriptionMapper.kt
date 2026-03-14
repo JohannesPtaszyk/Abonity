@@ -1,5 +1,6 @@
 package dev.pott.abonity.core.local.subscription.mapper
 
+import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.Price
@@ -29,6 +30,7 @@ fun Subscription.toEntity(): SubscriptionCategoryEntity {
             paymentType.toEntity(),
             periodCount,
             period,
+            notificationConfig?.daysBeforePayment,
         ),
         categories = categories.map { it.toEntity() },
     )
@@ -57,6 +59,7 @@ private fun SubscriptionEntity.toDomain(categories: List<CategoryEntity>): Subsc
         name = name,
         description = description,
         paymentInfo = paymentInfo,
-        categories.map { it.toDomain() },
+        categories = categories.map { it.toDomain() },
+        notificationConfig = notificationDaysBefore?.let { NotificationConfig(it) },
     )
 }

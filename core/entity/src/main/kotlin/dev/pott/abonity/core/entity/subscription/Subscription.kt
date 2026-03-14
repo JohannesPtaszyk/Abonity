@@ -6,4 +6,5 @@ data class Subscription(
     val description: String?,
     val paymentInfo: PaymentInfo,
     val categories: List<Category>,
+    val notificationConfig: NotificationConfig? = null,
 )

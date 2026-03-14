@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
+import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentType
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,5 +52,12 @@ class DetailViewModel @Inject constructor(
 
     fun setId(detailId: SubscriptionId?) {
         currentDetailId.value = detailId
+    }
+
+    fun setNotificationConfig(config: NotificationConfig?) {
+        val subscription = state.value.subscription ?: return
+        viewModelScope.launch {
+            repository.addOrUpdateSubscription(subscription.copy(notificationConfig = config))
+        }
     }
 }

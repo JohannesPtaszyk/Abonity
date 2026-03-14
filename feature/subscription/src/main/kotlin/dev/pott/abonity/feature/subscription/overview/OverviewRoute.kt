@@ -53,6 +53,7 @@ fun OverviewRoute(
             onFilterItemSelect = overviewViewModel::toggleFilter,
             onEditClick = onEditClick,
             onDeleteClick = overviewViewModel::delete,
+            onNotificationConfigChanged = detailViewModel::setNotificationConfig,
             closeDetails = overviewViewModel::consumeDetails,
             onOpenCategoriesClick = onOpenCategoriesClick,
             onPeriodChange = overviewViewModel::setPeriod,
@@ -89,6 +90,7 @@ fun OverviewRoute(
                 onEditClick = onEditClick,
                 onDeleteClick = overviewViewModel::delete,
                 close = overviewViewModel::consumeDetails,
+                onNotificationConfigChanged = detailViewModel::setNotificationConfig,
             )
         }
     }

@@ -153,6 +153,17 @@
     <string name="subscription_filter_current_period_month">This month</string>
     <string name="subscription_filter_current_period_week">This week</string>
     <string name="subscription_filter_current_period_day">Today</string>
+    <string name="subscription_detail_notification_label">Set notification for: %s</string>
+    <string name="subscription_notification_dialog_title">Notify me</string>
+    <string name="subscription_notification_dialog_off">Off</string>
+    <string name="subscription_notification_dialog_same_day">On payment day</string>
+    <string name="subscription_notification_dialog_days_before">%d days before</string>
+    <string name="subscription_notification_dialog_one_day_before">1 day before</string>
+    <string name="subscription_notification_dialog_one_week_before">1 week before</string>
+    <string name="subscription_notification_channel_name">Payment Reminders</string>
+    <string name="subscription_notification_title">Upcoming payment: %s</string>
+    <string name="subscription_notification_text_today">%s is due today</string>
+    <string name="subscription_notification_text_days">%s is due in %d day(s)</string>
     <string name="payments_widget_description">Upcoming payments</string>
     <string name="payments_widget_no_upcoming_text">No upcoming payments! ❤️</string>
     <string name="payments_widget_preview_date">1.1.2022</string>

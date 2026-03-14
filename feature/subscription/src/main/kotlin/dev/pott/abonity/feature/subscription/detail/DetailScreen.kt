@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.subscription.Category
+import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -59,6 +61,7 @@ import dev.pott.abonity.core.ui.components.subscription.categories.Categories
 import dev.pott.abonity.core.ui.preview.PreviewCommonScreenConfig
 import dev.pott.abonity.core.ui.theme.AppIcons
 import dev.pott.abonity.core.ui.theme.AppTheme
+import dev.pott.abonity.feature.subscription.detail.components.NotificationConfigDialog
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -72,11 +75,13 @@ fun DetailScreen(
     close: () -> Unit,
     onEditClick: (SubscriptionId) -> Unit,
     onDeleteClick: (SubscriptionId) -> Unit,
+    onNotificationConfigChanged: (NotificationConfig?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val subscription = state.subscription
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    var showNotificationDialog by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,6 +99,7 @@ fun DetailScreen(
                         subscription = subscription,
                         onEditClick = onEditClick,
                         onDeleteClick = { showDeleteDialog = true },
+                        onNotificationClick = { showNotificationDialog = true },
                     )
                 },
                 scrollBehavior = scrollBehavior,
@@ -117,6 +123,16 @@ fun DetailScreen(
                             onDismiss = { showDeleteDialog = false },
                         )
                     }
+                    if (showNotificationDialog) {
+                        NotificationConfigDialog(
+                            currentConfig = subscription.notificationConfig,
+                            onConfirm = { config ->
+                                onNotificationConfigChanged(config)
+                                showNotificationDialog = false
+                            },
+                            onDismiss = { showNotificationDialog = false },
+                        )
+                    }
                     DetailLoadedContent(
                         it,
                         state,
@@ -133,6 +149,7 @@ private fun DetailActions(
     subscription: Subscription?,
     onEditClick: (SubscriptionId) -> Unit,
     onDeleteClick: (SubscriptionId) -> Unit,
+    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -143,6 +160,15 @@ private fun DetailActions(
     ) {
         Row {
             subscription?.let {
+                IconButton(onClick = onNotificationClick) {
+                    Icon(
+                        painter = rememberVectorPainter(image = AppIcons.Notification),
+                        contentDescription = stringResource(
+                            id = R.string.subscription_detail_notification_label,
+                            subscription.name,
+                        ),
+                    )
+                }
                 IconButton(onClick = { onEditClick(subscription.id) }) {
                     Icon(
                         painter = rememberVectorPainter(image = AppIcons.Edit),
@@ -386,6 +412,9 @@ private fun DetailScreenPreview() {
             },
             onDeleteClick = {
                 // Delete
+            },
+            onNotificationConfigChanged = {
+                // Update notification config
             },
         )
     }

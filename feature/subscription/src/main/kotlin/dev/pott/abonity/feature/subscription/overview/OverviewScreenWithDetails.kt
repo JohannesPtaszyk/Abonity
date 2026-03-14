@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.pott.abonity.core.entity.subscription.Category
+import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.PaymentPeriod
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -52,6 +53,7 @@ fun OverviewScreenWithDetails(
     onFilterItemSelect: (item: SubscriptionFilterItem) -> Unit,
     onEditClick: (id: SubscriptionId) -> Unit,
     onDeleteClick: (id: SubscriptionId) -> Unit,
+    onNotificationConfigChanged: (NotificationConfig?) -> Unit,
     closeDetails: () -> Unit,
     onOpenCategoriesClick: () -> Unit,
     onPeriodChange: (period: PaymentPeriod) -> Unit,
@@ -84,6 +86,7 @@ fun OverviewScreenWithDetails(
                 },
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
+                onNotificationConfigChanged = onNotificationConfigChanged,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -178,6 +181,7 @@ private fun OverviewWithDetailScreenPreview() {
             onFilterItemSelect = {},
             onEditClick = {},
             onDeleteClick = {},
+            onNotificationConfigChanged = {},
             closeDetails = {},
             onOpenCategoriesClick = {},
             onPeriodChange = {},
