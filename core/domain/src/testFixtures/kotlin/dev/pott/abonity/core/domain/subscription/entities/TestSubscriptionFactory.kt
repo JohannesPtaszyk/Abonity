@@ -2,6 +2,7 @@ package dev.pott.abonity.core.domain.subscription.entities
 
 import dev.pott.abonity.core.entity.subscription.Category
 import dev.pott.abonity.core.entity.subscription.CategoryId
+import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentInfo
 import dev.pott.abonity.core.entity.subscription.Subscription
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
@@ -17,6 +18,7 @@ fun createTestSubscription(
     description: String = "Test Description",
     paymentInfo: PaymentInfo = createTestPaymentInfo(),
     categories: List<Category> = listOf(Category(CategoryId(1), "Test Category")),
+    notificationConfig: NotificationConfig? = null,
 ): Subscription =
     Subscription(
         SubscriptionId(id),
@@ -24,6 +26,7 @@ fun createTestSubscription(
         description,
         paymentInfo,
         categories,
+        notificationConfig,
     )
 
 fun createTestSubscriptionList(size: Int = 5): List<Subscription> {

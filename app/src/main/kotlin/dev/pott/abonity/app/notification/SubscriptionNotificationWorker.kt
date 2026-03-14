@@ -22,6 +22,26 @@ import kotlin.time.Clock
 
 const val SUBSCRIPTION_NOTIFICATION_CHANNEL_ID = "subscription_payment_reminders"
 
+/**
+ * Returns the number of days until the next payment for [subscription] relative to [todayEpochDays],
+ * or null if the subscription has no notification config.
+ * A result of 0 means the payment is due today.
+ */
+internal fun daysUntilNextPayment(
+    subscription: dev.pott.abonity.core.entity.subscription.Subscription,
+    todayEpochDays: Int,
+    calculator: PaymentInfoCalculator,
+): Int? {
+    subscription.notificationConfig ?: return null
+    val paymentType = subscription.paymentInfo.type
+    val nextPayment = if (paymentType is PaymentType.Periodic) {
+        calculator.getNextDateByType(paymentType)
+    } else {
+        subscription.paymentInfo.firstPayment
+    }
+    return (nextPayment.toEpochDays() - todayEpochDays).toInt()
+}
+
 @HiltWorker
 class SubscriptionNotificationWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
@@ -33,22 +53,16 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         ensureNotificationChannel()
-        val today = clock.todayIn(TimeZone.currentSystemDefault())
+        val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays()
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
-            val paymentType = subscription.paymentInfo.type
-            val nextPayment = if (paymentType is PaymentType.Periodic) {
-                calculator.getNextDateByType(paymentType)
-            } else {
-                subscription.paymentInfo.firstPayment
-            }
-            val daysUntilPayment = (nextPayment.toEpochDays() - today.toEpochDays()).toInt()
-            if (daysUntilPayment == config.daysBeforePayment) {
+            val days = daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
+            if (days == config.daysBeforePayment) {
                 sendNotification(
                     subscriptionId = subscription.id.value.toInt(),
                     subscriptionName = subscription.name,
-                    daysUntilPayment = daysUntilPayment,
+                    daysUntilPayment = days,
                 )
             }
         }
