@@ -53,19 +53,24 @@ private enum class NotificationPeriod {
 private const val DAYS_IN_WEEK = 7
 private const val APPROX_DAYS_IN_MONTH = 30
 
-private fun NotificationPeriod.labelRes(): Int = when (this) {
-    NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
-    NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
-    NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
-}
+private fun NotificationPeriod.labelRes(): Int =
+    when (this) {
+        NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
+        NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
+        NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
+    }
 
 private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPeriod, Int> =
     when {
         daysBeforePayment == null -> Pair(NotificationPeriod.DAYS, 1)
-        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 && daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
+
+        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 &&
+            daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
             Pair(NotificationPeriod.MONTHS, daysBeforePayment / APPROX_DAYS_IN_MONTH)
+
         daysBeforePayment % DAYS_IN_WEEK == 0 && daysBeforePayment >= DAYS_IN_WEEK ->
             Pair(NotificationPeriod.WEEKS, daysBeforePayment / DAYS_IN_WEEK)
+
         else -> Pair(NotificationPeriod.DAYS, daysBeforePayment)
     }
 

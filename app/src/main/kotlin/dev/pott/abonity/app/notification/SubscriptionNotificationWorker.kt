@@ -12,11 +12,11 @@ import dev.pott.abonity.app.R
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.entity.subscription.PaymentType
-import dev.pott.abonity.core.ui.R as UiR
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
+import dev.pott.abonity.core.ui.R as UiR
 
 const val SUBSCRIPTION_NOTIFICATION_CHANNEL_ID = "subscription_payment_reminders"
 
@@ -55,10 +55,12 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays()
-        val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
+        val subscriptions =
+            repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
-            val days = daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
+            val days =
+                daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
             if (days == config.daysBeforePayment) {
                 sendNotification(
                     subscriptionId = subscription.id.value.hashCode(),
@@ -75,7 +77,10 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         subscriptionName: String,
         daysUntilPayment: Int,
     ) {
-        val title = appContext.getString(UiR.string.subscription_notification_title, subscriptionName)
+        val title = appContext.getString(
+            UiR.string.subscription_notification_title,
+            subscriptionName,
+        )
         val text = if (daysUntilPayment == 0) {
             appContext.getString(UiR.string.subscription_notification_text_today, subscriptionName)
         } else {
@@ -88,7 +93,10 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         }
         val notificationManager = NotificationManagerCompat.from(appContext)
         if (!notificationManager.areNotificationsEnabled()) return
-        val notification = NotificationCompat.Builder(appContext, SUBSCRIPTION_NOTIFICATION_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(
+            appContext,
+            SUBSCRIPTION_NOTIFICATION_CHANNEL_ID,
+        )
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)

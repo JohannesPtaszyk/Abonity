@@ -17,7 +17,6 @@ import dev.pott.abonity.app.firebase.setFirebaseDefaultCustomKeys
 import dev.pott.abonity.app.notification.SUBSCRIPTION_NOTIFICATION_CHANNEL_ID
 import dev.pott.abonity.app.notification.SubscriptionNotificationWorker
 import dev.pott.abonity.app.widget.work.SubscriptionWidgetUpdateWorker
-import dev.pott.abonity.core.ui.R as UiR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,6 +31,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
+import dev.pott.abonity.core.ui.R as UiR
 
 private const val SUBSCRIPTION_WIDGET_WORK_ID = "SUBSCRIPTION_WIDGET_UPDATE"
 private const val SUBSCRIPTION_NOTIFICATION_WORK_ID = "SUBSCRIPTION_NOTIFICATION"
