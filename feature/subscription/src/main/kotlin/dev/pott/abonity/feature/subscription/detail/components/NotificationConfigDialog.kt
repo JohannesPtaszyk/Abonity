@@ -124,8 +124,6 @@ fun NotificationConfigDialog(
     var period by remember { mutableStateOf(initialPeriod) }
     var periodExpanded by remember { mutableStateOf(false) }
 
-    val periodLabel = stringResource(period.labelRes())
-
     AlertDialog(
         icon = {
             Icon(
@@ -137,94 +135,23 @@ fun NotificationConfigDialog(
             Text(stringResource(id = R.string.subscription_notification_dialog_title))
         },
         text = {
-            Column {
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { isOff = true }
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(selected = isOff, onClick = { isOff = true })
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.subscription_notification_dialog_off),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(selected = !isOff, onClick = { isOff = false })
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            OutlinedTextField(
-                                value = countText,
-                                onValueChange = { input ->
-                                    if (input.all { it.isDigit() }) {
-                                        countText = input
-                                        isOff = false
-                                    }
-                                },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                ),
-                                modifier = Modifier.weight(1f),
-                                singleLine = true,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            ExposedDropdownMenuBox(
-                                expanded = periodExpanded,
-                                onExpandedChange = { periodExpanded = it },
-                            ) {
-                                OutlinedTextField(
-                                    value = periodLabel,
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = periodExpanded,
-                                        )
-                                    },
-                                    modifier = Modifier.menuAnchor(
-                                        ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                                    ),
-                                    singleLine = true,
-                                )
-                                ExposedDropdownMenu(
-                                    expanded = periodExpanded,
-                                    onDismissRequest = { periodExpanded = false },
-                                ) {
-                                    NotificationPeriod.entries.forEach { p ->
-                                        DropdownMenuItem(
-                                            text = { Text(text = stringResource(p.labelRes())) },
-                                            onClick = {
-                                                period = p
-                                                periodExpanded = false
-                                                isOff = false
-                                            },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(
-                                id = R.string.subscription_notification_dialog_before_payment,
-                            ),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
+            NotificationDialogContent(
+                isOff = isOff,
+                countText = countText,
+                period = period,
+                periodExpanded = periodExpanded,
+                onIsOffChange = { isOff = it },
+                onCountTextChange = { input, newIsOff ->
+                    countText = input
+                    isOff = newIsOff
+                },
+                onPeriodChange = { p, expanded, newIsOff ->
+                    period = p
+                    periodExpanded = expanded
+                    isOff = newIsOff
+                },
+                onPeriodExpandedChange = { periodExpanded = it },
+            )
         },
         confirmButton = {
             TextButton(
@@ -264,6 +191,100 @@ fun NotificationConfigDialog(
                 context.startActivity(intent)
             },
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NotificationDialogContent(
+    isOff: Boolean,
+    countText: String,
+    period: NotificationPeriod,
+    periodExpanded: Boolean,
+    onIsOffChange: (Boolean) -> Unit,
+    onCountTextChange: (input: String, isOff: Boolean) -> Unit,
+    onPeriodChange: (period: NotificationPeriod, expanded: Boolean, isOff: Boolean) -> Unit,
+    onPeriodExpandedChange: (Boolean) -> Unit,
+) {
+    val periodLabel = stringResource(period.labelRes())
+    Column {
+        Spacer(modifier = Modifier.height(4.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onIsOffChange(true) }
+                .padding(vertical = 4.dp),
+        ) {
+            RadioButton(selected = isOff, onClick = { onIsOffChange(true) })
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(id = R.string.subscription_notification_dialog_off),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+        ) {
+            RadioButton(selected = !isOff, onClick = { onIsOffChange(false) })
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = countText,
+                        onValueChange = { input ->
+                            if (input.all { it.isDigit() }) {
+                                onCountTextChange(input, false)
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.weight(1f),
+                        singleLine = true,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    ExposedDropdownMenuBox(
+                        expanded = periodExpanded,
+                        onExpandedChange = onPeriodExpandedChange,
+                    ) {
+                        OutlinedTextField(
+                            value = periodLabel,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = periodExpanded)
+                            },
+                            modifier = Modifier.menuAnchor(
+                                ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                            ),
+                            singleLine = true,
+                        )
+                        ExposedDropdownMenu(
+                            expanded = periodExpanded,
+                            onDismissRequest = { onPeriodExpandedChange(false) },
+                        ) {
+                            NotificationPeriod.entries.forEach { p ->
+                                DropdownMenuItem(
+                                    text = { Text(text = stringResource(p.labelRes())) },
+                                    onClick = { onPeriodChange(p, false, false) },
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(
+                        id = R.string.subscription_notification_dialog_before_payment,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }
 
