@@ -27,7 +27,7 @@ const val SUBSCRIPTION_NOTIFICATION_CHANNEL_ID = "subscription_payment_reminders
  */
 internal fun daysUntilNextPayment(
     subscription: dev.pott.abonity.core.entity.subscription.Subscription,
-    todayEpochDays: Int,
+    todayEpochDays: Long,
     calculator: PaymentInfoCalculator,
 ): Int? {
     subscription.notificationConfig ?: return null
@@ -54,7 +54,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays().toInt()
+        val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays()
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
