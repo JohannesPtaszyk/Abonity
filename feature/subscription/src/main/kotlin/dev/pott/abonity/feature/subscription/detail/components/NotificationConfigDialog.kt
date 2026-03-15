@@ -50,6 +50,9 @@ private enum class NotificationPeriod {
     MONTHS,
 }
 
+private const val DAYS_IN_WEEK = 7
+private const val APPROX_DAYS_IN_MONTH = 30
+
 private fun NotificationPeriod.labelRes(): Int = when (this) {
     NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
     NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
@@ -59,10 +62,10 @@ private fun NotificationPeriod.labelRes(): Int = when (this) {
 private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPeriod, Int> =
     when {
         daysBeforePayment == null -> Pair(NotificationPeriod.DAYS, 1)
-        daysBeforePayment % 30 == 0 && daysBeforePayment >= 30 ->
-            Pair(NotificationPeriod.MONTHS, daysBeforePayment / 30)
-        daysBeforePayment % 7 == 0 && daysBeforePayment >= 7 ->
-            Pair(NotificationPeriod.WEEKS, daysBeforePayment / 7)
+        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 && daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
+            Pair(NotificationPeriod.MONTHS, daysBeforePayment / APPROX_DAYS_IN_MONTH)
+        daysBeforePayment % DAYS_IN_WEEK == 0 && daysBeforePayment >= DAYS_IN_WEEK ->
+            Pair(NotificationPeriod.WEEKS, daysBeforePayment / DAYS_IN_WEEK)
         else -> Pair(NotificationPeriod.DAYS, daysBeforePayment)
     }
 
@@ -227,8 +230,8 @@ fun NotificationConfigDialog(
                         val count = countText.toIntOrNull()?.coerceAtLeast(0) ?: 1
                         val days = when (period) {
                             NotificationPeriod.DAYS -> count
-                            NotificationPeriod.WEEKS -> count * 7
-                            NotificationPeriod.MONTHS -> count * 30
+                            NotificationPeriod.WEEKS -> count * DAYS_IN_WEEK
+                            NotificationPeriod.MONTHS -> count * APPROX_DAYS_IN_MONTH
                         }
                         requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = days))
                     }
