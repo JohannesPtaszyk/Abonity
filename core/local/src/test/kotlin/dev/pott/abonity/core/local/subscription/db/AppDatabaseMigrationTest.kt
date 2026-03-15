@@ -6,7 +6,6 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
-import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -90,8 +89,13 @@ class AppDatabaseMigrationTest {
 
         openV2Database().use { db ->
             db.execSQL(
-                "INSERT INTO subscription_entity " +
-                    "(name, price, currency, first_payment_local_date, payment_type, notification_days_before) " +
+                "INSERT INTO subscription_entity (" +
+                    "name, " +
+                    "price, " +
+                    "currency, " +
+                    "first_payment_local_date, " +
+                    "payment_type, " +
+                    "notification_days_before) " +
                     "VALUES ('New Sub', 4.99, 'USD', '2024-01-01', 'ONE_TIME', NULL)",
             )
             val cursor = db.query(
@@ -110,8 +114,13 @@ class AppDatabaseMigrationTest {
 
         openV2Database().use { db ->
             db.execSQL(
-                "INSERT INTO subscription_entity " +
-                    "(name, price, currency, first_payment_local_date, payment_type, notification_days_before) " +
+                "INSERT INTO subscription_entity (" +
+                    "name, " +
+                    "price, " +
+                    "currency, " +
+                    "first_payment_local_date, " +
+                    "payment_type, " +
+                    "notification_days_before) " +
                     "VALUES ('Notified Sub', 9.99, 'EUR', '2024-06-01', 'ONE_TIME', 7)",
             )
             val cursor = db.query(
@@ -128,27 +137,50 @@ class AppDatabaseMigrationTest {
     private fun createV1DatabaseWithData() {
         val config = SupportSQLiteOpenHelper.Configuration.builder(context)
             .name(TEST_DB_NAME)
-            .callback(object : SupportSQLiteOpenHelper.Callback(1) {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    db.execSQL(CREATE_SUBSCRIPTION_ENTITY_V1)
-                    db.execSQL(
-                        "INSERT INTO subscription_entity " +
-                            "(name, description, price, currency, first_payment_local_date, payment_type, period_count, period) " +
-                            "VALUES ('Periodic Sub', 'Monthly service', 9.99, 'EUR', '2020-02-02', 'PERIODICALLY', 1, 'MONTHS')",
-                    )
-                    db.execSQL(
-                        "INSERT INTO subscription_entity " +
-                            "(name, description, price, currency, first_payment_local_date, payment_type) " +
-                            "VALUES ('One Time Sub', 'One time purchase', 49.99, 'USD', '2021-05-15', 'ONE_TIME')",
-                    )
-                }
+            .callback(
+                object : SupportSQLiteOpenHelper.Callback(1) {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        db.execSQL(CREATE_SUBSCRIPTION_ENTITY_V1)
+                        db.execSQL(
+                            "INSERT INTO subscription_entity (" +
+                                "name, " +
+                                "description, " +
+                                "price, currency, " +
+                                "first_payment_local_date, " +
+                                "payment_type, period_count, " +
+                                "period) " +
+                                "VALUES (" +
+                                "'Periodic Sub', " +
+                                "'Monthly service', " +
+                                "9.99, 'EUR', " +
+                                "'2020-02-02', " +
+                                "'PERIODICALLY', " +
+                                "1, " +
+                                "'MONTHS')",
+                        )
+                        db.execSQL(
+                            "INSERT INTO subscription_entity (" +
+                                "name, " +
+                                "description, " +
+                                "price, currency, " +
+                                "first_payment_local_date, " +
+                                "payment_type) " +
+                                "VALUES (" +
+                                "'One Time Sub', " +
+                                "'One time purchase', " +
+                                "49.99, 'USD', " +
+                                "'2021-05-15', " +
+                                "'ONE_TIME')",
+                        )
+                    }
 
-                override fun onUpgrade(
-                    db: SupportSQLiteDatabase,
-                    oldVersion: Int,
-                    newVersion: Int,
-                ) = Unit
-            })
+                    override fun onUpgrade(
+                        db: SupportSQLiteDatabase,
+                        oldVersion: Int,
+                        newVersion: Int,
+                    ) = Unit
+                },
+            )
             .build()
         FrameworkSQLiteOpenHelperFactory().create(config).use { helper ->
             helper.writableDatabase.close()
@@ -158,19 +190,21 @@ class AppDatabaseMigrationTest {
     private fun openV2Database(): SupportSQLiteDatabase {
         val config = SupportSQLiteOpenHelper.Configuration.builder(context)
             .name(TEST_DB_NAME)
-            .callback(object : SupportSQLiteOpenHelper.Callback(2) {
-                override fun onCreate(db: SupportSQLiteDatabase) = Unit
+            .callback(
+                object : SupportSQLiteOpenHelper.Callback(2) {
+                    override fun onCreate(db: SupportSQLiteDatabase) = Unit
 
-                override fun onUpgrade(
-                    db: SupportSQLiteDatabase,
-                    oldVersion: Int,
-                    newVersion: Int,
-                ) {
-                    if (oldVersion < 2) {
-                        MIGRATION_1_2.migrate(db)
+                    override fun onUpgrade(
+                        db: SupportSQLiteDatabase,
+                        oldVersion: Int,
+                        newVersion: Int,
+                    ) {
+                        if (oldVersion < 2) {
+                            MIGRATION_1_2.migrate(db)
+                        }
                     }
-                }
-            })
+                },
+            )
             .build()
         return FrameworkSQLiteOpenHelperFactory().create(config).writableDatabase
     }
