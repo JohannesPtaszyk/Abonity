@@ -50,6 +50,12 @@ private enum class NotificationPeriod {
     MONTHS,
 }
 
+private fun NotificationPeriod.labelRes(): Int = when (this) {
+    NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
+    NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
+    NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
+}
+
 private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPeriod, Int> =
     when {
         daysBeforePayment == null -> Pair(NotificationPeriod.DAYS, 1)
@@ -110,11 +116,7 @@ fun NotificationConfigDialog(
     var period by remember { mutableStateOf(initialPeriod) }
     var periodExpanded by remember { mutableStateOf(false) }
 
-    val periodLabel = when (period) {
-        NotificationPeriod.DAYS -> stringResource(id = R.string.subscription_notification_dialog_period_days)
-        NotificationPeriod.WEEKS -> stringResource(id = R.string.subscription_notification_dialog_period_weeks)
-        NotificationPeriod.MONTHS -> stringResource(id = R.string.subscription_notification_dialog_period_months)
-    }
+    val periodLabel = stringResource(period.labelRes())
 
     AlertDialog(
         icon = {
@@ -162,7 +164,9 @@ fun NotificationConfigDialog(
                                         isOff = false
                                     }
                                 },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                ),
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                             )
@@ -190,19 +194,8 @@ fun NotificationConfigDialog(
                                     onDismissRequest = { periodExpanded = false },
                                 ) {
                                     NotificationPeriod.entries.forEach { p ->
-                                        val label = when (p) {
-                                            NotificationPeriod.DAYS -> stringResource(
-                                                id = R.string.subscription_notification_dialog_period_days,
-                                            )
-                                            NotificationPeriod.WEEKS -> stringResource(
-                                                id = R.string.subscription_notification_dialog_period_weeks,
-                                            )
-                                            NotificationPeriod.MONTHS -> stringResource(
-                                                id = R.string.subscription_notification_dialog_period_months,
-                                            )
-                                        }
                                         DropdownMenuItem(
-                                            text = { Text(text = label) },
+                                            text = { Text(text = stringResource(p.labelRes())) },
                                             onClick = {
                                                 period = p
                                                 periodExpanded = false
