@@ -54,7 +54,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays()
+        val todayEpochDays = clock.todayIn(TimeZone.currentSystemDefault()).toEpochDays().toInt()
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return Result.success()
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
