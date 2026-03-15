@@ -156,13 +156,10 @@
     <string name="subscription_detail_notification_label">Set notification for: %s</string>
     <string name="subscription_notification_dialog_title">Notify me</string>
     <string name="subscription_notification_dialog_off">Off</string>
-    <string name="subscription_notification_dialog_same_day">On payment day</string>
-    <plurals name="subscription_notification_dialog_days_before">
-        <item quantity="one">%d day before</item>
-        <item quantity="other">%d days before</item>
-    </plurals>
-    <string name="subscription_notification_dialog_one_day_before">1 day before</string>
-    <string name="subscription_notification_dialog_one_week_before">1 week before</string>
+    <string name="subscription_notification_dialog_period_days">Days</string>
+    <string name="subscription_notification_dialog_period_weeks">Weeks</string>
+    <string name="subscription_notification_dialog_period_months">Months</string>
+    <string name="subscription_notification_dialog_before_payment">before payment</string>
     <string name="subscription_notification_channel_name">Payment Reminders</string>
     <string name="subscription_notification_title">Upcoming payment: %s</string>
     <string name="subscription_notification_text_today">%s is due today</string>
