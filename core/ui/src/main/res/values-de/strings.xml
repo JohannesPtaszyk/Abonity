@@ -107,6 +107,20 @@
     <string name="subscription_add_label_period_dropdown_item_click">Periode</string>
     <string name="subscription_add_label_price">Preis</string>
     <string name="subscription_add_save">Einmalig</string>
+    <string name="subscription_detail_notification_label">Benachrichtigung setzen für: %s</string>
+    <string name="subscription_notification_dialog_title">Erinnere mich</string>
+    <string name="subscription_notification_dialog_off">Aus</string>
+    <string name="subscription_notification_dialog_period_days">Tage</string>
+    <string name="subscription_notification_dialog_period_weeks">Wochen</string>
+    <string name="subscription_notification_dialog_period_months">Monate</string>
+    <string name="subscription_notification_dialog_before_payment">vor der Zahlung</string>
+    <string name="subscription_notification_channel_name">Zahlungserinnerungen</string>
+    <string name="subscription_notification_title">Bevorstehende Zahlung: %s</string>
+    <string name="subscription_notification_text_today">%s ist heute fällig</string>
+    <plurals name="subscription_notification_text_days">
+        <item quantity="one">%s ist in %d Tag fällig</item>
+        <item quantity="other">%s ist in %d Tagen fällig</item>
+    </plurals>
     <string name="subscription_detail_delete_label">Zahlung löschen: %s</string>
     <string name="subscription_detail_description_label">Beschreibung</string>
     <string name="subscription_detail_edit_label">Zahlung bearbeiten: %s</string>
