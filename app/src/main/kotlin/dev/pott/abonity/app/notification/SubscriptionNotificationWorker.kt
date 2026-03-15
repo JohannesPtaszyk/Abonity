@@ -89,7 +89,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         val notificationManager = NotificationManagerCompat.from(appContext)
         if (!notificationManager.areNotificationsEnabled()) return
         val notification = NotificationCompat.Builder(appContext, SUBSCRIPTION_NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
