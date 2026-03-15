@@ -37,9 +37,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import dev.pott.abonity.common.text.rememberDigitsFilter
 import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
@@ -53,19 +55,24 @@ private enum class NotificationPeriod {
 private const val DAYS_IN_WEEK = 7
 private const val APPROX_DAYS_IN_MONTH = 30
 
-private fun NotificationPeriod.labelRes(): Int = when (this) {
-    NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
-    NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
-    NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
-}
+private fun NotificationPeriod.labelRes(): Int =
+    when (this) {
+        NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
+        NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
+        NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
+    }
 
 private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPeriod, Int> =
     when {
         daysBeforePayment == null -> Pair(NotificationPeriod.DAYS, 1)
-        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 && daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
+
+        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 &&
+            daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
             Pair(NotificationPeriod.MONTHS, daysBeforePayment / APPROX_DAYS_IN_MONTH)
+
         daysBeforePayment % DAYS_IN_WEEK == 0 && daysBeforePayment >= DAYS_IN_WEEK ->
             Pair(NotificationPeriod.WEEKS, daysBeforePayment / DAYS_IN_WEEK)
+
         else -> Pair(NotificationPeriod.DAYS, daysBeforePayment)
     }
 
@@ -122,6 +129,7 @@ fun NotificationConfigDialog(
     val periodLabel = stringResource(period.labelRes())
 
     AlertDialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         icon = {
             Icon(
                 painter = rememberVectorPainter(image = AppIcons.Notification),
@@ -159,24 +167,24 @@ fun NotificationConfigDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
+                            val digitsOnlyTextFieldFilter = rememberDigitsFilter {
+                                countText = it
+                                isOff = false
+                            }
                             OutlinedTextField(
                                 value = countText,
-                                onValueChange = { input ->
-                                    if (input.all { it.isDigit() }) {
-                                        countText = input
-                                        isOff = false
-                                    }
-                                },
+                                onValueChange = digitsOnlyTextFieldFilter,
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Number,
                                 ),
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(0.5f),
                                 singleLine = true,
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             ExposedDropdownMenuBox(
                                 expanded = periodExpanded,
                                 onExpandedChange = { periodExpanded = it },
+                                modifier = Modifier.weight(0.5f),
                             ) {
                                 OutlinedTextField(
                                     value = periodLabel,
@@ -198,7 +206,9 @@ fun NotificationConfigDialog(
                                 ) {
                                     NotificationPeriod.entries.forEach { p ->
                                         DropdownMenuItem(
-                                            text = { Text(text = stringResource(p.labelRes())) },
+                                            text = {
+                                                Text(text = stringResource(p.labelRes()))
+                                            },
                                             onClick = {
                                                 period = p
                                                 periodExpanded = false
