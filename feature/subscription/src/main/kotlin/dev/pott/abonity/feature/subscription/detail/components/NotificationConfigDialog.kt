@@ -76,15 +76,12 @@ private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPer
         else -> Pair(NotificationPeriod.DAYS, daysBeforePayment)
     }
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun NotificationConfigDialog(
-    currentConfig: NotificationConfig?,
+private fun rememberRequestPermissionAndConfirm(
     onConfirm: (NotificationConfig?) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val context = LocalContext.current
-    var showPermissionDeclinedDialog by remember { mutableStateOf(false) }
+    onPermissionDeclined: () -> Unit,
+): (NotificationConfig?) -> Unit {
     var pendingConfig by remember { mutableStateOf<NotificationConfig?>(null) }
     var isWaitingForPermission by remember { mutableStateOf(false) }
 
@@ -96,7 +93,7 @@ fun NotificationConfigDialog(
                     isWaitingForPermission = false
                     onConfirm(pendingConfig)
                     if (!isGranted) {
-                        showPermissionDeclinedDialog = true
+                        onPermissionDeclined()
                     }
                 }
             },
@@ -105,7 +102,7 @@ fun NotificationConfigDialog(
         null
     }
 
-    val requestPermissionAndConfirm: (NotificationConfig?) -> Unit = { config ->
+    return { config ->
         if (config != null &&
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             notificationPermissionState?.status?.isGranted == false
@@ -117,6 +114,21 @@ fun NotificationConfigDialog(
             onConfirm(config)
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotificationConfigDialog(
+    currentConfig: NotificationConfig?,
+    onConfirm: (NotificationConfig?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    var showPermissionDeclinedDialog by remember { mutableStateOf(false) }
+    val requestPermissionAndConfirm = rememberRequestPermissionAndConfirm(
+        onConfirm = onConfirm,
+        onPermissionDeclined = { showPermissionDeclinedDialog = true },
+    )
 
     val (initialPeriod, initialCount) = remember(currentConfig) {
         initialPeriodAndCount(currentConfig?.daysBeforePayment)
