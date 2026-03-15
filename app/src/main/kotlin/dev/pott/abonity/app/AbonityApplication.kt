@@ -23,7 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import java.util.concurrent.TimeUnit
@@ -91,25 +93,14 @@ class AbonityApplication :
                     workRequest,
                 )
 
-            val nowMillis = now.toEpochMilliseconds()
-            val notificationStartTime = now
-                .toLocalDateTime(timeZone)
-                .let { currentDateTime ->
-                    val todayAt8 = LocalDateTime(
-                        currentDateTime.year,
-                        currentDateTime.month,
-                        currentDateTime.day,
-                        NOTIFICATION_WORK_HOUR,
-                        0,
-                        0,
-                    ).toInstant(timeZone)
-                    val todayAt8Millis = todayAt8.toEpochMilliseconds()
-                    if (todayAt8Millis > nowMillis) todayAt8Millis else todayAt8.plus(1.days).toEpochMilliseconds()
-                }
+            val todayAt8 = now.toLocalDateTime(timeZone).date
+                .atTime(LocalTime(NOTIFICATION_WORK_HOUR, 0))
+                .toInstant(timeZone)
+            val notificationStartTime = if (todayAt8 > now) todayAt8 else todayAt8.plus(1.days)
 
             val notificationWorkRequest =
                 PeriodicWorkRequestBuilder<SubscriptionNotificationWorker>(1L, TimeUnit.DAYS)
-                    .setNextScheduleTimeOverride(notificationStartTime)
+                    .setNextScheduleTimeOverride(notificationStartTime.toEpochMilliseconds())
                     .build()
 
             WorkManager
