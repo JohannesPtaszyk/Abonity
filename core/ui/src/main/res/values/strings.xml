@@ -156,6 +156,7 @@
     <string name="subscription_detail_notification_label">Set notification for: %s</string>
     <string name="subscription_notification_dialog_title">Notify me</string>
     <string name="subscription_notification_dialog_off">Off</string>
+    <string name="subscription_notification_dialog_same_day">On the same day</string>
     <string name="subscription_notification_dialog_period_days">Days</string>
     <string name="subscription_notification_dialog_period_weeks">Weeks</string>
     <string name="subscription_notification_dialog_period_months">Months</string>

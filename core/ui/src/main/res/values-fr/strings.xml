@@ -121,6 +121,7 @@
     <string name="subscription_detail_notification_label">Définir une notification pour: %s</string>
     <string name="subscription_notification_dialog_title">Me notifier</string>
     <string name="subscription_notification_dialog_off">Désactivé</string>
+    <string name="subscription_notification_dialog_same_day">Le jour même</string>
     <string name="subscription_notification_dialog_period_days">Jours</string>
     <string name="subscription_notification_dialog_period_weeks">Semaines</string>
     <string name="subscription_notification_dialog_period_months">Mois</string>

@@ -52,6 +52,8 @@ private enum class NotificationPeriod {
     MONTHS,
 }
 
+private enum class NotificationMode { OFF, SAME_DAY, BEFORE }
+
 private const val DAYS_IN_WEEK = 7
 private const val APPROX_DAYS_IN_MONTH = 30
 
@@ -62,10 +64,14 @@ private fun NotificationPeriod.labelRes(): Int =
         NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
     }
 
-private fun initialPeriodAndCount(daysBeforePayment: Int?): Pair<NotificationPeriod, Int> =
-    when {
-        daysBeforePayment == null -> Pair(NotificationPeriod.DAYS, 1)
+private fun initialMode(config: NotificationConfig?): NotificationMode = when {
+    config == null -> NotificationMode.OFF
+    config.daysBeforePayment == 0 -> NotificationMode.SAME_DAY
+    else -> NotificationMode.BEFORE
+}
 
+private fun initialPeriodAndCount(daysBeforePayment: Int): Pair<NotificationPeriod, Int> =
+    when {
         daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 &&
             daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
             Pair(NotificationPeriod.MONTHS, daysBeforePayment / APPROX_DAYS_IN_MONTH)
@@ -131,9 +137,10 @@ fun NotificationConfigDialog(
     )
 
     val (initialPeriod, initialCount) = remember(currentConfig) {
-        initialPeriodAndCount(currentConfig?.daysBeforePayment)
+        val days = currentConfig?.daysBeforePayment?.takeIf { it > 0 } ?: 1
+        initialPeriodAndCount(days)
     }
-    var isOff by remember { mutableStateOf(currentConfig == null) }
+    var mode by remember { mutableStateOf(initialMode(currentConfig)) }
     var countText by remember { mutableStateOf(initialCount.toString()) }
     var period by remember { mutableStateOf(initialPeriod) }
     var periodExpanded by remember { mutableStateOf(false) }
@@ -158,10 +165,13 @@ fun NotificationConfigDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { isOff = true }
+                        .clickable { mode = NotificationMode.OFF }
                         .padding(vertical = 4.dp),
                 ) {
-                    RadioButton(selected = isOff, onClick = { isOff = true })
+                    RadioButton(
+                        selected = mode == NotificationMode.OFF,
+                        onClick = { mode = NotificationMode.OFF },
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(id = R.string.subscription_notification_dialog_off),
@@ -173,15 +183,38 @@ fun NotificationConfigDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable { mode = NotificationMode.SAME_DAY }
                         .padding(vertical = 4.dp),
                 ) {
-                    RadioButton(selected = !isOff, onClick = { isOff = false })
+                    RadioButton(
+                        selected = mode == NotificationMode.SAME_DAY,
+                        onClick = { mode = NotificationMode.SAME_DAY },
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(
+                            id = R.string.subscription_notification_dialog_same_day,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                ) {
+                    RadioButton(
+                        selected = mode == NotificationMode.BEFORE,
+                        onClick = { mode = NotificationMode.BEFORE },
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             val digitsOnlyTextFieldFilter = rememberDigitsFilter {
                                 countText = it
-                                isOff = false
+                                mode = NotificationMode.BEFORE
                             }
                             OutlinedTextField(
                                 value = countText,
@@ -224,7 +257,7 @@ fun NotificationConfigDialog(
                                             onClick = {
                                                 period = p
                                                 periodExpanded = false
-                                                isOff = false
+                                                mode = NotificationMode.BEFORE
                                             },
                                         )
                                     }
@@ -246,16 +279,19 @@ fun NotificationConfigDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (isOff) {
-                        requestPermissionAndConfirm(null)
-                    } else {
-                        val count = countText.toIntOrNull()?.coerceAtLeast(0) ?: 1
-                        val days = when (period) {
-                            NotificationPeriod.DAYS -> count
-                            NotificationPeriod.WEEKS -> count * DAYS_IN_WEEK
-                            NotificationPeriod.MONTHS -> count * APPROX_DAYS_IN_MONTH
+                    when (mode) {
+                        NotificationMode.OFF -> requestPermissionAndConfirm(null)
+                        NotificationMode.SAME_DAY ->
+                            requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = 0))
+                        NotificationMode.BEFORE -> {
+                            val count = countText.toIntOrNull()?.coerceAtLeast(1) ?: 1
+                            val days = when (period) {
+                                NotificationPeriod.DAYS -> count
+                                NotificationPeriod.WEEKS -> count * DAYS_IN_WEEK
+                                NotificationPeriod.MONTHS -> count * APPROX_DAYS_IN_MONTH
+                            }
+                            requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = days))
                         }
-                        requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = days))
                     }
                 },
             ) {

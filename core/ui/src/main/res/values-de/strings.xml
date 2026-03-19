@@ -110,6 +110,7 @@
     <string name="subscription_detail_notification_label">Benachrichtigung setzen für: %s</string>
     <string name="subscription_notification_dialog_title">Erinnere mich</string>
     <string name="subscription_notification_dialog_off">Aus</string>
+    <string name="subscription_notification_dialog_same_day">Am selben Tag</string>
     <string name="subscription_notification_dialog_period_days">Tage</string>
     <string name="subscription_notification_dialog_period_weeks">Wochen</string>
     <string name="subscription_notification_dialog_period_months">Monate</string>
