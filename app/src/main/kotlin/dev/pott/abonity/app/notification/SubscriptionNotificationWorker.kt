@@ -54,7 +54,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
-            val days = daysUntilNextPayment(subscription, todayEpochDays, calculator)
+            val days = daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
             if (days == config.daysBeforePayment) {
                 sendNotification(
                     subscriptionId = subscription.id.value,
@@ -110,7 +110,8 @@ internal fun daysUntilNextPayment(
     subscription: Subscription,
     todayEpochDays: Long,
     calculator: PaymentInfoCalculator,
-): Int {
+): Int? {
+    subscription.notificationConfig ?: return null
     val paymentType = subscription.paymentInfo.type
     val nextPayment = if (paymentType is PaymentType.Periodic) {
         var candidate = subscription.paymentInfo.firstPayment
