@@ -20,7 +20,6 @@ class AndroidAppConventionPlugin : Plugin<Project> {
                 apply("com.google.firebase.crashlytics")
                 apply("com.google.firebase.firebase-perf")
                 apply("dev.pott.android.lint")
-                apply("org.jetbrains.kotlin.android")
                 apply("com.google.gms.google-services")
                 apply("com.mikepenz.aboutlibraries.plugin")
                 apply("dev.shreyaspatil.compose-compiler-report-generator")

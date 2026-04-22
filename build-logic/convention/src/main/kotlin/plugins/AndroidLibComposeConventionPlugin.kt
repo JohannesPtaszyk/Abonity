@@ -1,6 +1,6 @@
 package plugins
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import configurations.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project

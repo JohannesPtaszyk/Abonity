@@ -1,6 +1,6 @@
 package plugins
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import configurations.applyKoverAndroid
 import configurations.configureGradleManagedDevices
 import configurations.configureKotlinAndroid
@@ -18,13 +18,10 @@ class AndroidLibConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("dev.pott.android.lint")
-                apply("org.jetbrains.kotlin.android")
                 apply("tech.apter.junit5.jupiter.robolectric-extension-gradle-plugin")
             }
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk =
-                    libs.findVersion("targetSdkVersion").get().toString().toInt()
                 configureGradleManagedDevices(this)
                 @Suppress("UnstableApiUsage")
                 testFixtures.enable = true

@@ -10,7 +10,6 @@ plugins {
     id(libs.plugins.firebase.distribution.get().pluginId)
     id(libs.plugins.secrets.get().pluginId)
     id(libs.plugins.play.publisher.get().pluginId)
-    id(libs.plugins.appsweep.get().pluginId)
     id(libs.plugins.kotlin.serialization.get().pluginId)
 }
 
@@ -30,6 +29,10 @@ android {
         }
 
         base.archivesName = "$applicationId($versionName)-$versionCode"
+
+        // Provide a default so the IDE manifest editor doesn't flag the placeholder as unresolved.
+        // The secrets-gradle-plugin overrides this at build time with the value from secrets.properties.
+        manifestPlaceholders["AD_MOB_APP_ID"] = ""
     }
 
     androidResources {

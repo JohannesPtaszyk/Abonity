@@ -21,7 +21,7 @@ class CoroutinesTestExtension :
     }
 
     private fun injectTestDispatcher(context: ExtensionContext) {
-        val testInstance = context?.testInstance?.get() ?: return
+        val testInstance = context.testInstance.get()
         val fields = testInstance.javaClass.declaredFields
 
         for (field in fields) {

@@ -9,28 +9,26 @@ import org.gradle.kotlin.dsl.invoke
  * Configure project for Gradle managed devices
  */
 @Suppress("UnstableApiUsage")
-internal fun configureGradleManagedDevices(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun configureGradleManagedDevices(commonExtension: CommonExtension) {
     val pixel6 = GradleManagedDeviceConfig("Pixel 6", 34, "google")
 
     val devices = listOf(pixel6)
     val ciDevices = listOf(pixel6)
 
-    commonExtension.testOptions {
-        managedDevices {
-            allDevices {
-                devices.forEach { deviceConfig ->
-                    maybeCreate(deviceConfig.taskName, ManagedVirtualDevice::class.java).apply {
-                        device = deviceConfig.device
-                        apiLevel = deviceConfig.apiLevel
-                        systemImageSource = deviceConfig.systemImageSource
-                    }
+    commonExtension.testOptions.managedDevices.apply {
+        allDevices {
+            devices.forEach { deviceConfig ->
+                maybeCreate(deviceConfig.taskName, ManagedVirtualDevice::class.java).apply {
+                    device = deviceConfig.device
+                    apiLevel = deviceConfig.apiLevel
+                    systemImageSource = deviceConfig.systemImageSource
                 }
             }
-            groups {
-                maybeCreate("ci").apply {
-                    ciDevices.forEach { deviceConfig ->
-                        targetDevices.add(allDevices[deviceConfig.taskName])
-                    }
+        }
+        groups {
+            maybeCreate("ci").apply {
+                ciDevices.forEach { deviceConfig ->
+                    targetDevices.add(allDevices[deviceConfig.taskName])
                 }
             }
         }
