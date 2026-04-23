@@ -24,7 +24,6 @@ plugins {
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.sonar) apply false
     alias(libs.plugins.spotless) apply false
-    alias(libs.plugins.appsweep) apply false
     alias(libs.plugins.kotlin.compose.compiler) apply false
     alias(libs.plugins.junit5.robolectric) apply false
     id("dev.pott.project")

@@ -1,6 +1,6 @@
 package plugins
 
-import com.android.build.gradle.TestExtension
+import com.android.build.api.dsl.TestExtension
 import configurations.configureGradleManagedDevices
 import configurations.configureKotlinAndroid
 import extensions.libs
@@ -14,7 +14,6 @@ class AndroidTestConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.test")
-                apply("org.jetbrains.kotlin.android")
             }
 
             extensions.configure<TestExtension> {

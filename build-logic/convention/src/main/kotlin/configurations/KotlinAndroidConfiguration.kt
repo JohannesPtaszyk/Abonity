@@ -14,32 +14,24 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 /**
  * Configure base Kotlin with Android options
  */
-internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
-        compileSdk = libs.findVersion("targetSdkVersion").get().toString().toInt()
+        compileSdk = libs.findVersion("compileSdkVersion").get().toString().toInt()
 
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = libs.findVersion("minSdkVersion").get().toString().toInt()
         }
 
-        packaging {
-            resources {
-                excludes.add("META-INF/LICENSE.md")
-                excludes.add("META-INF/LICENSE-notice.md")
-                excludes.add("/META-INF/{AL2.0,LGPL2.1}")
-            }
+        packaging.resources.apply {
+            excludes.add("META-INF/LICENSE.md")
+            excludes.add("META-INF/LICENSE-notice.md")
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
 
-        compileOptions {
+        compileOptions.apply {
             sourceCompatibility = projectJavaVersion
             targetCompatibility = projectJavaVersion
             isCoreLibraryDesugaringEnabled = true
-        }
-
-        sourceSets {
-            getByName("main").java.srcDirs("src/main/kotlin")
-            getByName("test").java.srcDirs("src/test/kotlin")
-            getByName("androidTest").java.srcDirs("src/androidTest/kotlin")
         }
     }
 

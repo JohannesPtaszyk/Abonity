@@ -5,28 +5,27 @@ import extensions.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradleSubplugin
 
-internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     pluginManager.apply(ComposeCompilerGradleSubplugin::class)
+    pluginManager.withPlugin("org.jetbrains.kotlin.plugin.compose") {
+        extensions.configure<ComposeCompilerGradlePluginExtension> {
+            includeSourceInformation = true
+        }
+    }
     commonExtension.apply {
-        buildFeatures {
+        buildFeatures.apply {
             compose = true
         }
 
-        with(extensions.getByType<ComposeCompilerGradlePluginExtension>()) {
-            includeSourceInformation = true
-        }
-
         @Suppress("UnstableApiUsage")
-        testOptions {
-            unitTests {
-                isIncludeAndroidResources = true
-                isReturnDefaultValues = true
-            }
+        testOptions.unitTests.apply {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
         }
 
         dependencies {
@@ -41,6 +40,10 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
             add("debugImplementation", libs.findLibrary("androidx.compose.ui.tooling").get())
 
             add("androidTestImplementation", platform(bom))
+
+            configurations.findByName("testFixturesImplementation")?.let {
+                add("testFixturesImplementation", platform(bom))
+            }
         }
     }
 }
