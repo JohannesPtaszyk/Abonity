@@ -56,6 +56,7 @@ private enum class NotificationMode { OFF, SAME_DAY, BEFORE }
 
 private const val DAYS_IN_WEEK = 7
 private const val APPROX_DAYS_IN_MONTH = 30
+private const val INPUT_FIELD_WEIGHT = 0.5f
 
 private fun NotificationPeriod.labelRes(): Int =
     when (this) {
@@ -64,11 +65,12 @@ private fun NotificationPeriod.labelRes(): Int =
         NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
     }
 
-private fun initialMode(config: NotificationConfig?): NotificationMode = when {
-    config == null -> NotificationMode.OFF
-    config.daysBeforePayment == 0 -> NotificationMode.SAME_DAY
-    else -> NotificationMode.BEFORE
-}
+private fun initialMode(config: NotificationConfig?): NotificationMode =
+    when {
+        config == null -> NotificationMode.OFF
+        config.daysBeforePayment == 0 -> NotificationMode.SAME_DAY
+        else -> NotificationMode.BEFORE
+    }
 
 private fun initialPeriodAndCount(daysBeforePayment: Int): Pair<NotificationPeriod, Int> =
     when {
@@ -159,130 +161,26 @@ fun NotificationConfigDialog(
             Text(stringResource(id = R.string.subscription_notification_dialog_title))
         },
         text = {
-            Column {
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { mode = NotificationMode.OFF }
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(
-                        selected = mode == NotificationMode.OFF,
-                        onClick = { mode = NotificationMode.OFF },
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.subscription_notification_dialog_off),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { mode = NotificationMode.SAME_DAY }
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(
-                        selected = mode == NotificationMode.SAME_DAY,
-                        onClick = { mode = NotificationMode.SAME_DAY },
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(
-                            id = R.string.subscription_notification_dialog_same_day,
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(
-                        selected = mode == NotificationMode.BEFORE,
-                        onClick = { mode = NotificationMode.BEFORE },
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            val digitsOnlyTextFieldFilter = rememberDigitsFilter {
-                                countText = it
-                                mode = NotificationMode.BEFORE
-                            }
-                            OutlinedTextField(
-                                value = countText,
-                                onValueChange = digitsOnlyTextFieldFilter,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                ),
-                                modifier = Modifier.weight(0.5f),
-                                singleLine = true,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            ExposedDropdownMenuBox(
-                                expanded = periodExpanded,
-                                onExpandedChange = { periodExpanded = it },
-                                modifier = Modifier.weight(0.5f),
-                            ) {
-                                OutlinedTextField(
-                                    value = periodLabel,
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = periodExpanded,
-                                        )
-                                    },
-                                    modifier = Modifier.menuAnchor(
-                                        ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                                    ),
-                                    singleLine = true,
-                                )
-                                ExposedDropdownMenu(
-                                    expanded = periodExpanded,
-                                    onDismissRequest = { periodExpanded = false },
-                                ) {
-                                    NotificationPeriod.entries.forEach { p ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(text = stringResource(p.labelRes()))
-                                            },
-                                            onClick = {
-                                                period = p
-                                                periodExpanded = false
-                                                mode = NotificationMode.BEFORE
-                                            },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(
-                                id = R.string.subscription_notification_dialog_before_payment,
-                            ),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
+            NotificationModeSelector(
+                mode = mode,
+                onModeChange = { mode = it },
+                countText = countText,
+                onCountChange = { countText = it },
+                onPeriodChange = { period = it },
+                periodExpanded = periodExpanded,
+                onPeriodExpandedChange = { periodExpanded = it },
+                periodLabel = periodLabel,
+            )
         },
         confirmButton = {
             TextButton(
                 onClick = {
                     when (mode) {
                         NotificationMode.OFF -> requestPermissionAndConfirm(null)
+
                         NotificationMode.SAME_DAY ->
                             requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = 0))
+
                         NotificationMode.BEFORE -> {
                             val count = countText.toIntOrNull()?.coerceAtLeast(1) ?: 1
                             val days = when (period) {
@@ -290,7 +188,9 @@ fun NotificationConfigDialog(
                                 NotificationPeriod.WEEKS -> count * DAYS_IN_WEEK
                                 NotificationPeriod.MONTHS -> count * APPROX_DAYS_IN_MONTH
                             }
-                            requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = days))
+                            requestPermissionAndConfirm(
+                                NotificationConfig(daysBeforePayment = days),
+                            )
                         }
                     }
                 },
@@ -317,6 +217,158 @@ fun NotificationConfigDialog(
                 context.startActivity(intent)
             },
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NotificationModeSelector(
+    mode: NotificationMode,
+    onModeChange: (NotificationMode) -> Unit,
+    countText: String,
+    onCountChange: (String) -> Unit,
+    onPeriodChange: (NotificationPeriod) -> Unit,
+    periodExpanded: Boolean,
+    onPeriodExpandedChange: (Boolean) -> Unit,
+    periodLabel: String,
+) {
+    Column {
+        Spacer(modifier = Modifier.height(4.dp))
+        ModeRadioRow(
+            selected = mode == NotificationMode.OFF,
+            onSelect = { onModeChange(NotificationMode.OFF) },
+            label = stringResource(id = R.string.subscription_notification_dialog_off),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        ModeRadioRow(
+            selected = mode == NotificationMode.SAME_DAY,
+            onSelect = { onModeChange(NotificationMode.SAME_DAY) },
+            label = stringResource(id = R.string.subscription_notification_dialog_same_day),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        BeforePaymentRow(
+            selected = mode == NotificationMode.BEFORE,
+            onSelect = { onModeChange(NotificationMode.BEFORE) },
+            countText = countText,
+            onCountChange = {
+                onCountChange(it)
+                onModeChange(NotificationMode.BEFORE)
+            },
+            onPeriodChange = {
+                onPeriodChange(it)
+                onModeChange(NotificationMode.BEFORE)
+            },
+            periodExpanded = periodExpanded,
+            onPeriodExpandedChange = onPeriodExpandedChange,
+            periodLabel = periodLabel,
+        )
+    }
+}
+
+@Composable
+private fun ModeRadioRow(selected: Boolean, onSelect: () -> Unit, label: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onSelect)
+            .padding(vertical = 4.dp),
+    ) {
+        RadioButton(selected = selected, onClick = onSelect)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = label, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BeforePaymentRow(
+    selected: Boolean,
+    onSelect: () -> Unit,
+    countText: String,
+    onCountChange: (String) -> Unit,
+    onPeriodChange: (NotificationPeriod) -> Unit,
+    periodExpanded: Boolean,
+    onPeriodExpandedChange: (Boolean) -> Unit,
+    periodLabel: String,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+    ) {
+        RadioButton(selected = selected, onClick = onSelect)
+        Spacer(modifier = Modifier.width(8.dp))
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val digitsOnlyTextFieldFilter = rememberDigitsFilter(onCountChange)
+                OutlinedTextField(
+                    value = countText,
+                    onValueChange = digitsOnlyTextFieldFilter,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.weight(INPUT_FIELD_WEIGHT),
+                    singleLine = true,
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                PeriodDropdown(
+                    onPeriodChange = onPeriodChange,
+                    expanded = periodExpanded,
+                    onExpandedChange = onPeriodExpandedChange,
+                    periodLabel = periodLabel,
+                    modifier = Modifier.weight(INPUT_FIELD_WEIGHT),
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    id = R.string.subscription_notification_dialog_before_payment,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PeriodDropdown(
+    onPeriodChange: (NotificationPeriod) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    periodLabel: String,
+    modifier: Modifier = Modifier,
+) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = modifier,
+    ) {
+        OutlinedTextField(
+            value = periodLabel,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+            singleLine = true,
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) },
+        ) {
+            NotificationPeriod.entries.forEach { entry ->
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(entry.labelRes())) },
+                    onClick = {
+                        onPeriodChange(entry)
+                        onExpandedChange(false)
+                    },
+                )
+            }
+        }
     }
 }
 

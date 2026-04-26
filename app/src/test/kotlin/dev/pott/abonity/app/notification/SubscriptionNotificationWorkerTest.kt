@@ -17,8 +17,6 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import org.junit.jupiter.api.Test
 
-
-//TODO: Add proper worker tests
 class SubscriptionNotificationWorkerTest {
 
     private val clock = FakeClock()
