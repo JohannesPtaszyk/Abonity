@@ -7,13 +7,16 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import dev.pott.abonity.common.test.CoroutinesTestExtension
 import dev.pott.abonity.core.domain.FakeClock
+import dev.pott.abonity.core.domain.subscription.FakeSubscriptionNotificationScheduler
 import dev.pott.abonity.core.domain.subscription.FakeSubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.entities.createTestSubscription
 import dev.pott.abonity.core.domain.subscription.entities.createTestSubscriptionList
 import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.SubscriptionId
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.time.Instant
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
 class DetailViewModelTest {
 
@@ -32,7 +36,11 @@ class DetailViewModelTest {
                 subscriptionFlow = flowOf(*subscriptions),
             )
 
-            val tested = DetailViewModel(subscriptionRepository, PaymentInfoCalculator(FakeClock()))
+            val tested = DetailViewModel(
+                subscriptionRepository,
+                PaymentInfoCalculator(FakeClock()),
+                FakeSubscriptionNotificationScheduler(),
+            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -65,7 +73,11 @@ class DetailViewModelTest {
                 subscriptionFlow = flowOf(*subscriptions),
             )
 
-            val tested = DetailViewModel(subscriptionRepository, PaymentInfoCalculator(FakeClock()))
+            val tested = DetailViewModel(
+                subscriptionRepository,
+                PaymentInfoCalculator(FakeClock()),
+                FakeSubscriptionNotificationScheduler(),
+            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -76,13 +88,18 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun `GIVEN loaded subscription WHEN setNotificationConfig with config THEN subscription is saved with config`() {
+    fun `GIVEN loaded subscription WHEN setNotificationConfig with config THEN subscription is saved with config AND scheduler is triggered`() {
         runTest {
             val subscription = createTestSubscription()
             val subscriptionRepository = FakeSubscriptionRepository(
                 subscriptionFlow = flowOf(subscription),
             )
-            val tested = DetailViewModel(subscriptionRepository, PaymentInfoCalculator(FakeClock()))
+            val scheduler = FakeSubscriptionNotificationScheduler()
+            val tested = DetailViewModel(
+                subscriptionRepository,
+                PaymentInfoCalculator(FakeClock()),
+                scheduler,
+            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -91,16 +108,18 @@ class DetailViewModelTest {
 
                 val config = NotificationConfig(daysBeforePayment = 3)
                 tested.setNotificationConfig(config)
+                runCurrent()
 
                 assertThat(subscriptionRepository.addedSubscriptions.last())
                     .isEqualTo(subscription.copy(notificationConfig = config))
+                assertThat(scheduler.immediateCheckCount).isEqualTo(1)
                 cancelAndConsumeRemainingEvents()
             }
         }
     }
 
     @Test
-    fun `GIVEN loaded subscription with config WHEN setNotificationConfig with null THEN subscription is saved with no config`() {
+    fun `GIVEN loaded subscription with config WHEN setNotificationConfig with null THEN subscription is saved with no config AND scheduler is not triggered`() {
         runTest {
             val subscription = createTestSubscription(
                 notificationConfig = NotificationConfig(daysBeforePayment = 1),
@@ -108,7 +127,12 @@ class DetailViewModelTest {
             val subscriptionRepository = FakeSubscriptionRepository(
                 subscriptionFlow = flowOf(subscription),
             )
-            val tested = DetailViewModel(subscriptionRepository, PaymentInfoCalculator(FakeClock()))
+            val scheduler = FakeSubscriptionNotificationScheduler()
+            val tested = DetailViewModel(
+                subscriptionRepository,
+                PaymentInfoCalculator(FakeClock()),
+                scheduler,
+            )
 
             tested.state.test {
                 assertThat(awaitItem()).isEqualTo(DetailState())
@@ -116,9 +140,11 @@ class DetailViewModelTest {
                 awaitItem() // consume the loaded state
 
                 tested.setNotificationConfig(null)
+                runCurrent()
 
                 assertThat(subscriptionRepository.addedSubscriptions.last().notificationConfig)
                     .isNull()
+                assertThat(scheduler.immediateCheckCount).isEqualTo(0)
                 cancelAndConsumeRemainingEvents()
             }
         }
@@ -128,7 +154,11 @@ class DetailViewModelTest {
     fun `GIVEN no subscription loaded WHEN setNotificationConfig THEN nothing is saved`() {
         runTest {
             val subscriptionRepository = FakeSubscriptionRepository()
-            val tested = DetailViewModel(subscriptionRepository, PaymentInfoCalculator(FakeClock()))
+            val tested = DetailViewModel(
+                subscriptionRepository,
+                PaymentInfoCalculator(FakeClock()),
+                FakeSubscriptionNotificationScheduler(),
+            )
 
             tested.setNotificationConfig(NotificationConfig(daysBeforePayment = 0))
 

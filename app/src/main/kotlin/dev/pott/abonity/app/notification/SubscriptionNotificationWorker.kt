@@ -1,7 +1,9 @@
 package dev.pott.abonity.app.notification
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
@@ -12,6 +14,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dev.pott.abonity.app.MainActivity
 import dev.pott.abonity.app.R
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
@@ -54,7 +57,8 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         val subscriptions = repository.getSubscriptionsFlow().firstOrNull() ?: return
         subscriptions.forEach { subscription ->
             val config = subscription.notificationConfig ?: return@forEach
-            val days = daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
+            val days =
+                daysUntilNextPayment(subscription, todayEpochDays, calculator) ?: return@forEach
             if (days == config.daysBeforePayment) {
                 sendNotification(
                     subscriptionId = subscription.id.value,
@@ -87,6 +91,14 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
         }
         val notificationManager = NotificationManagerCompat.from(appContext)
         if (!notificationManager.areNotificationsEnabled()) return
+        val contentIntent = PendingIntent.getActivity(
+            appContext,
+            subscriptionId.hashCode(),
+            Intent(appContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
         val notification = NotificationCompat.Builder(
             appContext,
             SUBSCRIPTION_NOTIFICATION_CHANNEL_ID,
@@ -94,6 +106,7 @@ class SubscriptionNotificationWorker @AssistedInject constructor(
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
+            .setContentIntent(contentIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()

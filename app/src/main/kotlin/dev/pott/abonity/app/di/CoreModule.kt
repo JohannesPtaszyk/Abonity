@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.pott.abonity.app.firebase.FirebaseRemoteConfigDataSource
+import dev.pott.abonity.app.notification.WorkManagerSubscriptionNotificationScheduler
 import dev.pott.abonity.core.domain.config.ConfigRepository
 import dev.pott.abonity.core.domain.config.ConfigRepositoryImpl
 import dev.pott.abonity.core.domain.config.LocalConfigDataSource
@@ -22,6 +23,7 @@ import dev.pott.abonity.core.domain.subscription.CategoryLocalDataSource
 import dev.pott.abonity.core.domain.subscription.CategoryRepository
 import dev.pott.abonity.core.domain.subscription.CategoryRepositoryImpl
 import dev.pott.abonity.core.domain.subscription.SubscriptionLocalDataSource
+import dev.pott.abonity.core.domain.subscription.SubscriptionNotificationScheduler
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepositoryImpl
 import dev.pott.abonity.core.local.legal.LegalDataStoreDataSource
@@ -78,4 +80,9 @@ interface CoreModule {
 
     @Binds
     fun bindLocalConfigDataSource(impl: FirebaseRemoteConfigDataSource): LocalConfigDataSource
+
+    @Binds
+    fun bindSubscriptionNotificationScheduler(
+        impl: WorkManagerSubscriptionNotificationScheduler,
+    ): SubscriptionNotificationScheduler
 }

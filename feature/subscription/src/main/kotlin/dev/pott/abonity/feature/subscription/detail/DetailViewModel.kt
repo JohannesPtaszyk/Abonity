@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.pott.abonity.core.domain.subscription.PaymentInfoCalculator
+import dev.pott.abonity.core.domain.subscription.SubscriptionNotificationScheduler
 import dev.pott.abonity.core.domain.subscription.SubscriptionRepository
 import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.entity.subscription.PaymentType
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val repository: SubscriptionRepository,
     private val calculator: PaymentInfoCalculator,
+    private val notificationScheduler: SubscriptionNotificationScheduler,
 ) : ViewModel() {
 
     private val currentDetailId: MutableStateFlow<SubscriptionId?> = MutableStateFlow(null)
@@ -58,6 +60,9 @@ class DetailViewModel @Inject constructor(
         val subscription = state.value.subscription ?: return
         viewModelScope.launch {
             repository.addOrUpdateSubscription(subscription.copy(notificationConfig = config))
+            if (config != null) {
+                notificationScheduler.scheduleImmediateCheck()
+            }
         }
     }
 }
