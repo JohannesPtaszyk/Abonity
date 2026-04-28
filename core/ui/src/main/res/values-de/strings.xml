@@ -111,10 +111,10 @@
     <string name="subscription_notification_dialog_title">Erinnere mich</string>
     <string name="subscription_notification_dialog_off">Aus</string>
     <string name="subscription_notification_dialog_same_day">Am selben Tag</string>
-    <string name="subscription_notification_dialog_period_days">Tage</string>
-    <string name="subscription_notification_dialog_period_weeks">Wochen</string>
-    <string name="subscription_notification_dialog_period_months">Monate</string>
-    <string name="subscription_notification_dialog_before_payment">vor der Zahlung</string>
+    <plurals name="subscription_notification_dialog_days_before_payment">
+        <item quantity="one">Tag vor der Zahlung</item>
+        <item quantity="other">Tage vor der Zahlung</item>
+    </plurals>
     <string name="subscription_notification_channel_name">Zahlungserinnerungen</string>
     <string name="subscription_notification_title">Bevorstehende Zahlung: %s</string>
     <string name="subscription_notification_text_today">%s ist heute fällig</string>

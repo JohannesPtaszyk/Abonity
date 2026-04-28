@@ -14,11 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -46,42 +42,16 @@ import dev.pott.abonity.core.entity.subscription.NotificationConfig
 import dev.pott.abonity.core.ui.R
 import dev.pott.abonity.core.ui.theme.AppIcons
 
-private enum class NotificationPeriod {
-    DAYS,
-    WEEKS,
-    MONTHS,
-}
-
 private enum class NotificationMode { OFF, SAME_DAY, BEFORE }
 
-private const val DAYS_IN_WEEK = 7
-private const val APPROX_DAYS_IN_MONTH = 30
-private const val INPUT_FIELD_WEIGHT = 0.5f
-
-private fun NotificationPeriod.labelRes(): Int =
-    when (this) {
-        NotificationPeriod.DAYS -> R.string.subscription_notification_dialog_period_days
-        NotificationPeriod.WEEKS -> R.string.subscription_notification_dialog_period_weeks
-        NotificationPeriod.MONTHS -> R.string.subscription_notification_dialog_period_months
-    }
+private const val COUNT_FIELD_WEIGHT = 0.4f
+private const val LABEL_WEIGHT = 0.6f
 
 private fun initialMode(config: NotificationConfig?): NotificationMode =
     when {
         config == null -> NotificationMode.OFF
         config.daysBeforePayment == 0 -> NotificationMode.SAME_DAY
         else -> NotificationMode.BEFORE
-    }
-
-private fun initialPeriodAndCount(daysBeforePayment: Int): Pair<NotificationPeriod, Int> =
-    when {
-        daysBeforePayment % APPROX_DAYS_IN_MONTH == 0 &&
-            daysBeforePayment >= APPROX_DAYS_IN_MONTH ->
-            Pair(NotificationPeriod.MONTHS, daysBeforePayment / APPROX_DAYS_IN_MONTH)
-
-        daysBeforePayment % DAYS_IN_WEEK == 0 && daysBeforePayment >= DAYS_IN_WEEK ->
-            Pair(NotificationPeriod.WEEKS, daysBeforePayment / DAYS_IN_WEEK)
-
-        else -> Pair(NotificationPeriod.DAYS, daysBeforePayment)
     }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -124,7 +94,6 @@ private fun rememberRequestPermissionAndConfirm(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationConfigDialog(
     currentConfig: NotificationConfig?,
@@ -138,16 +107,11 @@ fun NotificationConfigDialog(
         onPermissionDeclined = { showPermissionDeclinedDialog = true },
     )
 
-    val (initialPeriod, initialCount) = remember(currentConfig) {
-        val days = currentConfig?.daysBeforePayment?.takeIf { it > 0 } ?: 1
-        initialPeriodAndCount(days)
+    val initialDays = remember(currentConfig) {
+        currentConfig?.daysBeforePayment?.takeIf { it > 0 } ?: 1
     }
     var mode by remember { mutableStateOf(initialMode(currentConfig)) }
-    var countText by remember { mutableStateOf(initialCount.toString()) }
-    var period by remember { mutableStateOf(initialPeriod) }
-    var periodExpanded by remember { mutableStateOf(false) }
-
-    val periodLabel = stringResource(period.labelRes())
+    var countText by remember { mutableStateOf(initialDays.toString()) }
 
     AlertDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -166,10 +130,6 @@ fun NotificationConfigDialog(
                 onModeChange = { mode = it },
                 countText = countText,
                 onCountChange = { countText = it },
-                onPeriodChange = { period = it },
-                periodExpanded = periodExpanded,
-                onPeriodExpandedChange = { periodExpanded = it },
-                periodLabel = periodLabel,
             )
         },
         confirmButton = {
@@ -182,12 +142,7 @@ fun NotificationConfigDialog(
                             requestPermissionAndConfirm(NotificationConfig(daysBeforePayment = 0))
 
                         NotificationMode.BEFORE -> {
-                            val count = countText.toIntOrNull()?.coerceAtLeast(1) ?: 1
-                            val days = when (period) {
-                                NotificationPeriod.DAYS -> count
-                                NotificationPeriod.WEEKS -> count * DAYS_IN_WEEK
-                                NotificationPeriod.MONTHS -> count * APPROX_DAYS_IN_MONTH
-                            }
+                            val days = countText.toIntOrNull()?.coerceAtLeast(1) ?: 1
                             requestPermissionAndConfirm(
                                 NotificationConfig(daysBeforePayment = days),
                             )
@@ -220,17 +175,12 @@ fun NotificationConfigDialog(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NotificationModeSelector(
     mode: NotificationMode,
     onModeChange: (NotificationMode) -> Unit,
     countText: String,
     onCountChange: (String) -> Unit,
-    onPeriodChange: (NotificationPeriod) -> Unit,
-    periodExpanded: Boolean,
-    onPeriodExpandedChange: (Boolean) -> Unit,
-    periodLabel: String,
 ) {
     Column {
         Spacer(modifier = Modifier.height(4.dp))
@@ -254,13 +204,6 @@ private fun NotificationModeSelector(
                 onCountChange(it)
                 onModeChange(NotificationMode.BEFORE)
             },
-            onPeriodChange = {
-                onPeriodChange(it)
-                onModeChange(NotificationMode.BEFORE)
-            },
-            periodExpanded = periodExpanded,
-            onPeriodExpandedChange = onPeriodExpandedChange,
-            periodLabel = periodLabel,
         )
     }
 }
@@ -280,18 +223,14 @@ private fun ModeRadioRow(selected: Boolean, onSelect: () -> Unit, label: String)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BeforePaymentRow(
     selected: Boolean,
     onSelect: () -> Unit,
     countText: String,
     onCountChange: (String) -> Unit,
-    onPeriodChange: (NotificationPeriod) -> Unit,
-    periodExpanded: Boolean,
-    onPeriodExpandedChange: (Boolean) -> Unit,
-    periodLabel: String,
 ) {
+    val days = countText.toIntOrNull()?.coerceAtLeast(1) ?: 1
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -300,75 +239,23 @@ private fun BeforePaymentRow(
     ) {
         RadioButton(selected = selected, onClick = onSelect)
         Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val digitsOnlyTextFieldFilter = rememberDigitsFilter(onCountChange)
-                OutlinedTextField(
-                    value = countText,
-                    onValueChange = digitsOnlyTextFieldFilter,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(INPUT_FIELD_WEIGHT),
-                    singleLine = true,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                PeriodDropdown(
-                    onPeriodChange = onPeriodChange,
-                    expanded = periodExpanded,
-                    onExpandedChange = onPeriodExpandedChange,
-                    periodLabel = periodLabel,
-                    modifier = Modifier.weight(INPUT_FIELD_WEIGHT),
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = stringResource(
-                    id = R.string.subscription_notification_dialog_before_payment,
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PeriodDropdown(
-    onPeriodChange: (NotificationPeriod) -> Unit,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    periodLabel: String,
-    modifier: Modifier = Modifier,
-) {
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
-        modifier = modifier,
-    ) {
+        val digitsOnlyTextFieldFilter = rememberDigitsFilter(onCountChange)
         OutlinedTextField(
-            value = periodLabel,
-            onValueChange = {},
-            readOnly = true,
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+            value = countText,
+            onValueChange = digitsOnlyTextFieldFilter,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.weight(COUNT_FIELD_WEIGHT),
             singleLine = true,
         )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) },
-        ) {
-            NotificationPeriod.entries.forEach { entry ->
-                DropdownMenuItem(
-                    text = { Text(text = stringResource(entry.labelRes())) },
-                    onClick = {
-                        onPeriodChange(entry)
-                        onExpandedChange(false)
-                    },
-                )
-            }
-        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = pluralStringResource(
+                id = R.plurals.subscription_notification_dialog_days_before_payment,
+                count = days,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(LABEL_WEIGHT),
+        )
     }
 }
 
